@@ -135,89 +135,104 @@ app.get('/api/sensors/latest', authenticateToken, async (req, res) => {
 });
 
 // ==========================================
-// PROTECTED ROUTES & API ENDPOINTS
-// ==========================================
-// ---------- LIVE WEATHER API (DB COORDINATES + OPEN-METEO) ----------
+// ---------- LIVE WEATHER API (SUPABASE COORDINATES + OPEN-METEO) ----------
 app.get('/api/weather', authenticateToken, async (req, res) => {
     try {
-        const farmerId = req.user.id; // Or req.session.farmerId depending on your auth setup
+        const farmerId = String(req.user.id);
 
-        // Query the farmer_location table from your database
-        const query = `SELECT latitude, longitude FROM farmer_location WHERE farmer_id = ? ORDER BY updated_at DESC LIMIT 1`;
-        
-        db.get(query, [farmerId], async (err, locRow) => {
-            // Default fallbacks if none found
-            let lat = -23.887; 
-            let lon = 29.7361;
+        // Query the farmer location table from Supabase
+        // (Checking both 'farmer_locations' or 'farmer_location' depending on your table name)
+        let locRow = null;
+        try {
+            const { data } = await supabase
+                .from('farmer_locations')
+                .select('latitude, longitude')
+                .eq('farmer_id', farmerId)
+                .order('updated_at', { ascending: false })
+                .maybeSingle();
+            locRow = data;
+        } catch (e) {
+            // Fallback table name check
+            const { data } = await supabase
+                .from('farmer_location')
+                .select('latitude, longitude')
+                .eq('farmer_id', farmerId)
+                .order('updated_at', { ascending: false })
+                .maybeSingle();
+            locRow = data;
+        }
 
-            if (!err && locRow && locRow.latitude && locRow.longitude) {
-                lat = Number(locRow.latitude);
-                lon = Number(locRow.longitude);
+        // Default fallbacks if none stored yet
+        let lat = -23.887; 
+        let lon = 29.7361;
+
+        if (locRow && locRow.latitude && locRow.longitude) {
+            lat = Number(locRow.latitude);
+            lon = Number(locRow.longitude);
+        }
+
+        // Fetch live weather from Open-Meteo using the database coordinates
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&past_days=2&forecast_days=5&hourly=temperature_2m,weather_code,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`;
+
+        const weatherRes = await fetch(weatherUrl);
+        if (!weatherRes.ok) throw new Error(`Open-Meteo returned status ${weatherRes.status}`);
+
+        const data = await weatherRes.json();
+        const hourlyPrecip = data.hourly && data.hourly.precipitation ? data.hourly.precipitation : [];
+        const past48HoursRain = hourlyPrecip.slice(0, 48).reduce((acc, curr) => acc + curr, 0);
+        const future48HoursRain = hourlyPrecip.slice(48, 96).reduce((acc, curr) => acc + curr, 0);
+
+        // Build hourly forecast list
+        const nowIndex = data.hourly.time.findIndex(t => new Date(t) >= new Date()) || 0;
+        const hourlyList = [];
+        for (let i = 0; i < 6; i++) {
+            const idx = nowIndex + i;
+            if (idx < data.hourly.time.length) {
+                const hourStr = new Date(data.hourly.time[idx]).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: false });
+                hourlyList.push({
+                    time: i === 0 ? 'Now' : hourStr,
+                    temp: Math.round(data.hourly.temperature_2m[idx]),
+                    code: data.hourly.weather_code[idx]
+                });
             }
+        }
 
-            // Fetch live weather from Open-Meteo using the database coordinates
-            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&past_days=2&forecast_days=5&hourly=temperature_2m,weather_code,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`;
-
-            const weatherRes = await fetch(weatherUrl);
-            if (!weatherRes.ok) throw new Error(`Open-Meteo returned status ${weatherRes.status}`);
-
-            const data = await weatherRes.json();
-            const hourlyPrecip = data.hourly && data.hourly.precipitation ? data.hourly.precipitation : [];
-            const past48HoursRain = hourlyPrecip.slice(0, 48).reduce((acc, curr) => acc + curr, 0);
-            const future48HoursRain = hourlyPrecip.slice(48, 96).reduce((acc, curr) => acc + curr, 0);
-
-            // Build hourly forecast list
-            const nowIndex = data.hourly.time.findIndex(t => new Date(t) >= new Date()) || 0;
-            const hourlyList = [];
-            for (let i = 0; i < 6; i++) {
-                const idx = nowIndex + i;
-                if (idx < data.hourly.time.length) {
-                    const hourStr = new Date(data.hourly.time[idx]).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: false });
-                    hourlyList.push({
-                        time: i === 0 ? 'Now' : hourStr,
-                        temp: Math.round(data.hourly.temperature_2m[idx]),
-                        code: data.hourly.weather_code[idx]
-                    });
-                }
+        // Build daily forecast list (5 days)
+        const dailyList = [];
+        const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        if (data.daily && data.daily.time) {
+            for (let i = 0; i < data.daily.time.length; i++) {
+                const d = new Date(data.daily.time[i]);
+                const dayName = i === 0 ? 'Today' : daysOfWeek[d.getDay()];
+                dailyList.push({
+                    day: dayName,
+                    max: Math.round(data.daily.temperature_2m_max[i]),
+                    min: Math.round(data.daily.temperature_2m_min[i]),
+                    code: data.daily.weather_code[i],
+                    pop: data.daily.precipitation_probability_max ? data.daily.precipitation_probability_max[i] : 0
+                });
             }
+        }
 
-            // Build daily forecast list (5 days)
-            const dailyList = [];
-            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            if (data.daily && data.daily.time) {
-                for (let i = 0; i < data.daily.time.length; i++) {
-                    const d = new Date(data.daily.time[i]);
-                    const dayName = i === 0 ? 'Today' : daysOfWeek[d.getDay()];
-                    dailyList.push({
-                        day: dayName,
-                        max: Math.round(data.daily.temperature_2m_max[i]),
-                        min: Math.round(data.daily.temperature_2m_min[i]),
-                        code: data.daily.weather_code[i],
-                        pop: data.daily.precipitation_probability_max ? data.daily.precipitation_probability_max[i] : 0
-                    });
-                }
-            }
+        const code = data.current.weather_code;
+        let condition = "Mostly Cloudy";
+        if ([0].includes(code)) condition = "Clear Sky";
+        else if ([1, 2, 3].includes(code)) condition = "Mostly Cloudy";
+        else if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) condition = "Rain Showers";
+        else if ([95, 96, 99].includes(code)) condition = "Thunderstorm";
 
-            const code = data.current.weather_code;
-            let condition = "Mostly Cloudy";
-            if ([0].includes(code)) condition = "Clear Sky";
-            else if ([1, 2, 3].includes(code)) condition = "Mostly Cloudy";
-            else if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) condition = "Rain Showers";
-            else if ([95, 96, 99].includes(code)) condition = "Thunderstorm";
-
-            res.json({
-                temp: Math.round(data.current.temperature_2m),
-                high: dailyList.length ? dailyList[0].max : Math.round(data.current.temperature_2m + 3),
-                low: dailyList.length ? dailyList[0].min : Math.round(data.current.temperature_2m - 4),
-                humidity: data.current.relative_humidity_2m,
-                windSpeed: data.current.wind_speed_10m,
-                rain48h: parseFloat(past48HoursRain.toFixed(1)),
-                rainFuture48h: parseFloat(future48HoursRain.toFixed(1)),
-                condition: condition,
-                hourly: hourlyList,
-                daily: dailyList,
-                city: "Synced Farm Location"
-            });
+        res.json({
+            temp: Math.round(data.current.temperature_2m),
+            high: dailyList.length ? dailyList[0].max : Math.round(data.current.temperature_2m + 3),
+            low: dailyList.length ? dailyList[0].min : Math.round(data.current.temperature_2m - 4),
+            humidity: data.current.relative_humidity_2m,
+            windSpeed: data.current.wind_speed_10m,
+            rain48h: parseFloat(past48HoursRain.toFixed(1)),
+            rainFuture48h: parseFloat(future48HoursRain.toFixed(1)),
+            condition: condition,
+            hourly: hourlyList,
+            daily: dailyList,
+            city: "Synced Farm Location"
         });
     } catch (err) {
         console.error("Live Weather API Error:", err.message);
