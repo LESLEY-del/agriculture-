@@ -19,8 +19,6 @@ app.use(express.static(__dirname));
 // Initialize Supabase & Gemini
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key_change_me';
-
 const supabase = createClient(supabaseUrl, supabaseKey);
 const ai = new GoogleGenAI({});
 
@@ -52,17 +50,10 @@ app.get('/register', (req, res) => {
 // ==========================================
 const authenticateToken = (req, res, next) => {
     const token = req.cookies.token;
-    if (!token) {
-        if (req.path.startsWith('/api/')) return res.status(401).json({ error: 'Unauthorized' });
-        return res.redirect('/login');
-    }
+    if (!token) return res.redirect('/login');
 
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) {
-            console.error("JWT Verification Error:", err.message);
-            if (req.path.startsWith('/api/')) return res.status(403).json({ error: 'Invalid token' });
-            return res.redirect('/login');
-        }
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.redirect('/login');
         req.user = user; 
         next();
     });
@@ -107,7 +98,7 @@ app.post('/login', async (req, res) => {
         }
         const token = jwt.sign(
             { id: user.id, email: user.email, fullname: user.full_name },
-            JWT_SECRET,
+            process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
         res.cookie('token', token, {
@@ -151,9 +142,10 @@ app.get('/api/sensors/latest', authenticateToken, async (req, res) => {
 // ==========================================
 // PROTECTED ROUTES & API ENDPOINTS
 // ==========================================
-// ---------- LIVE WEATHER API (SUPABASE COORDINATES + OPEN-METEO) ----------
+// ---------- SECURE LIVE WEATHER API ----------
 app.get('/api/weather', authenticateToken, async (req, res) => {
     try {
+        // Strictly use the logged-in user's unique ID from their JWT cookie
         const farmerId = String(req.user.id);
 
         let locRow = null;
@@ -175,6 +167,7 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
             locRow = data;
         }
 
+        // Default fallbacks if this specific user hasn't synced location yet
         let lat = -23.887; 
         let lon = 29.7361;
 
