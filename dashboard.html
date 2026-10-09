@@ -124,21 +124,75 @@ body.chat-open #chat-fab{display:none}
     </div>
   </div>
 
+  <!-- RECOMMENDED FOR PLANTING WITH REALISTIC MOTIVATIONAL METRICS -->
   <div class="mt-14">
     <div class="flex items-center justify-between gap-4 mb-8">
-      <div><h2 class="text-2xl font-bold font-heading text-slate-900">Recommended for Planting</h2><p class="text-slate-600 font-medium mt-1">Crops verified for your current soil parameters.</p></div>
-      <button class="hidden sm:block shrink-0 text-sm font-bold text-emerald-700 hover:text-emerald-800">View All Plans &rarr;</button>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-8">
-      <div class="advanced-card rounded-3xl overflow-hidden group flex flex-col">
-        <div class="h-48 sm:h-52 overflow-hidden relative"><img src="https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&q=80&w=800" alt="Tomatoes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"><span class="absolute top-4 right-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">98% Match</span></div>
-        <div class="p-6 flex flex-col flex-grow"><h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Roma Tomatoes</h3><p class="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">Optimal for your current pH of 6.2. High yield expected in the current temperature cycle.</p>
-          <button onclick="openPlotGuide('Roma Tomatoes')" class="w-full min-h-[48px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2"><iconify-icon icon="lucide:sprout"></iconify-icon> Prepare Plot</button></div>
+      <div>
+        <h2 class="text-2xl font-bold font-heading text-slate-900">Recommended for Planting</h2>
+        <p class="text-slate-600 font-medium mt-1">Verified for your current soil telemetry (pH 6.2, Moisture 45%) &amp; local weather cycle.</p>
       </div>
+      <button onclick="switchView('detail-plans')" class="hidden sm:block shrink-0 text-sm font-bold text-emerald-700 hover:text-emerald-800">View All Plans &rarr;</button>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-8">
+      <!-- TOMATOES CARD -->
       <div class="advanced-card rounded-3xl overflow-hidden group flex flex-col">
-        <div class="h-48 sm:h-52 overflow-hidden relative"><img src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&q=80&w=800" alt="Carrots" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"><span class="absolute top-4 right-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">92% Match</span></div>
-        <div class="p-6 flex flex-col flex-grow"><h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Root Carrots</h3><p class="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">Current 45% moisture level provides ideal density resistance for deep root development.</p>
-          <button onclick="openPlotGuide('Root Carrots')" class="w-full min-h-[48px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2"><iconify-icon icon="lucide:sprout"></iconify-icon> Prepare Plot</button></div>
+        <div class="h-48 sm:h-52 overflow-hidden relative">
+          <img src="https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&q=80&w=800" alt="Tomatoes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <span class="absolute top-4 right-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
+            <iconify-icon icon="lucide:sparkles"></iconify-icon> 98% Success Match
+          </span>
+        </div>
+        <div class="p-6 sm:p-8 flex flex-col flex-grow">
+          <h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Roma Tomatoes</h3>
+          <p class="text-sm text-slate-600 mb-6 leading-relaxed">Optimal for your current pH of 6.2. High yield expected in the current local temperature and moisture cycle.</p>
+          
+          <!-- Motivational Realistic Work Metrics -->
+          <div class="grid grid-cols-2 gap-3 mb-6 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-100">
+            <div>
+              <p class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-0.5 flex items-center gap-1"><iconify-icon icon="lucide:sprout"></iconify-icon> Recommended Plot</p>
+              <p class="text-lg font-black text-emerald-950">~250 Plants <span class="text-xs font-semibold text-emerald-700">(100m²)</span></p>
+            </div>
+            <div>
+              <p class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-0.5 flex items-center gap-1"><iconify-icon icon="lucide:trending-up"></iconify-icon> Est. Yield &amp; Profit</p>
+              <p class="text-lg font-black text-emerald-950">~1,450 kg <span class="text-xs font-semibold text-emerald-700">(~R24,650)</span></p>
+            </div>
+          </div>
+
+          <button onclick="openPlotGuide('Roma Tomatoes')" class="w-full min-h-[48px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm">
+            <iconify-icon icon="lucide:sprout" class="text-lg"></iconify-icon> Prepare Plot &amp; Start Growing
+          </button>
+        </div>
+      </div>
+
+      <!-- CARROTS CARD -->
+      <div class="advanced-card rounded-3xl overflow-hidden group flex flex-col">
+        <div class="h-48 sm:h-52 overflow-hidden relative">
+          <img src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&q=80&w=800" alt="Carrots" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <span class="absolute top-4 right-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
+            <iconify-icon icon="lucide:sparkles"></iconify-icon> 92% Success Match
+          </span>
+        </div>
+        <div class="p-6 sm:p-8 flex flex-col flex-grow">
+          <h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Root Carrots</h3>
+          <p class="text-sm text-slate-600 mb-6 leading-relaxed">Current 45% moisture level provides ideal density resistance for deep, straight root development.</p>
+          
+          <!-- Motivational Realistic Work Metrics -->
+          <div class="grid grid-cols-2 gap-3 mb-6 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-100">
+            <div>
+              <p class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-0.5 flex items-center gap-1"><iconify-icon icon="lucide:sprout"></iconify-icon> Recommended Plot</p>
+              <p class="text-lg font-black text-emerald-950">~400 Seeds <span class="text-xs font-semibold text-emerald-700">(50m²)</span></p>
+            </div>
+            <div>
+              <p class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-0.5 flex items-center gap-1"><iconify-icon icon="lucide:trending-up"></iconify-icon> Est. Yield &amp; Profit</p>
+              <p class="text-lg font-black text-emerald-950">~850 kg <span class="text-xs font-semibold text-emerald-700">(~R15,300)</span></p>
+            </div>
+          </div>
+
+          <button onclick="openPlotGuide('Root Carrots')" class="w-full min-h-[48px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm">
+            <iconify-icon icon="lucide:sprout" class="text-lg"></iconify-icon> Prepare Plot &amp; Start Growing
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -169,11 +223,11 @@ body.chat-open #chat-fab{display:none}
     <p class="text-slate-600 font-medium text-base sm:text-lg mb-8 max-w-3xl">Based on your telemetry <span class="font-bold text-slate-800">(pH 6.2, N-Level: Low)</span> and the current climate cycle, the AI recommends the following planting strategy.</p>
     <div class="grid gap-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white">
-        <div class="flex items-center gap-4 sm:gap-6"><div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-rose-100 rounded-2xl flex items-center justify-center text-rose-600"><iconify-icon icon="lucide:apple" class="text-3xl"></iconify-icon></div><div><div class="flex flex-wrap items-center gap-2 mb-1"><h3 class="font-bold font-heading text-xl text-slate-900">Tomatoes</h3><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-md">98% Match</span></div><p class="text-sm font-medium text-slate-600">Thrives perfectly in pH 6.2. High yield expected.</p></div></div>
+        <div class="flex items-center gap-4 sm:gap-6"><div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-rose-100 rounded-2xl flex items-center justify-center text-rose-600"><iconify-icon icon="lucide:apple" class="text-3xl"></iconify-icon></div><div><div class="flex flex-wrap items-center gap-2 mb-1"><h3 class="font-bold font-heading text-xl text-slate-900">Roma Tomatoes</h3><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-md">98% Match</span></div><p class="text-sm font-medium text-slate-600">Thrives perfectly in pH 6.2. Estimated yield: ~1,450 kg (~R24,650 revenue).</p></div></div>
         <button onclick="openPlotGuide('Roma Tomatoes')" class="min-h-[48px] px-6 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-emerald-600 transition-colors">Initialize Plot</button>
       </div>
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white">
-        <div class="flex items-center gap-4 sm:gap-6"><div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-green-100 rounded-2xl flex items-center justify-center text-green-600"><iconify-icon icon="lucide:carrot" class="text-3xl"></iconify-icon></div><div><div class="flex flex-wrap items-center gap-2 mb-1"><h3 class="font-bold font-heading text-xl text-slate-900">Root Carrots</h3><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-md">92% Match</span></div><p class="text-sm font-medium text-slate-600">Moisture at 45% suits deep root growth.</p></div></div>
+        <div class="flex items-center gap-4 sm:gap-6"><div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-green-100 rounded-2xl flex items-center justify-center text-green-600"><iconify-icon icon="lucide:carrot" class="text-3xl"></iconify-icon></div><div><div class="flex flex-wrap items-center gap-2 mb-1"><h3 class="font-bold font-heading text-xl text-slate-900">Root Carrots</h3><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-md">92% Match</span></div><p class="text-sm font-medium text-slate-600">Moisture at 45% suits deep root growth. Estimated yield: ~850 kg (~R15,300 revenue).</p></div></div>
         <button onclick="openPlotGuide('Root Carrots')" class="min-h-[48px] px-6 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-emerald-600 transition-colors">Initialize Plot</button>
       </div>
     </div>
