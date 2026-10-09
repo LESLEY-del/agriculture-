@@ -6,7 +6,7 @@
 <title>Advanced Dashboard | Soil Buddies</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,6 +49,7 @@ body.chat-open #chat-fab{display:none}
 .btn-icon:hover{background:#E2E8F0}
 :focus-visible{outline:3px solid #059669;outline-offset:2px}
 .chat-bubble-ai strong{font-weight:700}
+.chat-bubble-ai li{margin:.15rem 0}
 </style>
 </head>
 <body class="min-h-screen">
@@ -357,7 +358,8 @@ function closeModal(id){const m=document.getElementById(id),c=document.getElemen
 
 /* ===== PROBLEM AI, ALERTS, PUSH ===== */
 const $=id=>document.getElementById(id);
-const md=t=>{const h=window.marked?marked.parse(t):escapeHtml(t);return window.DOMPurify?DOMPurify.sanitize(h):h};
+const mdFallback=t=>escapeHtml(t).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^#{1,6}\s*/gm,'').replace(/^\s*[\*\-]\s+/gm,'&bull; ').replace(/\*/g,'').replace(/\n/g,'<br>');
+const md=t=>{let h;try{h=window.marked&&marked.parse?marked.parse(t):mdFallback(t)}catch(e){h=mdFallback(t)}return window.DOMPurify?DOMPurify.sanitize(h):h};
 let alertsState=[],readingState=null,pushActive=false,problemHistory=[];
 const SEEN_KEY='sb_seen_alerts';
 const getSeen=()=>{try{return JSON.parse(localStorage.getItem(SEEN_KEY)||'[]')}catch(e){return[]}};
@@ -457,7 +459,7 @@ pi.addEventListener('input',()=>{pi.style.height='auto';pi.style.height=Math.min
 function b64ToU8(b){const p='='.repeat((4-b.length%4)%4),s=(b+p).replace(/-/g,'+').replace(/_/g,'/'),r=atob(s);return Uint8Array.from([...r].map(c=>c.charCodeAt(0)))}
 function updatePushUI(){
   const l=$('push-label'),btn=$('enable-push'); if(!l) return;
-  if(!('Notification' in window)){l.textContent='Clear notifications';btn.disabled=true;return}
+  if(!('Notification' in window)){l.textContent='click the problem for direct chart';btn.disabled=true;return}
   if(Notification.permission==='denied'){l.textContent='Blocked: allow notifications in browser settings';btn.disabled=true;return}
   if(Notification.permission==='granted'){l.textContent=pushActive?'Push alerts are on':'Alerts on while this page is open';return}
   l.textContent='Turn on push alerts';
