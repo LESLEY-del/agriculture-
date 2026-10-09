@@ -199,33 +199,60 @@ body.chat-open #chat-fab{display:none}
   </div>
 </div>
 
-<!-- WEATHER -->
+<!-- WEATHER (APPLE WEATHER STYLE) -->
 <div id="detail-weather" class="view-section hidden">
   <button onclick="switchView('settings-view')" class="flex items-center gap-2 min-h-[44px] text-sm font-bold text-slate-600 mb-4 hover:text-[#4338CA]"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Return to Settings</button>
-  <div class="advanced-card p-6 sm:p-10 lg:p-12 rounded-[2rem]">
-    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold font-heading text-slate-900 flex items-center gap-3 mb-8"><span class="p-3 bg-[#EBEFFF] text-[#6366F1] rounded-xl flex"><iconify-icon icon="lucide:cloud-drizzle"></iconify-icon></span>Live Microclimate</h2>
-    <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
-      <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-6 sm:p-10 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20">
-        <p class="text-sm font-bold text-blue-300 uppercase tracking-widest mb-2">Current Location</p><p id="weather-location" class="text-xs text-slate-300 mb-5">Live GPS Location</p>
-        <div class="flex items-center gap-5 mb-8"><iconify-icon id="weather-icon" icon="lucide:cloud-sun" class="text-6xl sm:text-7xl text-amber-400"></iconify-icon><div><p id="weather-temp" class="text-6xl sm:text-7xl font-black tracking-tighter">--°</p><p id="weather-condition" class="text-lg sm:text-xl text-slate-300 font-medium">Loading live weather…</p></div></div>
-        <div class="grid grid-cols-2 gap-4 border-t border-white/10 pt-6"><div><p class="text-xs text-slate-300 font-bold uppercase mb-1">Humidity</p><p id="weather-humidity" class="text-lg font-bold">--%</p></div><div><p class="text-xs text-slate-300 font-bold uppercase mb-1">Wind Speed</p><p id="weather-wind" class="text-lg font-bold">-- km/h</p></div></div><p id="weather-updated" class="text-xs text-slate-400 mt-5">Weather data has not loaded yet.</p>
-      </div>
-      <div class="flex flex-col justify-center">
-        <h3 class="text-sm uppercase tracking-widest font-bold text-slate-500 mb-5">Rain Dilution &amp; Forecast API</h3>
-        <div id="rain-card-box" class="bg-white p-6 rounded-2xl border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.15)] mb-6 transition-all">
-          <div class="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <p class="text-xs font-bold text-slate-500 uppercase mb-1">Past 48 Hours</p>
-              <p class="text-2xl font-black text-slate-800"><span id="weather-rain48">--</span> <span class="text-sm text-slate-500 font-bold">mm</span></p>
-            </div>
-            <div>
-              <p class="text-xs font-bold text-slate-500 uppercase mb-1">Next 48 Hours</p>
-              <p class="text-2xl font-black text-slate-800"><span id="weather-rain-future">--</span> <span class="text-sm text-slate-500 font-bold">mm</span></p>
-            </div>
-          </div>
-          <p id="weather-rain-status" class="text-sm font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg block text-center">Checking rainfall conditions…</p>
+  
+  <div class="grid lg:grid-cols-3 gap-8">
+    <!-- LEFT: Apple Weather Card -->
+    <div class="lg:col-span-2 bg-[#1E2538] rounded-[2.5pax] sm:rounded-[2.5rem] p-6 sm:p-10 text-white shadow-2xl relative overflow-hidden flex flex-col justify-between">
+      <div>
+        <!-- City Header -->
+        <div class="text-center my-6">
+          <h2 id="weather-city-title" class="text-3xl sm:text-4xl font-light tracking-wide text-white/90">Polokwane</h2>
+          <p id="weather-temp-main" class="text-7xl sm:text-8xl font-thin tracking-tighter my-2">--°</p>
+          <p id="weather-condition-main" class="text-lg font-medium text-slate-300">Loading conditions...</p>
+          <p class="text-sm text-slate-400 mt-1">H: <span id="weather-high">--°</span>&nbsp;&nbsp; L: <span id="weather-low">--°</span></p>
         </div>
-        <p class="text-sm text-slate-600 font-medium leading-relaxed">Weather is supplied by Open-Meteo and refreshed automatically. Advanced indicators warn you of upcoming precipitation before testing soil.</p>
+
+        <!-- Hourly Forecast Scroll Section -->
+        <div class="mt-8 bg-black/20 backdrop-blur-md rounded-2xl p-4 border border-white/5">
+          <p class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-4 flex items-center gap-2"><iconify-icon icon="lucide:clock" class="text-base"></iconify-icon> Hourly Conditions</p>
+          <div id="hourly-container" class="grid grid-cols-6 gap-2 text-center overflow-x-auto pb-2">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- 5-Day Forecast Section -->
+        <div class="mt-6 bg-black/20 backdrop-blur-md rounded-2xl p-5 border border-white/5">
+          <p class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-4 flex items-center gap-2"><iconify-icon icon="lucide:calendar" class="text-base"></iconify-icon> 5-Day Forecast</p>
+          <div id="daily-container" class="space-y-3">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+      <p id="weather-updated" class="text-xs text-slate-400 mt-8 text-center">Weather supplied by Open-Meteo API.</p>
+    </div>
+
+    <!-- RIGHT: Soil Dilution & Forecast Warning Box -->
+    <div class="flex flex-col justify-start">
+      <h3 class="text-sm uppercase tracking-widest font-bold text-slate-500 mb-5">Rain Dilution &amp; Forecast API</h3>
+      <div id="rain-card-box" class="bg-white p-6 rounded-2xl border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.15)] mb-6 transition-all">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <p class="text-xs font-bold text-slate-500 uppercase mb-1">Past 48 Hours</p>
+            <p class="text-2xl font-black text-slate-800"><span id="weather-rain48">--</span> <span class="text-sm text-slate-500 font-bold">mm</span></p>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-slate-500 uppercase mb-1">Next 48 Hours</p>
+            <p class="text-2xl font-black text-slate-800"><span id="weather-rain-future">--</span> <span class="text-sm text-slate-500 font-bold">mm</span></p>
+          </div>
+        </div>
+        <p id="weather-rain-status" class="text-sm font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg block text-center">Checking rainfall conditions…</p>
+      </div>
+      <div class="advanced-card p-6 rounded-2xl bg-white">
+        <h4 class="font-bold font-heading text-slate-900 mb-2 flex items-center gap-2"><iconify-icon icon="lucide:shield-alert" class="text-amber-500 text-xl"></iconify-icon> Smart Agricultural Warning</h4>
+        <p class="text-sm text-slate-600 leading-relaxed">If significant rain is forecasted for the upcoming 48 hours, the system highlights an advance warning so you can postpone fertilizer or compost top-dressings before nutrients wash away.</p>
       </div>
     </div>
   </div>
@@ -522,41 +549,25 @@ refreshAlerts(); setInterval(refreshAlerts,60000);
 const alertParam=new URLSearchParams(location.search).get('alert');
 if(alertParam){window.history.replaceState(null,'',location.pathname);openProblem(alertParam)}
 
-/* ===== LIVE OPEN-METEO WEATHER (GPS + PAST/FUTURE RAIN) ===== */
+/* ===== APPLE WEATHER UI RENDERER ===== */
+function getWeatherIcon(code) {
+    if ([0].includes(Number(code))) return 'lucide:sun';
+    if ([1, 2].includes(Number(code))) return 'lucide:cloud-sun';
+    if ([3, 45, 48].includes(Number(code))) return 'lucide:cloud';
+    if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(Number(code))) return 'lucide:cloud-rain';
+    if ([95, 96, 99].includes(Number(code))) return 'lucide:cloud-lightning';
+    return 'lucide:cloud';
+}
+
 async function refreshLiveWeather() {
-    const elements = {
-        temperature: document.getElementById('weather-temp'),
-        condition: document.getElementById('weather-condition'),
-        humidity: document.getElementById('weather-humidity'),
-        wind: document.getElementById('weather-wind'),
-        rain48: document.getElementById('weather-rain48'),
-        rainFuture: document.getElementById('weather-rain-future'),
-        status: document.getElementById('weather-rain-status'),
-        rainCard: document.getElementById('rain-card-box'),
-        location: document.getElementById('weather-location'),
-        updated: document.getElementById('weather-updated'),
-        summaryTemp: document.getElementById('weather-summary-temp'),
-        summaryCondition: document.getElementById('weather-summary-condition'),
-        summaryRain: document.getElementById('weather-summary-rain')
-    };
-
-    function setText(el, txt) { if (el) el.textContent = txt; }
-
-    setText(elements.condition, 'Locating GPS...');
-    setText(elements.summaryCondition, 'Locating GPS...');
-
     let url = '/api/weather';
-
     if ("geolocation" in navigator) {
         try {
             const position = await new Promise((resolve, reject) => {
                 navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 4000, maximumAge: 60000 });
             });
             url = `/api/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
-            setText(elements.location, 'Live GPS Location');
-        } catch (e) {
-            setText(elements.location, 'Saved farm location');
-        }
+        } catch (e) {}
     }
 
     try {
@@ -564,35 +575,70 @@ async function refreshLiveWeather() {
         if (!response.ok) throw new Error('Weather request failed');
         const data = await response.json();
 
-        setText(elements.temperature, `${Math.round(data.temp)}°`);
-        setText(elements.condition, data.condition || 'Current conditions');
-        setText(elements.humidity, `${Math.round(data.humidity)}%`);
-        setText(elements.wind, `${Math.round(data.windSpeed)} km/h`);
-        setText(elements.rain48, data.rain48h.toFixed(1));
-        setText(elements.rainFuture, data.rainFuture48h.toFixed(1));
-        setText(elements.summaryTemp, `${Math.round(data.temp)}°`);
-        setText(elements.summaryCondition, data.condition || 'Current conditions');
-        setText(elements.summaryRain, data.rain48h.toFixed(1));
+        // Populate Main Apple Weather View
+        document.getElementById('weather-city-title').textContent = data.city || 'Polokwane';
+        document.getElementById('weather-temp-main').textContent = `${Math.round(data.temp)}°`;
+        document.getElementById('weather-condition-main').textContent = data.condition || 'Mostly Cloudy';
+        document.getElementById('weather-high').textContent = `${Math.round(data.high)}°`;
+        document.getElementById('weather-low').textContent = `${Math.round(data.low)}°`;
 
-        // Intelligent Warning Logic for Upcoming Rain
-        if (data.rainFuture48h > 1.0) {
-            if (elements.rainCard) {
-                elements.rainCard.className = "bg-amber-50 p-6 rounded-2xl border-2 border-amber-500 shadow-[0_0_30px_rgba(245,158,11,0.15)] mb-6 transition-all";
-            }
-            setText(elements.status, `⚠️ Warning: ${data.rainFuture48h}mm expected soon! Postpone fertilizer application.`);
-            elements.status.className = "text-sm font-bold text-amber-800 bg-amber-100 py-2 px-4 rounded-lg block text-center";
-        } else {
-            if (elements.rainCard) {
-                elements.rainCard.className = "bg-white p-6 rounded-2xl border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.15)] mb-6 transition-all";
-            }
-            setText(elements.status, 'Clear conditions. Optimal for soil testing.');
-            elements.status.className = "text-sm font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg block text-center";
+        // Populate Summary Card for Settings view
+        if(document.getElementById('weather-summary-temp')) document.getElementById('weather-summary-temp').textContent = `${Math.round(data.temp)}°`;
+        if(document.getElementById('weather-summary-condition')) document.getElementById('weather-summary-condition').textContent = data.condition;
+        if(document.getElementById('weather-summary-rain')) document.getElementById('weather-summary-rain').textContent = data.rain48h.toFixed(1);
+
+        // Populate Hourly Container
+        const hourlyEl = document.getElementById('hourly-container');
+        if (hourlyEl && data.hourly) {
+            hourlyEl.innerHTML = data.hourly.map(h => `
+                <div class="flex flex-col items-center justify-center p-2 rounded-xl bg-white/5">
+                    <span class="text-xs text-slate-300 mb-2">${h.time}</span>
+                    <iconify-icon icon="${getWeatherIcon(h.code)}" class="text-xl text-amber-400 mb-2"></iconify-icon>
+                    <span class="text-sm font-bold text-white">${h.temp}°</span>
+                </div>
+            `).join('');
         }
 
-        setText(elements.updated, `Updated at ${new Date().toLocaleTimeString()}`);
+        // Populate Daily 5-Day Forecast Container
+        const dailyEl = document.getElementById('daily-container');
+        if (dailyEl && data.daily) {
+            dailyEl.innerHTML = data.daily.map(d => `
+                <div class="flex items-center justify-between py-1.5 border-b border-white/5 last:border-none">
+                    <span class="w-16 text-sm font-medium text-white">${d.day}</span>
+                    <div class="flex items-center gap-2">
+                        <iconify-icon icon="${getWeatherIcon(d.code)}" class="text-lg text-amber-400"></iconify-icon>
+                        <span class="text-xs text-blue-300">${d.pop > 15 ? d.pop + '%' : ''}</span>
+                    </div>
+                    <div class="flex items-center gap-3 w-32 justify-end">
+                        <span class="text-xs text-slate-400">${d.min}°</span>
+                        <div class="w-16 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-r from-emerald-400 to-amber-400 h-full rounded-full" style="width: 70%"></div>
+                        </div>
+                        <span class="text-xs font-bold text-white">${d.max}°</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Rain Dilution & Forecast Warning
+        document.getElementById('weather-rain48').textContent = data.rain48h.toFixed(1);
+        document.getElementById('weather-rain-future').textContent = data.rainFuture48h.toFixed(1);
+        const rainCard = document.getElementById('rain-card-box');
+        const rainStatus = document.getElementById('weather-rain-status');
+
+        if (data.rainFuture48h > 1.0) {
+            rainCard.className = "bg-amber-50 p-6 rounded-2xl border-2 border-amber-500 shadow-[0_0_30px_rgba(245,158,11,0.15)] mb-6 transition-all";
+            rainStatus.textContent = `⚠️ Warning: ${data.rainFuture48h}mm expected soon! Postpone fertilizer application.`;
+            rainStatus.className = "text-sm font-bold text-amber-800 bg-amber-100 py-2 px-4 rounded-lg block text-center";
+        } else {
+            rainCard.className = "bg-white p-6 rounded-2xl border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.15)] mb-6 transition-all";
+            rainStatus.textContent = 'Clear conditions. Optimal for soil testing.';
+            rainStatus.className = "text-sm font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg block text-center";
+        }
+
+        document.getElementById('weather-updated').textContent = `Weather updated at ${new Date().toLocaleTimeString()}`;
     } catch (err) {
-        setText(elements.condition, 'Weather unavailable');
-        setText(elements.summaryCondition, 'Weather unavailable');
+        console.error("Weather error:", err);
     }
 }
 
