@@ -636,5 +636,31 @@ async function refreshLiveWeather() {
 refreshLiveWeather();
 setInterval(refreshLiveWeather, 10 * 60 * 1000);
 </script>
+<script>
+async function loadUserProfile() {
+    try {
+        const res = await fetch('/api/me');
+        if (!res.ok) return;
+        const user = await res.json();
+        
+        // Update welcome header with real user name
+        const welcomeEl = document.querySelector('h1 span.gradient-text');
+        if (welcomeEl && user.fullname) {
+            welcomeEl.textContent = user.fullname;
+        }
+
+        // Update avatar initials if desired
+        const initials = user.fullname.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        const avatarEl = document.querySelector('header .rounded-xl.bg-emerald-100');
+        if (avatarEl && initials) {
+            avatarEl.textContent = initials;
+        }
+    } catch (err) {
+        console.error("Failed to load user profile", err);
+    }
+}
+loadUserProfile();
+</script>
+  
 </body>
 </html>
