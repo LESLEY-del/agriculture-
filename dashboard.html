@@ -18,7 +18,7 @@ h1,h2,h3,h4,.font-heading{font-family:'Plus Jakarta Sans',sans-serif}
 /* 16px inputs = no iOS auto-zoom on focus */
 html{touch-action:manipulation}
 input,select,textarea{font-size:16px!important;line-height:1.4;-webkit-text-size-adjust:100%;touch-action:manipulation}
-#chat-input,#problem-input{font-size:16px!important}
+#chat-input,#problem-input,#crop-input{font-size:16px!important}
 button{touch-action:manipulation}
 .glass-nav{background:rgba(255,255,255,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(226,232,240,.8)}
 .advanced-card{background:#fff;border:1px solid rgba(226,232,240,.9);box-shadow:0 4px 6px -1px rgba(0,0,0,.03),0 10px 15px -3px rgba(0,0,0,.03);transition:transform .3s,box-shadow .3s,border-color .3s}
@@ -72,7 +72,7 @@ body.chat-open #chat-fab{display:none}
 </header>
 
 <div id="notif-panel" style="display:none" class="fixed z-[80] top-[78px] left-3 right-3 sm:left-auto sm:right-6 sm:w-[390px] bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
-  <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><h3 class="font-bold font-heading text-slate-900">Crop alerts</h3><button onclick="toggleNotif(false)" class="w-9 h-9 flex items-center justify-center text-slate-500" aria-label="Close alerts"><iconify-icon icon="lucide:x" class="text-xl"></iconify-icon></button></div>
+  <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><h3 class="font-bold font-heading text-slate-900">Soil alerts</h3><button onclick="toggleNotif(false)" class="w-9 h-9 flex items-center justify-center text-slate-500" aria-label="Close alerts"><iconify-icon icon="lucide:x" class="text-xl"></iconify-icon></button></div>
   <div id="notif-list" class="max-h-[55vh] overflow-y-auto"></div>
   <div class="p-3 border-t border-slate-100"><button id="enable-push" onclick="enablePush()" class="w-full min-h-[44px] rounded-xl bg-slate-900 text-white text-sm font-bold hover:bg-emerald-700 flex items-center justify-center gap-2"><iconify-icon icon="lucide:bell-ring"></iconify-icon><span id="push-label">Turn on push alerts</span></button></div>
 </div>
@@ -258,15 +258,23 @@ body.chat-open #chat-fab{display:none}
   <div class="bg-slate-900 text-white py-3 chat-pad chat-top flex items-center justify-between shrink-0">
     <div class="flex items-center gap-3 min-w-0">
       <div class="w-10 h-10 shrink-0 rounded-full bg-rose-500/20 flex items-center justify-center"><iconify-icon icon="lucide:message-square-warning" class="text-rose-400 text-2xl"></iconify-icon></div>
-      <div class="min-w-0"><h3 class="font-bold font-heading text-lg leading-tight">Problem AI</h3><p class="text-xs text-rose-300">Crop alerts from your sensors</p></div>
+      <div class="min-w-0"><h3 class="font-bold font-heading text-lg leading-tight">Problem AI</h3><p class="text-xs text-rose-300">Soil alerts from your sensor</p></div>
     </div>
     <button onclick="toggleProblem(false)" class="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-white" aria-label="Close Problem AI"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
   </div>
   <div id="problem-messages" class="msgs flex-1 min-h-0 bg-slate-50 py-4 chat-pad overflow-y-auto chat-scroll flex flex-col gap-4">
+    <div id="crop-box">
+      <label for="crop-input" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">What did you plant? (optional)</label>
+      <div class="flex gap-2">
+        <input id="crop-input" type="text" maxlength="60" autocomplete="off" enterkeyhint="done" placeholder="e.g. Tomatoes, Maize" class="flex-1 min-w-0 min-h-[48px] px-3 rounded-xl border border-slate-300 bg-white text-slate-800 font-medium focus:border-rose-500 focus:ring-2 focus:ring-rose-200 outline-none">
+        <button onclick="saveCrop()" class="min-h-[48px] px-5 rounded-xl bg-rose-600 text-white font-bold hover:bg-rose-700">Save</button>
+      </div>
+      <p id="crop-note" class="text-xs text-slate-600 font-medium mt-2"></p>
+    </div>
     <div id="problem-summary"></div>
     <div class="flex gap-3 max-w-[90%]">
       <div class="w-8 h-8 rounded-full bg-rose-100 shrink-0 flex items-center justify-center text-rose-600 mt-1"><iconify-icon icon="lucide:message-square-warning"></iconify-icon></div>
-      <div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm">I only discuss problems your sensors find on crops you have already planted. Tap an alert above, or ask me about it.</div>
+      <div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm">I report soil issues from your sensor. Tell me what crop you planted and I will tell you if the soil is changing in a way that could harm it.</div>
     </div>
   </div>
   <div class="pt-3 chat-pad chat-bottom bg-white border-t border-slate-100 flex items-end gap-2 shrink-0">
@@ -360,7 +368,19 @@ function closeModal(id){const m=document.getElementById(id),c=document.getElemen
 const $=id=>document.getElementById(id);
 const mdFallback=t=>escapeHtml(t).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^#{1,6}\s*/gm,'').replace(/^\s*[\*\-]\s+/gm,'&bull; ').replace(/\*/g,'').replace(/\n/g,'<br>');
 const md=t=>{let h;try{h=window.marked&&marked.parse?marked.parse(t):mdFallback(t)}catch(e){h=mdFallback(t)}return window.DOMPurify?DOMPurify.sanitize(h):h};
-let alertsState=[],readingState=null,pushActive=false,problemHistory=[];
+let alertsState=[],readingState=null,changeState=null,pushActive=false,problemHistory=[];
+const CROP_KEY='sb_crop';
+const getCrop=()=>{try{return localStorage.getItem(CROP_KEY)||''}catch(e){return''}};
+async function saveCrop(){
+  const v=$('crop-input').value.replace(/\s+/g,' ').trim().slice(0,60);
+  try{localStorage.setItem(CROP_KEY,v)}catch(e){}
+  $('crop-note').textContent=v?'Saved. Problem AI will check your soil against: '+v:'Crop cleared. Showing general soil health.';
+  fetch('/api/crop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({crop:v})}).catch(()=>{});
+  await refreshAlerts();
+  if(v) sendProblem(`I planted ${v}. Is my soil okay for it, and is anything changing that could harm it?`);
+}
+$('crop-input').value=getCrop();
+$('crop-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveCrop()}});
 const SEEN_KEY='sb_seen_alerts';
 const getSeen=()=>{try{return JSON.parse(localStorage.getItem(SEEN_KEY)||'[]')}catch(e){return[]}};
 const addSeen=ids=>{try{localStorage.setItem(SEEN_KEY,JSON.stringify([...new Set([...getSeen(),...ids])].slice(-50)))}catch(e){}};
@@ -368,9 +388,9 @@ const sevClass=a=>a.severity==='critical'?{box:'bg-rose-50 border-rose-200',ico:
 
 async function refreshAlerts(){
   try{
-    const r=await fetch('/api/alerts'); if(!r.ok) return;
+    const r=await fetch('/api/alerts'+(getCrop()?'?crop='+encodeURIComponent(getCrop()):'')); if(!r.ok) return;
     const d=await r.json();
-    alertsState=d.alerts||[]; readingState=d.reading||null;
+    alertsState=d.alerts||[]; readingState=d.reading||null; changeState=d.change||null;
     renderBell(); renderProblemSummary();
     const fresh=alertsState.filter(a=>!getSeen().includes(a.id));
     if(fresh.length){
@@ -380,22 +400,23 @@ async function refreshAlerts(){
   }catch(e){console.error('Alerts error:',e)}
 }
 function localNotify(a){
-  const o={body:a.detail,tag:a.id,requireInteraction:true,data:{url:'/dashboard?alert='+encodeURIComponent(a.id)}};
+  const o={body:a.detail+(a.harm?' '+a.harm:''),tag:a.id,requireInteraction:true,data:{url:'/dashboard?alert='+encodeURIComponent(a.id)}};
   if('serviceWorker' in navigator) navigator.serviceWorker.ready.then(r=>r.showNotification(a.title,o)).catch(()=>{try{new Notification(a.title,o)}catch(e){}});
 }
 function renderBell(){
   const n=alertsState.length,b=$('bell-badge'); b.textContent=n; b.style.display=n?'flex':'none';
   const list=$('notif-list');
-  list.innerHTML=n?alertsState.map((a,i)=>{const c=sevClass(a);return `<button data-open="${i}" class="w-full text-left p-4 flex gap-3 hover:bg-slate-50 border-b border-slate-100"><span class="w-10 h-10 shrink-0 rounded-xl ${c.ico} flex items-center justify-center"><iconify-icon icon="lucide:alert-triangle" class="text-xl"></iconify-icon></span><span class="min-w-0"><span class="block font-bold text-slate-900 text-sm">${escapeHtml(a.title)}</span><span class="block text-sm text-slate-600">${escapeHtml(a.detail)}</span><span class="block text-xs font-bold ${c.txt} mt-1">Tap to get help from Problem AI</span></span></button>`}).join(''):'<p class="p-6 text-sm text-center text-slate-600 font-medium">No problems detected. Your crops look healthy.</p>';
+  list.innerHTML=n?alertsState.map((a,i)=>{const c=sevClass(a);return `<button data-open="${i}" class="w-full text-left p-4 flex gap-3 hover:bg-slate-50 border-b border-slate-100"><span class="w-10 h-10 shrink-0 rounded-xl ${c.ico} flex items-center justify-center"><iconify-icon icon="lucide:alert-triangle" class="text-xl"></iconify-icon></span><span class="min-w-0"><span class="block font-bold text-slate-900 text-sm">${escapeHtml(a.title)}</span><span class="block text-sm text-slate-600">${escapeHtml(a.detail)}</span>${a.harm?`<span class="block text-sm font-semibold ${c.txt} mt-1">${escapeHtml(a.harm)}</span>`:""}<span class="block text-xs font-bold ${c.txt} mt-1">Tap to get help from Problem AI</span></span></button>`}).join(''):'<p class="p-6 text-sm text-center text-slate-600 font-medium">No soil problems detected. Your soil looks healthy.</p>';
   list.querySelectorAll('[data-open]').forEach(btn=>btn.addEventListener('click',()=>{toggleNotif(false);openProblem(alertsState[btn.dataset.open].id)}));
 }
 function renderProblemSummary(){
   const el=$('problem-summary'); if(!el) return;
-  const r=readingState||{};
-  const chip=(l,v)=>`<div class="bg-white border border-slate-200 rounded-xl px-3 py-2"><p class="text-[11px] font-bold text-slate-500 uppercase">${l}</p><p class="text-lg font-black text-slate-800">${escapeHtml(String(v))}</p></div>`;
-  let h=`<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Live sensor readings</p><div class="grid grid-cols-3 gap-2 mb-4">${chip('pH',r.ph_level??'-')}${chip('Moisture',r.moisture_level!=null?r.moisture_level+'%':'-')}${chip('Nitrogen',r.nitrogen_status??'-')}</div>`;
-  if(!alertsState.length) h+='<div class="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-sm font-semibold text-emerald-800">No problems detected. Your planted crops look healthy.</div>';
-  else h+='<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Active alerts</p>'+alertsState.map((a,i)=>{const c=sevClass(a);return `<button data-ask="${i}" class="w-full text-left mb-2 rounded-xl border p-4 ${c.box}"><span class="flex items-center justify-between gap-2"><span class="font-bold text-slate-900">${escapeHtml(a.crop)}: ${escapeHtml(a.label)}</span><span class="text-xs font-bold uppercase ${c.txt}">${a.severity}</span></span><span class="block text-sm text-slate-700 mt-1">${escapeHtml(a.detail)}</span><span class="block text-sm font-bold ${c.txt} mt-2">Get help</span></button>`}).join('');
+  const r=readingState||{}, ch=changeState||{};
+  const delta=(v,u)=>(v==null||v===0)?'':`<span class="block text-[11px] font-bold text-slate-600">${v>0?'&#9650;':'&#9660;'} ${Math.abs(v)}${u}</span>`;
+  const chip=(l,v,extra)=>`<div class="bg-white border border-slate-200 rounded-xl px-3 py-2"><p class="text-[11px] font-bold text-slate-500 uppercase">${l}</p><p class="text-lg font-black text-slate-800">${escapeHtml(String(v))}</p>${extra||''}</div>`;
+  let h=`<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 mt-4">Live soil readings</p><div class="grid grid-cols-3 gap-2 mb-1">${chip('pH',r.ph_level??'-',delta(ch.ph,''))}${chip('Moisture',r.moisture_level!=null?r.moisture_level+'%':'-',delta(ch.moisture,'%'))}${chip('Nitrogen',r.nitrogen_status??'-',ch.nitrogen_from?`<span class="block text-[11px] font-bold text-slate-600">was ${escapeHtml(String(ch.nitrogen_from))}</span>`:'')}</div><p class="text-[11px] text-slate-500 font-medium mb-4">Arrows show the change since the previous reading.</p>`;
+  if(!alertsState.length) h+='<div class="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-sm font-semibold text-emerald-800">No soil problems detected'+(getCrop()?' for '+escapeHtml(getCrop()):'')+'. Your soil is within healthy range.</div>';
+  else h+='<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Soil alerts</p>'+alertsState.map((a,i)=>{const c=sevClass(a);return `<button data-ask="${i}" class="w-full text-left mb-2 rounded-xl border p-4 ${c.box}"><span class="flex items-center justify-between gap-2"><span class="font-bold text-slate-900">${escapeHtml(a.label)}</span><span class="text-xs font-bold uppercase ${c.txt}">${a.severity}</span></span><span class="block text-sm text-slate-700 mt-1">${escapeHtml(a.detail)}</span>${a.harm?`<span class="block text-sm font-semibold ${c.txt} mt-1">${escapeHtml(a.harm)}</span>`:''}<span class="block text-sm font-bold ${c.txt} mt-2">Get help</span></button>`}).join('');
   el.innerHTML=h;
   el.querySelectorAll('[data-ask]').forEach(b=>b.addEventListener('click',()=>askAlert(alertsState[b.dataset.ask])));
 }
@@ -422,7 +443,7 @@ async function openProblem(alertId){
   await refreshAlerts();
   if(alertId){const a=alertsState.find(x=>x.id===alertId); if(a) askAlert(a);}
 }
-function askAlert(a){ if(a) sendProblem(`${a.crop}: ${a.label}. What should I do?`); }
+function askAlert(a){ if(a) sendProblem(`Soil alert: ${a.label}. Can this harm my crop, and what should I do?`); }
 
 const PAVATAR='<div class="w-8 h-8 rounded-full bg-rose-100 shrink-0 flex items-center justify-center text-rose-600 mt-1"><iconify-icon icon="lucide:message-square-warning"></iconify-icon></div>';
 async function sendProblem(preset){
@@ -432,10 +453,10 @@ async function sendProblem(preset){
   u.innerHTML=`<div class="chat-bubble-user p-4 text-sm font-medium shadow-sm max-w-[90%]">${escapeHtml(text)}</div>`;
   box.appendChild(u); if(!preset){input.value='';input.style.height='auto'}
   const l=document.createElement('div'); l.className='flex gap-3 max-w-[90%]';
-  l.innerHTML=PAVATAR+'<div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm text-slate-500">Problem AI is checking your readings...</div>';
+  l.innerHTML=PAVATAR+'<div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm text-slate-500">Problem AI is checking your soil...</div>';
   box.appendChild(l); box.scrollTop=box.scrollHeight;
   try{
-    const r=await fetch('/api/problem-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,history:problemHistory.slice(-8)})});
+    const r=await fetch('/api/problem-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,history:problemHistory.slice(-8),crop:getCrop()})});
     const d=await r.json(); l.remove();
     if(!r.ok) throw new Error(d.error||'Something went wrong');
     problemHistory.push({role:'user',text},{role:'ai',text:d.reply});
@@ -459,7 +480,7 @@ pi.addEventListener('input',()=>{pi.style.height='auto';pi.style.height=Math.min
 function b64ToU8(b){const p='='.repeat((4-b.length%4)%4),s=(b+p).replace(/-/g,'+').replace(/_/g,'/'),r=atob(s);return Uint8Array.from([...r].map(c=>c.charCodeAt(0)))}
 function updatePushUI(){
   const l=$('push-label'),btn=$('enable-push'); if(!l) return;
-  if(!('Notification' in window)){l.textContent='click the problem for direct chart';btn.disabled=true;return}
+  if(!('Notification' in window)){l.textContent='Notifications not supported here';btn.disabled=true;return}
   if(Notification.permission==='denied'){l.textContent='Blocked: allow notifications in browser settings';btn.disabled=true;return}
   if(Notification.permission==='granted'){l.textContent=pushActive?'Push alerts are on':'Alerts on while this page is open';return}
   l.textContent='Turn on push alerts';
