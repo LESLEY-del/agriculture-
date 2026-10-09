@@ -141,23 +141,29 @@ app.get('/dashboard', authenticateToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
-// ---------- OPEN-METEO WEATHER API ROUTE (BULLETPROOF) ----------
-// ---------- OPEN-METEO WEATHER API ROUTE (WITH CONDITIONS) ----------
+// ---------- OPEN-METEO WEATHER API ROUTE (PAST & FUTURE RAIN) ----------
 app.get('/api/weather', authenticateToken, async (req, res) => {
     try {
         let lat = req.query.lat ? Number(req.query.lat) : -23.9045;
         let lon = req.query.lon ? Number(req.query.lon) : 29.4688;
 
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&past_days=2&hourly=precipitation`;
+        // Fetch past 2 days and forecast for future days
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&past_days=2&forecast_days=3&hourly=precipitation`;
 
         const weatherRes = await fetch(url);
         if (!weatherRes.ok) throw new Error(`Open-Meteo returned status ${weatherRes.status}`);
 
         const data = await weatherRes.json();
         const hourlyPrecip = data.hourly && data.hourly.precipitation ? data.hourly.precipitation : [];
+        
+        // Open-Meteo returns hourly data: 2 days past (48h) + current hour + forecast days
+        // Assuming hourlyPrecip starts 48 hours in the past:
+        // Indices 0 to 47 = Past 48 hours
+        // Index 48 onwards = Future hours
         const past48HoursRain = hourlyPrecip.slice(0, 48).reduce((acc, curr) => acc + curr, 0);
+        const future48HoursRain = hourlyPrecip.slice(48, 96).reduce((acc, curr) => acc + curr, 0);
 
-        // Convert WMO weather code to readable text
+        // Convert WMO weather code to text
         const code = data.current.weather_code;
         let condition = "Clear Sky";
         if ([1, 2, 3].includes(code)) condition = "Partly Cloudy";
@@ -170,6 +176,7 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
             humidity: data.current.relative_humidity_2m,
             windSpeed: data.current.wind_speed_10m,
             rain48h: parseFloat(past48HoursRain.toFixed(1)),
+            rainFuture48h: parseFloat(future48HoursRain.toFixed(1)),
             condition: condition,
             city: lat === -23.9045 ? "Polokwane" : "Live GPS Location"
         });
@@ -180,6 +187,7 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
             humidity: 45,
             windSpeed: 12,
             rain48h: 0.0,
+            rainFuture48h: 0.0,
             condition: "Partly Cloudy",
             city: "Polokwane"
         });
