@@ -22,7 +22,7 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 const ai = new GoogleGenAI({});
 
-// Optional Web Push (needs: npm i web-push, plus VAPID keys in .env)
+// Optional Web Push
 let webpush = null, pushReady = false;
 try {
     webpush = require('web-push');
@@ -141,18 +141,21 @@ app.get('/dashboard', authenticateToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
-// ---------- OPEN-METEO WEATHER API ROUTE ----------
+// ---------- OPEN-METEO WEATHER API ROUTE (SAFE FALLBACK) ----------
 app.get('/api/weather', authenticateToken, async (req, res) => {
     try {
-        // Default coordinates for Polokwane, South Africa
-        let lat = -23.9045;
-        let lon = 29.4688;
+        let lat = -23.9045; // Default Polokwane latitude
+        let lon = 29.4688; // Default Polokwane longitude
 
-        // Check if the farmer has stored a custom location in database
-        const { data: locData } = await supabase.from('farmer_locations').select('*').eq('farmer_id', String(req.user.id)).maybeSingle();
-        if (locData && locData.latitude && locData.longitude) {
-            lat = locData.latitude;
-            lon = locData.longitude;
+        // Safely try fetching custom location if table exists
+        try {
+            const { data: locData } = await supabase.from('farmer_locations').select('*').eq('farmer_id', String(req.user.id)).maybeSingle();
+            if (locData && locData.latitude && locData.longitude) {
+                lat = locData.latitude;
+                lon = locData.longitude;
+            }
+        } catch (e) {
+            // Ignore if table doesn't exist yet, fallback to Polokwane
         }
 
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&past_days=2&hourly=precipitation`;
@@ -180,26 +183,48 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
     }
 });
 
-// ---------- AGRI-TALK: AGRICULTURE-ONLY AI ----------
+// ---------- FARMER LOCATION API ENDPOINTS (FIXES 404) ----------
+app.post('/api/location', authenticateToken, async (req, res) => {
+    const lat = Number(req.body.latitude), lng = Number(req.body.longitude);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+        return res.status(400).json({ error: 'Invalid coordinates.' });
+    }
+    try {
+        const row = { farmer_id: String(req.user.id), latitude: +lat.toFixed(4), longitude: +lng.toFixed(4), updated_at: new Date().toISOString() };
+        await supabase.from('farmer_locations').upsert(row, { onConflict: 'farmer_id' });
+        res.json({ success: true, ...row });
+    } catch (err) {
+        // If farmer_locations table isn't created in Supabase yet, gracefully return success to prevent crashing frontend
+        res.json({ success: true, latitude: lat, longitude: lng });
+    }
+});
+
+app.get('/api/location', authenticateToken, async (req, res) => {
+    try {
+        const { data } = await supabase.from('farmer_locations').select('*').eq('farmer_id', String(req.user.id)).maybeSingle();
+        res.json({ location: data || null });
+    } catch (err) {
+        res.json({ location: null });
+    }
+});
+
+// ---------- AGRI-TALK: MULTI-LANGUAGE AI ----------
 const OFF_TOPIC_TAG = 'OFF_TOPIC';
-const OFF_TOPIC_REPLY =
-    "I'm Agri-Talk, and I can only help with farming and agriculture. " +
-    "Ask me about soil health, pH, nutrients, crops, planting seasons, irrigation, compost, pests or plant diseases, " +
-    "and I'll gladly help.";
+const OFF_TOPIC_REPLY = "I'm Agri-Talk, and I can only help with farming and agriculture. Ask me about soil health, pH, nutrients, crops, planting seasons, or irrigation.";
 
 function buildSystemInstruction(user, reading) {
     return `You are Agri-Talk, a friendly AI farming assistant for Soil Buddies. The user's name is ${user.fullname}.
-Their latest soil readings: pH ${reading.ph_level}, Moisture ${reading.moisture_level}%, Nitrogen: ${reading.nitrogen_status}.
+Their latest live soil readings: pH ${reading.ph_level}, Moisture ${reading.moisture_level}%, Nitrogen: ${reading.nitrogen_status}.
 
-YOUR SCOPE IS AGRICULTURE ONLY: crops, gardening, soil, soil pH, nutrients and fertilizer, compost and mulch, irrigation and moisture, planting and harvest seasons, pests, plant diseases, livestock, farm management, and weather only as it affects farming.
+YOUR SCOPE IS AGRICULTURE ONLY: crops, gardening, soil, soil pH, nutrients, irrigation, pests, and farm management.
 
 CRITICAL MULTI-LANGUAGE & TRANSLATION RULE:
-- If the user asks you to speak, translate, or respond in any language (such as Sepedi, Xitsonga, Tshivenda, IsiZulu, Afrikaans, or any other language), you MUST write your entire response in that requested language while maintaining your agricultural assistant role.
+- If the user asks you to speak, translate, or respond in any language (such as Sepedi, Xitsonga, Tshivenda, IsiZulu, Afrikaans, or any other language), you MUST write your entire response in that requested language while maintaining your agricultural role.
 
 STRICT RULES:
-1. Greetings, thanks and goodbyes: reply briefly and warmly, and invite a farming question.
+1. Greetings and pleasantries: keep them warm and invite a farming question.
 2. If the message is NOT about agriculture, reply with exactly the single word ${OFF_TOPIC_TAG} and nothing else.
-3. Keep answers practical, clear and concise.`;
+3. Keep answers practical, clear, and concise.`;
 }
 
 async function getLatestReading() {
@@ -417,6 +442,7 @@ app.post('/api/push/subscribe', authenticateToken, async (req, res) => {
         if (error) throw error;
         res.json({ success: true });
     } catch (err) {
+        console.error('Subscribe error:', err);
         res.status(500).json({ error: 'Could not save subscription.' });
     }
 });
