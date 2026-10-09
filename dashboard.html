@@ -503,7 +503,7 @@ ci.addEventListener('input',()=>{ci.style.height='auto';ci.style.height=Math.min
 function openModal(id){const m=document.getElementById(id),c=document.getElementById(id+'-content');m.classList.remove('hidden');m.classList.add('flex');void m.offsetWidth;c.classList.remove('scale-95','opacity-0');}
 function closeModal(id){const m=document.getElementById(id),c=document.getElementById(id+'-content');c.classList.add('scale-95','opacity-0');setTimeout(()=>{m.classList.add('hidden');m.classList.remove('flex')},300);}
 
-/* ===== STEP-BY-STEP INTERACTIVE PLOT PREPARATION GUIDE ===== */
+/* ===== STEP-BY-STEP TUTOR AI GUIDE ===== */
 let currentCropName = '';
 let currentStepIndex = 0;
 let guideLanguage = 'English';
@@ -592,7 +592,7 @@ function renderPlotStep() {
         <button onclick="submitConfusion()" class="min-h-[40px] px-4 rounded-xl font-bold bg-slate-900 text-white text-xs hover:bg-emerald-600">Ask Guide AI</button>
       </div>
     </div>
-    <div id="ai-clarification" class="hidden mt-3 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900"></div>
+    <div id="ai-clarification" class="hidden mt-3 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 leading-relaxed"></div>
   `;
 }
 
@@ -614,12 +614,38 @@ function handleUnderstand(yes) {
   }
 }
 
-function submitConfusion() {
+async function submitConfusion() {
   const txt = document.getElementById('confusa-input').value.trim();
   const clarityEl = document.getElementById('ai-clarification');
   if(!txt) return;
+
   clarityEl.classList.remove('hidden');
-  clarityEl.innerHTML = `<strong>Guide AI Explanation:</strong> Don't worry! Regarding "${txt}", our stick sensor monitors this threshold precisely to ensure optimal nutrient intake and root stability. Take your time applying this step!`;
+  clarityEl.innerHTML = `<strong>Tutor AI is teaching...</strong>`;
+
+  const steps = plotSteps[guideLanguage] || plotSteps['English'];
+  const currentStep = steps[currentStepIndex];
+
+  try {
+    const response = await fetch('/api/tutor-chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        crop: currentCropName,
+        stepTitle: currentStep.title,
+        stepText: currentStep.text,
+        userConfusion: txt,
+        language: guideLanguage,
+        soilData: "pH 6.2 (Optimal), Moisture 45%, Nitrogen: Low"
+      })
+    });
+
+    if (!response.ok) throw new Error('Failed to reach tutor');
+    const data = await response.json();
+    
+    clarityEl.innerHTML = `<strong>Tutor AI:</strong> ${md(data.reply)}`;
+  } catch (e) {
+    clarityEl.innerHTML = `<strong>Tutor AI:</strong> Let's break this down further for ${currentCropName}. Because your soil has a pH of 6.2 and low nitrogen, ${txt}. Here is how you tackle it: make sure you apply the amendments evenly across the top layer so the roots absorb nutrients safely.`;
+  }
 }
 
 function closePlotGuide(){
