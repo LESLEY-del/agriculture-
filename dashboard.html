@@ -86,7 +86,10 @@ body.chat-open #chat-fab{display:none}
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 mb-2 font-heading">Welcome back, <span class="gradient-text">Trish man</span></h1>
       <p class="text-slate-600 text-base sm:text-lg font-medium">Your telemetry and environment status looks stable today.</p>
     </div>
-    <div class="self-start flex items-center gap-2 text-sm font-semibold text-emerald-700 bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-100"><span class="w-2 h-2 rounded-full bg-emerald-500 pulse-ring"></span> System Online</div>
+    <div class="self-start flex flex-wrap gap-2">
+      <div class="flex items-center gap-2 text-sm font-semibold text-emerald-700 bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-100"><span class="w-2 h-2 rounded-full bg-emerald-500 pulse-ring"></span> System Online</div>
+      <button id="loc-pill" onclick="updateLocation(true)" class="flex items-center gap-2 text-sm font-semibold text-slate-700 bg-white px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50"><iconify-icon icon="lucide:map-pin" class="text-base"></iconify-icon><span id="loc-label">Locating...</span></button>
+    </div>
   </div>
 
   <div class="grid md:grid-cols-2 gap-5 lg:gap-8">
@@ -513,6 +516,30 @@ document.addEventListener('error',e=>{
 refreshAlerts(); setInterval(refreshAlerts,60000);
 const alertParam=new URLSearchParams(location.search).get('alert');
 if(alertParam){window.history.replaceState(null,'',location.pathname);openProblem(alertParam)}
+
+/* ===== AUTO LOCATION (every 10 minutes) ===== */
+const LOC_EVERY=10*60*1000;
+let lastLoc=0,locBusy=false;
+const setLoc=t=>{const l=$('loc-label');if(l)l.textContent=t};
+function updateLocation(manual){
+  if(!('geolocation' in navigator)){setLoc('Location not supported');return}
+  if(locBusy) return;
+  locBusy=true; setLoc('Locating...');
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    try{
+      const r=await fetch('/api/location',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({latitude:pos.coords.latitude,longitude:pos.coords.longitude,accuracy:pos.coords.accuracy})});
+      if(r.ok){lastLoc=Date.now();setLoc('Location saved at '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}))}
+      else setLoc('Could not save location. Tap to retry');
+    }catch(e){setLoc('Could not save location. Tap to retry')}
+    locBusy=false;
+  },err=>{
+    locBusy=false;
+    setLoc(err.code===1?'Location blocked. Allow it in browser settings':'Location unavailable. Tap to retry');
+  },{enableHighAccuracy:false,timeout:15000,maximumAge:300000});
+}
+updateLocation();
+setInterval(updateLocation,LOC_EVERY);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&Date.now()-lastLoc>LOC_EVERY)updateLocation()});
 </script>
 </body>
 </html>
