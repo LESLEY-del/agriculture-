@@ -530,42 +530,26 @@ function weatherIcon(code, isDay) {
   return 'lucide:cloud';
 }
 async function refreshLiveWeather() {
-  if (weatherBusy) return; weatherBusy = true;
-  try {
-    let url = '/api/weather';
-    // If a saved location is not yet available, use browser coordinates for this request.
-    let response = await fetch(url, { headers: { 'Accept': 'application/json' } });
-    if (response.status === 409 && navigator.geolocation) {
-      const pos = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }));
-      url += '?latitude=' + encodeURIComponent(pos.coords.latitude) + '&longitude=' + encodeURIComponent(pos.coords.longitude);
-      response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    try {
+        const response = await fetch('/api/weather');
+        if (!response.ok) throw new Error('Failed to retrieve live weather data.');
+        
+        const data = await response.json();
+
+        // Update the Live Microclimate card UI elements safely
+        if (document.getElementById('weather-temp')) document.getElementById('weather-temp').innerText = data.temp + '°';
+        if (document.getElementById('weather-humidity')) document.getElementById('weather-humidity').innerText = data.humidity + '%';
+        if (document.getElementById('weather-wind')) document.getElementById('weather-wind').innerText = data.windSpeed + ' km/h';
+        if (document.getElementById('weather-rain')) document.getElementById('weather-rain').innerText = data.rain48h + ' mm Rain';
+        if (document.getElementById('weather-city')) document.getElementById('weather-city').innerText = data.city || 'Polokwane';
+        
+    } catch (error) {
+        console.error("Weather refresh failed:", error);
     }
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Weather could not be loaded');
-    const c = data.current || {}, temp = c.temperature == null ? '--' : Math.round(c.temperature), rain = data.rain48HoursMm;
-    weatherText('weather-temp', temp + '°'); weatherText('weather-condition', c.condition || 'Conditions unavailable');
-    weatherText('weather-humidity', c.humidity == null ? '--%' : Math.round(c.humidity) + '%');
-    weatherText('weather-wind', c.windSpeed == null ? '-- km/h' : Math.round(c.windSpeed) + ' km/h');
-    weatherText('weather-rain48', rain == null ? 'Unavailable' : Number(rain).toFixed(1));
-    weatherText('weather-summary-temp', temp + '°'); weatherText('weather-summary-condition', c.condition || 'Conditions unavailable');
-    const sr = document.getElementById('weather-summary-rain'); if (sr) sr.innerHTML = (rain == null ? '--' : Number(rain).toFixed(1)) + '<span class="text-sm text-slate-500">mm</span>';
-    const icon = document.getElementById('weather-icon'); if (icon) icon.setAttribute('icon', weatherIcon(c.weatherCode, c.isDay));
-    const status = document.getElementById('weather-rain-status');
-    if (status) {
-      if (data.rainStatus === 'limited' || rain == null) { status.className='text-sm font-bold text-amber-800 bg-amber-50 py-2 px-4 rounded-lg inline-block'; status.textContent='Recent rainfall data is incomplete. Use caution.'; }
-      else if (data.rainStatus === 'heavy') { status.className='text-sm font-bold text-amber-800 bg-amber-50 py-2 px-4 rounded-lg inline-block'; status.textContent='Rainfall is elevated. Consider delaying soil testing and re-checking conditions.'; }
-      else { status.className='text-sm font-bold text-emerald-700 bg-emerald-50 py-2 px-4 rounded-lg inline-block'; status.textContent='No heavy rainfall detected in the available 48-hour data.'; }
-    }
-    const loc = data.location || {}; weatherText('weather-location', Number(loc.latitude).toFixed(3) + ', ' + Number(loc.longitude).toFixed(3) + (loc.timezone ? ' · ' + loc.timezone : ''));
-    weatherText('weather-updated', 'Updated ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + ' · Open-Meteo');
-    weatherLastLoaded = Date.now();
-  } catch (e) {
-    console.error('Weather refresh failed:', e);
-    weatherText('weather-condition', 'Weather unavailable'); weatherText('weather-summary-condition', 'Weather unavailable');
-    weatherText('weather-updated', e.message || 'Could not load live weather. Check location permission and connection.');
-    weatherText('weather-rain-status', 'Weather data unavailable. Try refreshing.');
-  } finally { weatherBusy = false; }
 }
+
+// Call it on page load
+window.addEventListener('DOMContentLoaded', refreshLiveWeather);
 const originalSwitchView = switchView;
 switchView = function(id) { originalSwitchView(id); if (id === 'detail-weather' && Date.now() - weatherLastLoaded > 5 * 60 * 1000) refreshLiveWeather(); };
 refreshLiveWeather();
