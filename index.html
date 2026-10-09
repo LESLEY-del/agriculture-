@@ -1,444 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Soil Buddies | Soil Health & Planting Resource</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-warm: #FAF8F3;
-      --soil-brown: #4A3728;
-      --olive-green: #6B7F4E;
-      --soft-clay: #C9A27E;
-    }
-    body {
-      font-family: 'Inter', sans-serif;
-      color: var(--soil-brown);
-      background-color: var(--bg-warm);
-    }
-    h1, h2, h3, h4 {
-      font-family: 'Lora', serif;
-    }
-    .ph-gradient {
-      background: linear-gradient(to right, #e74c3c, #f1c40f, #2ecc71, #3498db, #8e44ad);
-    }
-    .custom-shadow {
-      box-shadow: 0 4px 20px -2px rgba(74, 55, 40, 0.08);
-    }
-    .btn-primary {
-      background-color: var(--olive-green);
-      transition: all 0.3s ease;
-    }
-    .btn-primary:hover {
-      background-color: #5a6b41;
-      transform: translateY(-1px);
-    }
-    .btn-secondary {
-      background-color: transparent;
-      border: 1px solid var(--soft-clay);
-      color: var(--soil-brown);
-    }
-    .btn-secondary:hover {
-      background-color: var(--soft-clay);
-      color: white;
-    }
-    ::-moz-selection { background: #C9A27E; color: white; }
-    ::selection { background: #C9A27E; color: white; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soil Buddies | Soil Health & Planting Resource</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF8F3;--soil:#4A3728;--olive:#5C6F40;--clay:#C9A27E}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+html,body{max-width:100%;overflow-x:hidden}
+body{font-family:'DM Sans',system-ui,sans-serif;font-size:16px;line-height:1.6;color:var(--soil);background:var(--bg)}
+h1,h2,h3,h4{font-family:'Fraunces',Georgia,serif;letter-spacing:-.01em}
+/* 16px minimum stops iOS auto-zoom on focus */
+input,button,select,textarea{font-family:inherit;font-size:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:48px;padding:0 1.5rem;border-radius:.6rem;font-weight:600;font-size:16px;line-height:1;cursor:pointer;border:2px solid transparent;transition:background .2s,color .2s,transform .2s;white-space:nowrap}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--olive);color:#fff;border-color:var(--olive)}
+.btn-primary:hover{background:#4a5a33;border-color:#4a5a33}
+.btn-outline{background:#fff;color:var(--soil);border-color:var(--soil)}
+.btn-outline:hover{background:var(--soil);color:#fff}
+.btn-dark{background:var(--soil);color:#fff;border-color:var(--soil)}
+.btn-dark:hover{background:#2e2218}
+:focus-visible{outline:3px solid var(--olive);outline-offset:2px}
+.shadow-soft{box-shadow:0 4px 20px -2px rgba(74,55,40,.1)}
+.ph-bar{background:linear-gradient(to right,#e74c3c,#f1c40f,#2ecc71,#3498db,#8e44ad)}
+#mobileMenu{display:none}#mobileMenu.open{display:block}
+</style>
 </head>
 <body>
-  <div class="min-h-screen">
-    <!-- Header -->
-    <header class="sticky top-0 z-50 bg-[#FAF8F3]/95 backdrop-blur-sm border-b border-[#4A3728]/10">
-      <div class="max-w-7xl mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-full bg-[#6B7F4E] flex items-center justify-center">
-            <iconify-icon icon="lucide:leaf" class="text-white text-xl"></iconify-icon>
-          </div>
-          <span class="text-xl font-semibold tracking-tight text-[#4A3728] uppercase">Soil Buddies</span>
-        </div>
-
-        <nav class="hidden lg:flex items-center gap-8">
-          <a href="#" class="text-sm font-medium hover:text-[#6B7F4E] transition-colors">Seasons</a>
-          <a href="#" class="text-sm font-medium hover:text-[#6B7F4E] transition-colors">Soil Treatment</a>
-          <a href="#" class="text-sm font-medium hover:text-[#6B7F4E] transition-colors">Nutrients</a>
-          <a href="#" class="text-sm font-medium hover:text-[#6B7F4E] transition-colors">pH Guide</a>
-          <a href="#" class="text-sm font-medium hover:text-[#6B7F4E] transition-colors">Resources</a>
-          <a href="#" class="text-sm font-medium hover:text-[#6B7F4E] transition-colors">Contact</a>
-        </nav>
-
-        <div class="flex items-center gap-4">
-          <a href="/login" class="hidden sm:inline-flex px-5 py-2 rounded-full border border-[#4A3728]/20 text-sm font-medium hover:bg-[#4A3728] hover:text-white transition-all">Get Started</a>
-          <button class="lg:hidden text-2xl">
-            <iconify-icon icon="lucide:menu"></iconify-icon>
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="relative py-20 lg:py-32 overflow-hidden">
-      <div class="max-w-7xl mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-12 items-center relative z-10">
-        <div class="max-w-xl">
-          <span class="inline-block px-3 py-1 rounded-full bg-[#6B7F4E]/10 text-[#6B7F4E] text-xs font-semibold mb-6 uppercase tracking-widest">For Farmers & Gardeners</span>
-          <h1 class="text-5xl lg:text-6xl font-medium leading-[1.1] text-[#4A3728] mb-6">
-            Know your soil. <br>Plant in the right season.
-          </h1>
-          <p class="text-lg text-[#4A3728]/80 mb-10 leading-relaxed">
-            Understanding the foundation of your garden is the first step toward a bountiful harvest. We provide the data and guidance to help your crops thrive naturally.
-          </p>
-          <div class="flex flex-col sm:flex-row gap-4">
-            <a href="#" class="btn-primary px-8 py-4 rounded-lg text-white font-medium flex items-center justify-center gap-2">
-              Explore Planting Seasons <iconify-icon icon="lucide:arrow-right"></iconify-icon>
-            </a>
-            <a href="#" class="btn-secondary px-8 py-4 rounded-lg font-medium flex items-center justify-center">
-              Test Your Soil pH
-            </a>
-          </div>
-        </div>
-        <div class="relative">
-          <div class="aspect-[4/3] rounded-2xl bg-[#C9A27E]/10 overflow-hidden custom-shadow">
-            <img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?auto=format&fit=crop&q=80&w=1200" alt="Close up of healthy soil in hands" class="w-full h-full object-cover opacity-90">
-          </div>
-          <div class="absolute -bottom-6 -left-6 p-6 bg-white rounded-xl shadow-xl hidden md:block">
-            <div class="flex items-center gap-3">
-              <div class="w-12 h-12 bg-[#6B7F4E]/20 rounded-full flex items-center justify-center">
-                <iconify-icon icon="lucide:thermometer-sun" class="text-[#6B7F4E] text-2xl"></iconify-icon>
-              </div>
-              <div>
-                <p class="text-sm font-semibold">Ideal Treatment</p>
-                <p class="text-xs text-gray-500">Compost addition: +15% nitrogen</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="absolute top-0 right-0 w-1/3 h-full bg-[#C9A27E]/5 -z-0 rounded-l-full blur-3xl"></div>
-    </section>
-
-    <!-- Focus Cards -->
-    <section class="py-20 bg-white">
-      <div class="max-w-7xl mx-auto px-6 lg:px-12">
-        <div class="text-center max-w-2xl mx-auto mb-16">
-          <h2 class="text-3xl lg:text-4xl font-medium mb-4">The Core of Soil Health</h2>
-          <p class="text-[#4A3728]/70">Mastering these four pillars ensures your plantation or garden maintains a sustainable cycle of growth.</p>
-        </div>
-        
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <!-- Card 1 -->
-          <div class="p-8 rounded-2xl bg-[#FAF8F3] hover:bg-[#6B7F4E]/5 transition-all group">
-            <iconify-icon icon="lucide:calendar" class="text-3xl text-[#6B7F4E] mb-6"></iconify-icon>
-            <h3 class="text-xl font-semibold mb-3">Planting Seasons</h3>
-            <p class="text-sm text-[#4A3728]/80 leading-relaxed mb-6">
-              Timing is everything. Learn exactly when to plant, grow and harvest by crop type and your specific climate region.
-            </p>
-            <a href="#" class="text-sm font-semibold text-[#6B7F4E] flex items-center gap-1 group-hover:gap-2 transition-all">
-              Learn more <iconify-icon icon="lucide:chevron-right"></iconify-icon>
-            </a>
-          </div>
-          <!-- Card 2 -->
-          <div class="p-8 rounded-2xl bg-[#FAF8F3] hover:bg-[#6B7F4E]/5 transition-all group">
-            <iconify-icon icon="lucide:sprout" class="text-3xl text-[#6B7F4E] mb-6"></iconify-icon>
-            <h3 class="text-xl font-semibold mb-3">Soil Treatment</h3>
-            <p class="text-sm text-[#4A3728]/80 leading-relaxed mb-6">
-              From tilling to crop rotation. Discover natural ways to revitalize your earth through composting, mulching, and liming.
-            </p>
-            <a href="#" class="text-sm font-semibold text-[#6B7F4E] flex items-center gap-1 group-hover:gap-2 transition-all">
-              Learn more <iconify-icon icon="lucide:chevron-right"></iconify-icon>
-            </a>
-          </div>
-          <!-- Card 3 -->
-          <div class="p-8 rounded-2xl bg-[#FAF8F3] hover:bg-[#6B7F4E]/5 transition-all group">
-            <iconify-icon icon="lucide:microscope" class="text-3xl text-[#6B7F4E] mb-6"></iconify-icon>
-            <h3 class="text-xl font-semibold mb-3">Nutrient Discovery</h3>
-            <p class="text-sm text-[#4A3728]/80 leading-relaxed mb-6">
-              Identify Nitrogen, Phosphorus, and Potassium levels. Spot signs of deficiency before they affect your harvest.
-            </p>
-            <a href="#" class="text-sm font-semibold text-[#6B7F4E] flex items-center gap-1 group-hover:gap-2 transition-all">
-              Learn more <iconify-icon icon="lucide:chevron-right"></iconify-icon>
-            </a>
-          </div>
-          <!-- Card 4 -->
-          <div class="p-8 rounded-2xl bg-[#FAF8F3] hover:bg-[#6B7F4E]/5 transition-all group">
-            <iconify-icon icon="lucide:test-tube-2" class="text-3xl text-[#6B7F4E] mb-6"></iconify-icon>
-            <h3 class="text-xl font-semibold mb-3">Soil pH Guide</h3>
-            <p class="text-sm text-[#4A3728]/80 leading-relaxed mb-6">
-              Understand acidity and alkalinity. Learn how to test your pH and adjust it to meet your specific crop needs.
-            </p>
-            <a href="#" class="text-sm font-semibold text-[#6B7F4E] flex items-center gap-1 group-hover:gap-2 transition-all">
-              Learn more <iconify-icon icon="lucide:chevron-right"></iconify-icon>
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Interactive pH Strip -->
-    <section class="py-24">
-      <div class="max-w-7xl mx-auto px-6 lg:px-12 bg-white rounded-3xl p-10 lg:p-16 custom-shadow">
-        <div class="grid lg:grid-cols-3 gap-12 items-center">
-          <div class="lg:col-span-1">
-            <h2 class="text-3xl font-medium mb-4">The pH Scale</h2>
-            <p class="text-[#4A3728]/80 mb-6">
-              Soil pH directly affects how plants absorb nutrients. Most garden plants thrive in a slightly acidic range between 6.0 and 7.0.
-            </p>
-            <a href="#" class="inline-flex items-center gap-2 text-[#6B7F4E] font-medium border-b border-[#6B7F4E]">
-              Full pH Treatment Guide <iconify-icon icon="lucide:external-link"></iconify-icon>
-            </a>
-          </div>
-          
-          <div class="lg:col-span-2">
-            <div class="relative pt-12 pb-8">
-              <!-- Labels -->
-              <div class="flex justify-between mb-4 text-xs font-semibold uppercase tracking-widest text-gray-400">
-                <span>Acidic</span>
-                <span>Neutral</span>
-                <span>Alkaline</span>
-              </div>
-              <!-- Strip -->
-              <div class="h-6 w-full ph-gradient rounded-full relative">
-                <!-- Numbers -->
-                <div class="absolute inset-0 flex justify-between px-2 -top-8">
-                  <span class="text-xs font-bold">3</span>
-                  <span class="text-xs font-bold">4</span>
-                  <span class="text-xs font-bold">5</span>
-                  <span class="text-xs font-bold">6</span>
-                  <span class="text-xs font-bold">7</span>
-                  <span class="text-xs font-bold">8</span>
-                  <span class="text-xs font-bold">9</span>
-                  <span class="text-xs font-bold uppercase">10</span>
-                </div>
-                
-                <!-- Markers -->
-                <div class="absolute left-[42%] -bottom-10 flex flex-col items-center">
-                  <div class="w-0.5 h-12 bg-[#4A3728] mb-1"></div>
-                  <span class="text-[10px] font-bold bg-[#4A3728] text-white px-2 py-0.5 rounded whitespace-nowrap">BLUEBERRIES (4.5-5.5)</span>
-                </div>
-                
-                <div class="absolute left-[65%] -top-12 flex flex-col items-center">
-                  <span class="text-[10px] font-bold bg-[#6B7F4E] text-white px-2 py-0.5 rounded whitespace-nowrap uppercase">Most Vegetables (6.2-6.8)</span>
-                  <div class="w-0.5 h-12 bg-[#6B7F4E] mt-1"></div>
-                </div>
-
-                <div class="absolute left-[88%] -bottom-10 flex flex-col items-center">
-                  <div class="w-0.5 h-12 bg-[#4A3728] mb-1"></div>
-                  <span class="text-[10px] font-bold bg-[#4A3728] text-white px-2 py-0.5 rounded whitespace-nowrap uppercase">Asparagus (7.0-8.0)</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Seasonal Calendar Preview -->
-    <section class="py-20">
-      <div class="max-w-7xl mx-auto px-6 lg:px-12">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
-          <div class="max-w-xl">
-            <h2 class="text-3xl lg:text-4xl font-medium mb-4">Seasonal Planting Guide</h2>
-            <p class="text-[#4A3728]/70">A glance at the current planting cycle. Optimize your activities based on the natural rhythm of the year.</p>
-          </div>
-          <a href="#" class="text-[#6B7F4E] font-semibold flex items-center gap-2 mb-2">
-            View Full Calendar <iconify-icon icon="lucide:arrow-right"></iconify-icon>
-          </a>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <!-- Month Cards -->
-          <div class="bg-white p-6 rounded-xl border border-[#4A3728]/5">
-            <p class="text-xs font-bold text-[#C9A27E] uppercase mb-2">January</p>
-            <p class="text-sm font-medium mb-1">Prepare Beds</p>
-            <p class="text-[11px] text-gray-500">Composting & testing</p>
-          </div>
-          <div class="bg-white p-6 rounded-xl border border-[#4A3728]/5">
-            <p class="text-xs font-bold text-[#C9A27E] uppercase mb-2">February</p>
-            <p class="text-sm font-medium mb-1">Cold Crops</p>
-            <p class="text-[11px] text-gray-500">Kale & Spinach seeds</p>
-          </div>
-          <div class="bg-[#6B7F4E]/10 p-6 rounded-xl border border-[#6B7F4E]/20">
-            <p class="text-xs font-bold text-[#6B7F4E] uppercase mb-2">March (Current)</p>
-            <p class="text-sm font-medium mb-1">Spring Planting</p>
-            <p class="text-[11px] text-gray-500">Tomatoes & Peppers</p>
-          </div>
-          <div class="bg-white p-6 rounded-xl border border-[#4A3728]/5">
-            <p class="text-xs font-bold text-[#C9A27E] uppercase mb-2">April</p>
-            <p class="text-sm font-medium mb-1">Nutrient Boost</p>
-            <p class="text-[11px] text-gray-500">Mulch application</p>
-          </div>
-          <div class="bg-white p-6 rounded-xl border border-[#4A3728]/5">
-            <p class="text-xs font-bold text-[#C9A27E] uppercase mb-2">May</p>
-            <p class="text-sm font-medium mb-1">Summer Start</p>
-            <p class="text-[11px] text-gray-500">Corn & Squash</p>
-          </div>
-          <div class="bg-white p-6 rounded-xl border border-[#4A3728]/5">
-            <p class="text-xs font-bold text-[#C9A27E] uppercase mb-2">June</p>
-            <p class="text-sm font-medium mb-1">Watering Focus</p>
-            <p class="text-[11px] text-gray-500">Irrigation check</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- How it Works -->
-    <section class="py-24 bg-[#4A3728] text-white">
-      <div class="max-w-7xl mx-auto px-6 lg:px-12 text-center">
-        <h2 class="text-3xl lg:text-4xl font-medium mb-16">Three Steps to Success</h2>
-        <div class="grid md:grid-cols-3 gap-16">
-          <div class="flex flex-col items-center">
-            <div class="w-20 h-20 rounded-full border border-white/20 flex items-center justify-center text-2xl font-serif mb-6">
-              01
-            </div>
-            <h3 class="text-xl font-medium mb-4">Test Your Soil</h3>
-            <p class="text-white/70 text-sm leading-relaxed max-w-xs">
-              Gather small samples from across your field and test for pH, moisture, and key nutrients.
-            </p>
-          </div>
-          <div class="flex flex-col items-center">
-            <div class="w-20 h-20 rounded-full border border-white/20 flex items-center justify-center text-2xl font-serif mb-6">
-              02
-            </div>
-            <h3 class="text-xl font-medium mb-4">Understand Results</h3>
-            <p class="text-white/70 text-sm leading-relaxed max-w-xs">
-              Compare your data against our database of 200+ crop types to see exactly what's missing.
-            </p>
-          </div>
-          <div class="flex flex-col items-center">
-            <div class="w-20 h-20 rounded-full border border-white/20 flex items-center justify-center text-2xl font-serif mb-6">
-              03
-            </div>
-            <h3 class="text-xl font-medium mb-4">Treat and Plant</h3>
-            <p class="text-white/70 text-sm leading-relaxed max-w-xs">
-              Follow tailored advice to amend your soil and sow your seeds at the peak of their window.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Featured Guides -->
-    <section class="py-24">
-      <div class="max-w-7xl mx-auto px-6 lg:px-12">
-        <div class="flex justify-between items-center mb-12">
-          <h2 class="text-3xl font-medium">Essential Reading</h2>
-          <a href="#" class="text-sm font-semibold border-b border-[#4A3728] pb-1">All Guides</a>
-        </div>
-        
-        <div class="grid md:grid-cols-3 gap-8">
-          <!-- Guide 1 -->
-          <a href="#" class="group flex flex-col">
-            <div class="aspect-video rounded-xl overflow-hidden mb-6 bg-gray-100">
-              <img src="https://images.unsplash.com/photo-1416870230247-d0efec946562?auto=format&fit=crop&q=80&w=800" alt="Compost pile" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-            </div>
-            <h3 class="text-xl font-medium mb-2 group-hover:text-[#6B7F4E] transition-colors">The Art of Composting</h3>
-            <p class="text-sm text-[#4A3728]/70 mb-4 line-clamp-2">Transform kitchen scraps into black gold with our simple, odor-free system.</p>
-            <span class="text-[11px] font-bold uppercase tracking-wider text-[#C9A27E]">8 Min Read</span>
-          </a>
-          <!-- Guide 2 -->
-          <a href="#" class="group flex flex-col">
-            <div class="aspect-video rounded-xl overflow-hidden mb-6 bg-gray-100">
-              <img src="https://images.unsplash.com/photo-1594498653385-d5172c532c00?auto=format&fit=crop&q=80&w=800" alt="Seedlings" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-            </div>
-            <h3 class="text-xl font-medium mb-2 group-hover:text-[#6B7F4E] transition-colors">Crop Rotation for Beginners</h3>
-            <p class="text-sm text-[#4A3728]/70 mb-4 line-clamp-2">How to prevent pest build-up and soil exhaustion by moving your crops annually.</p>
-            <span class="text-[11px] font-bold uppercase tracking-wider text-[#C9A27E]">12 Min Read</span>
-          </a>
-          <!-- Guide 3 -->
-          <a href="#" class="group flex flex-col">
-            <div class="aspect-video rounded-xl overflow-hidden mb-6 bg-gray-100">
-              <img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80&w=800" alt="Raised garden beds" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-            </div>
-            <h3 class="text-xl font-medium mb-2 group-hover:text-[#6B7F4E] transition-colors">Fixing Yellow Leaves</h3>
-            <p class="text-sm text-[#4A3728]/70 mb-4 line-clamp-2">A visual guide to diagnosing nitrogen and iron deficiencies in common garden plants.</p>
-            <span class="text-[11px] font-bold uppercase tracking-wider text-[#C9A27E]">5 Min Read</span>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA Band -->
-    <section class="py-16 bg-[#F1EFE9]">
-      <div class="max-w-7xl mx-auto px-6 lg:px-12">
-        <div class="bg-[#FAF8F3] p-10 lg:p-16 rounded-[2rem] flex flex-col lg:flex-row items-center justify-between gap-12 border border-[#4A3728]/5">
-          <div class="max-w-lg">
-            <h2 class="text-3xl font-medium mb-4">Free Soil Checklist</h2>
-            <p class="text-[#4A3728]/80">Download our 10-point soil testing checklist before you start your spring planting. It's simple, practical, and free.</p>
-          </div>
-          <form class="w-full lg:w-auto flex flex-col sm:flex-row gap-3">
-            <input type="email" placeholder="yourname@email.com" class="px-6 py-4 rounded-lg bg-white border border-[#4A3728]/10 min-w-[300px] focus:outline-none focus:ring-2 focus:ring-[#6B7F4E]/30">
-            <button class="px-8 py-4 bg-[#4A3728] text-white rounded-lg font-medium hover:bg-black transition-colors">Send Checklist</button>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-white pt-24 pb-12 border-t border-[#4A3728]/5">
-      <div class="max-w-7xl mx-auto px-6 lg:px-12">
-        <div class="grid lg:grid-cols-4 gap-12 mb-20">
-          <div class="lg:col-span-1">
-            <div class="flex items-center gap-2 mb-6">
-              <div class="w-6 h-6 rounded-full bg-[#6B7F4E] flex items-center justify-center">
-                <iconify-icon icon="lucide:leaf" class="text-white text-sm"></iconify-icon>
-              </div>
-              <span class="text-lg font-semibold tracking-tight text-[#4A3728] uppercase">Soil Buddies</span>
-            </div>
-            <p class="text-sm text-[#4A3728]/70 leading-relaxed">
-              We are a community-driven resource dedicated to the health of our earth. Our mission is to help growers understand their land for a more sustainable future.
-            </p>
-          </div>
-          
-          <div>
-            <h4 class="text-xs font-bold uppercase tracking-widest mb-6">Quick Links</h4>
-            <ul class="space-y-3">
-              <li><a href="#" class="text-sm text-[#4A3728]/80 hover:text-[#6B7F4E]">Planting Seasons</a></li>
-              <li><a href="#" class="text-sm text-[#4A3728]/80 hover:text-[#6B7F4E]">Soil pH Guide</a></li>
-              <li><a href="#" class="text-sm text-[#4A3728]/80 hover:text-[#6B7F4E]">Nutrient Deficiency</a></li>
-              <li><a href="#" class="text-sm text-[#4A3728]/80 hover:text-[#6B7F4E]">Farmer Resources</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 class="text-xs font-bold uppercase tracking-widest mb-6">Contact Us</h4>
-            <ul class="space-y-3">
-              <li class="text-sm text-[#4A3728]/80">hello@soilbuddies.org</li>
-              <li class="text-sm text-[#4A3728]/80">+1 (555) 123-4567</li>
-              <li class="text-sm text-[#4A3728]/80 italic">Northfield, VT 05663</li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 class="text-xs font-bold uppercase tracking-widest mb-6">Follow Our Journey</h4>
-            <div class="flex gap-4">
-              <a href="#" class="w-10 h-10 rounded-full border border-[#4A3728]/10 flex items-center justify-center hover:bg-[#6B7F4E] hover:text-white transition-all">
-                <iconify-icon icon="lucide:instagram"></iconify-icon>
-              </a>
-              <a href="#" class="w-10 h-10 rounded-full border border-[#4A3728]/10 flex items-center justify-center hover:bg-[#6B7F4E] hover:text-white transition-all">
-                <iconify-icon icon="lucide:twitter"></iconify-icon>
-              </a>
-              <a href="#" class="w-10 h-10 rounded-full border border-[#4A3728]/10 flex items-center justify-center hover:bg-[#6B7F4E] hover:text-white transition-all">
-                <iconify-icon icon="lucide:facebook"></iconify-icon>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="pt-8 border-t border-[#4A3728]/5 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p class="text-[11px] text-[#4A3728]/50 uppercase tracking-widest">
-            © 2024 Soil Buddies Collective. All rights reserved.
-          </p>
-          <div class="flex gap-6">
-            <a href="#" class="text-[11px] text-[#4A3728]/50 uppercase tracking-widest hover:text-[#4A3728]">Privacy</a>
-            <a href="#" class="text-[11px] text-[#4A3728]/50 uppercase tracking-widest hover:text-[#4A3728]">Terms</a>
-          </div>
-        </div>
-      </div>
-    </footer>
+<header class="sticky top-0 z-50 bg-[#FAF8F3]/95 backdrop-blur border-b border-[#4A3728]/10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 h-[72px] flex items-center justify-between gap-3">
+    <a href="#" class="flex items-center gap-2 shrink-0">
+      <span class="w-9 h-9 rounded-full bg-[#5C6F40] flex items-center justify-center"><iconify-icon icon="lucide:leaf" class="text-white text-xl"></iconify-icon></span>
+      <span class="font-serif text-lg font-semibold">Soil Buddies</span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-8 text-[15px] font-medium">
+      <a href="#seasons" class="hover:text-[#5C6F40]">Seasons</a>
+      <a href="#core" class="hover:text-[#5C6F40]">Soil Treatment</a>
+      <a href="#core" class="hover:text-[#5C6F40]">Nutrients</a>
+      <a href="#ph" class="hover:text-[#5C6F40]">pH Guide</a>
+      <a href="#guides" class="hover:text-[#5C6F40]">Resources</a>
+      <a href="#contact" class="hover:text-[#5C6F40]">Contact</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <a href="/login" class="btn btn-primary !min-h-[44px] !px-5">Get Started</a>
+      <button id="menuBtn" class="lg:hidden btn btn-outline !min-h-[44px] !px-3" aria-label="Open menu" aria-expanded="false">
+        <iconify-icon icon="lucide:menu" class="text-2xl"></iconify-icon>
+      </button>
+    </div>
   </div>
+  <nav id="mobileMenu" class="lg:hidden border-t border-[#4A3728]/10 bg-[#FAF8F3]">
+    <div class="px-4 py-3 flex flex-col text-base font-medium">
+      <a href="#seasons" class="py-3 border-b border-[#4A3728]/10">Seasons</a>
+      <a href="#core" class="py-3 border-b border-[#4A3728]/10">Soil Treatment</a>
+      <a href="#core" class="py-3 border-b border-[#4A3728]/10">Nutrients</a>
+      <a href="#ph" class="py-3 border-b border-[#4A3728]/10">pH Guide</a>
+      <a href="#guides" class="py-3 border-b border-[#4A3728]/10">Resources</a>
+      <a href="#contact" class="py-3">Contact</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+<section class="py-14 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 grid lg:grid-cols-2 gap-12 items-center">
+    <div class="max-w-xl">
+      <p class="inline-block px-3 py-1 rounded-full bg-[#5C6F40]/10 text-[#4a5a33] text-sm font-semibold mb-6">For farmers and gardeners</p>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.1] mb-6">Know your soil.<br>Plant in the right season.</h1>
+      <p class="text-lg text-[#4A3728]/85 mb-8">Understanding the foundation of your garden is the first step toward a bountiful harvest. We give you the data and guidance to help your crops thrive naturally.</p>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href="#seasons" class="btn btn-primary">Explore planting seasons <iconify-icon icon="lucide:arrow-right"></iconify-icon></a>
+        <a href="#ph" class="btn btn-outline">Test your soil pH</a>
+      </div>
+    </div>
+    <div class="relative">
+      <div class="aspect-[4/3] rounded-2xl bg-[#C9A27E]/20 overflow-hidden shadow-soft">
+        <img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?auto=format&fit=crop&q=80&w=1200" alt="Healthy soil held in hands" class="w-full h-full object-cover">
+      </div>
+      <div class="absolute bottom-3 left-3 sm:-bottom-6 sm:-left-6 p-4 bg-white rounded-xl shadow-xl max-w-[260px]">
+        <div class="flex items-center gap-3">
+          <span class="w-11 h-11 shrink-0 bg-[#5C6F40]/15 rounded-full flex items-center justify-center"><iconify-icon icon="lucide:thermometer-sun" class="text-[#5C6F40] text-2xl"></iconify-icon></span>
+          <div><p class="text-sm font-semibold leading-tight">Ideal treatment</p><p class="text-sm text-[#4A3728]/70 leading-tight">Compost: +15% nitrogen</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="core" class="py-16 lg:py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <h2 class="text-3xl lg:text-4xl font-semibold mb-4">The core of soil health</h2>
+      <p class="text-[#4A3728]/80">Master these four areas and your garden or plantation stays productive season after season.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <article class="p-7 rounded-2xl bg-[#FAF8F3] border border-[#4A3728]/10">
+        <iconify-icon icon="lucide:calendar" class="text-3xl text-[#5C6F40] mb-5"></iconify-icon>
+        <h3 class="text-xl font-semibold mb-2">Planting seasons</h3>
+        <p class="text-[15px] text-[#4A3728]/85 mb-5">Learn when to plant, grow and harvest by crop type and climate region.</p>
+        <a href="#seasons" class="btn btn-outline !min-h-[44px] w-full">Learn more</a>
+      </article>
+      <article class="p-7 rounded-2xl bg-[#FAF8F3] border border-[#4A3728]/10">
+        <iconify-icon icon="lucide:sprout" class="text-3xl text-[#5C6F40] mb-5"></iconify-icon>
+        <h3 class="text-xl font-semibold mb-2">Soil treatment</h3>
+        <p class="text-[15px] text-[#4A3728]/85 mb-5">Revive tired earth with composting, mulching, liming and crop rotation.</p>
+        <a href="#guides" class="btn btn-outline !min-h-[44px] w-full">Learn more</a>
+      </article>
+      <article class="p-7 rounded-2xl bg-[#FAF8F3] border border-[#4A3728]/10">
+        <iconify-icon icon="lucide:microscope" class="text-3xl text-[#5C6F40] mb-5"></iconify-icon>
+        <h3 class="text-xl font-semibold mb-2">Nutrient discovery</h3>
+        <p class="text-[15px] text-[#4A3728]/85 mb-5">Check nitrogen, phosphorus and potassium. Spot deficiencies before they cost you harvest.</p>
+        <a href="#guides" class="btn btn-outline !min-h-[44px] w-full">Learn more</a>
+      </article>
+      <article class="p-7 rounded-2xl bg-[#FAF8F3] border border-[#4A3728]/10">
+        <iconify-icon icon="lucide:test-tube-2" class="text-3xl text-[#5C6F40] mb-5"></iconify-icon>
+        <h3 class="text-xl font-semibold mb-2">Soil pH guide</h3>
+        <p class="text-[15px] text-[#4A3728]/85 mb-5">Test your pH and adjust it to suit your crop.</p>
+        <a href="#ph" class="btn btn-outline !min-h-[44px] w-full">Learn more</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="ph" class="py-16 lg:py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+    <div class="bg-white rounded-3xl p-6 sm:p-10 lg:p-14 shadow-soft grid lg:grid-cols-3 gap-10 items-center">
+      <div>
+        <h2 class="text-3xl font-semibold mb-4">The pH scale</h2>
+        <p class="text-[#4A3728]/85 mb-6">Soil pH controls how well plants absorb nutrients. Most garden plants do best between 6.0 and 7.0.</p>
+        <a href="#" class="btn btn-dark">Full pH treatment guide</a>
+      </div>
+      <div class="lg:col-span-2">
+        <div class="flex justify-between text-sm font-semibold mb-2"><span>Acidic</span><span>Neutral</span><span>Alkaline</span></div>
+        <div class="relative h-6 rounded-full ph-bar">
+          <span class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-4 border-[#4A3728]" style="left:28.6%" title="Blueberries"></span>
+          <span class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-4 border-[#4A3728]" style="left:50%" title="Most vegetables"></span>
+          <span class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-4 border-[#4A3728]" style="left:64.3%" title="Asparagus"></span>
+        </div>
+        <div class="flex justify-between text-sm font-bold mt-2 px-1"><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+        <ul class="grid sm:grid-cols-3 gap-3 mt-8 text-sm">
+          <li class="rounded-xl bg-[#FAF8F3] p-4"><strong class="block">Blueberries</strong>pH 4.5 to 5.5</li>
+          <li class="rounded-xl bg-[#FAF8F3] p-4"><strong class="block">Most vegetables</strong>pH 6.2 to 6.8</li>
+          <li class="rounded-xl bg-[#FAF8F3] p-4"><strong class="block">Asparagus</strong>pH 7.0 to 8.0</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="seasons" class="py-16 lg:py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+      <div class="max-w-xl">
+        <h2 class="text-3xl lg:text-4xl font-semibold mb-3">Seasonal planting guide</h2>
+        <p class="text-[#4A3728]/80">A glance at the planting cycle, so you can match your work to the rhythm of the year.</p>
+      </div>
+      <a href="#" class="btn btn-outline self-start">View full calendar</a>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div class="bg-white p-5 rounded-xl border border-[#4A3728]/10"><p class="text-sm font-bold text-[#8a6a47] mb-1">January</p><p class="font-medium">Prepare beds</p><p class="text-sm text-[#4A3728]/70">Composting and testing</p></div>
+      <div class="bg-white p-5 rounded-xl border border-[#4A3728]/10"><p class="text-sm font-bold text-[#8a6a47] mb-1">February</p><p class="font-medium">Cold crops</p><p class="text-sm text-[#4A3728]/70">Kale and spinach seeds</p></div>
+      <div class="bg-[#5C6F40]/10 p-5 rounded-xl border-2 border-[#5C6F40]"><p class="text-sm font-bold text-[#4a5a33] mb-1">March (current)</p><p class="font-medium">Spring planting</p><p class="text-sm text-[#4A3728]/70">Tomatoes and peppers</p></div>
+      <div class="bg-white p-5 rounded-xl border border-[#4A3728]/10"><p class="text-sm font-bold text-[#8a6a47] mb-1">April</p><p class="font-medium">Nutrient boost</p><p class="text-sm text-[#4A3728]/70">Mulch application</p></div>
+      <div class="bg-white p-5 rounded-xl border border-[#4A3728]/10"><p class="text-sm font-bold text-[#8a6a47] mb-1">May</p><p class="font-medium">Summer start</p><p class="text-sm text-[#4A3728]/70">Corn and squash</p></div>
+      <div class="bg-white p-5 rounded-xl border border-[#4A3728]/10"><p class="text-sm font-bold text-[#8a6a47] mb-1">June</p><p class="font-medium">Watering focus</p><p class="text-sm text-[#4A3728]/70">Irrigation check</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="py-16 lg:py-24 bg-[#4A3728] text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 text-center">
+    <h2 class="text-3xl lg:text-4xl font-semibold mb-12">Three steps to success</h2>
+    <div class="grid md:grid-cols-3 gap-12">
+      <div class="flex flex-col items-center"><span class="w-16 h-16 rounded-full border-2 border-white/40 flex items-center justify-center font-serif text-2xl mb-5">1</span><h3 class="text-xl font-semibold mb-2">Test your soil</h3><p class="text-white/85 max-w-xs">Take small samples from across your field and test pH, moisture and key nutrients.</p></div>
+      <div class="flex flex-col items-center"><span class="w-16 h-16 rounded-full border-2 border-white/40 flex items-center justify-center font-serif text-2xl mb-5">2</span><h3 class="text-xl font-semibold mb-2">Understand results</h3><p class="text-white/85 max-w-xs">Compare your results with 200+ crop types to see exactly what is missing.</p></div>
+      <div class="flex flex-col items-center"><span class="w-16 h-16 rounded-full border-2 border-white/40 flex items-center justify-center font-serif text-2xl mb-5">3</span><h3 class="text-xl font-semibold mb-2">Treat and plant</h3><p class="text-white/85 max-w-xs">Follow tailored advice to amend your soil and sow at the peak of the window.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="guides" class="py-16 lg:py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+    <div class="flex justify-between items-center mb-10 gap-4">
+      <h2 class="text-3xl font-semibold">Essential reading</h2>
+      <a href="#" class="btn btn-outline !min-h-[44px]">All guides</a>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <a href="#" class="group flex flex-col"><div class="aspect-video rounded-xl overflow-hidden mb-5 bg-[#C9A27E]/20"><img src="https://images.unsplash.com/photo-1416870230247-d0efec946562?auto=format&fit=crop&q=80&w=800" alt="Compost" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div><h3 class="text-xl font-semibold mb-2 group-hover:text-[#5C6F40]">The art of composting</h3><p class="text-[15px] text-[#4A3728]/80 mb-3">Turn kitchen scraps into rich compost with a simple, odor-free system.</p><span class="text-sm font-bold text-[#8a6a47]">8 min read</span></a>
+      <a href="#" class="group flex flex-col"><div class="aspect-video rounded-xl overflow-hidden mb-5 bg-[#C9A27E]/20"><img src="https://images.unsplash.com/photo-1594498653385-d5172c532c00?auto=format&fit=crop&q=80&w=800" alt="Seedlings" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div><h3 class="text-xl font-semibold mb-2 group-hover:text-[#5C6F40]">Crop rotation for beginners</h3><p class="text-[15px] text-[#4A3728]/80 mb-3">Prevent pest build-up and soil exhaustion by moving crops each year.</p><span class="text-sm font-bold text-[#8a6a47]">12 min read</span></a>
+      <a href="#" class="group flex flex-col"><div class="aspect-video rounded-xl overflow-hidden mb-5 bg-[#C9A27E]/20"><img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80&w=800" alt="Garden beds" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div><h3 class="text-xl font-semibold mb-2 group-hover:text-[#5C6F40]">Fixing yellow leaves</h3><p class="text-[15px] text-[#4A3728]/80 mb-3">Diagnose nitrogen and iron deficiencies in common garden plants.</p><span class="text-sm font-bold text-[#8a6a47]">5 min read</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="py-14 bg-[#F1EFE9]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+    <div class="bg-[#FAF8F3] p-6 sm:p-10 lg:p-14 rounded-3xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 border border-[#4A3728]/10">
+      <div class="max-w-lg">
+        <h2 class="text-3xl font-semibold mb-3">Free soil checklist</h2>
+        <p class="text-[#4A3728]/85">Download our 10-point soil testing checklist before spring planting. Simple, practical and free.</p>
+      </div>
+      <form class="w-full lg:w-auto flex flex-col sm:flex-row gap-3" onsubmit="event.preventDefault();">
+        <label for="email" class="sr-only">Email address</label>
+        <input id="email" type="email" required placeholder="yourname@email.com" class="px-5 min-h-[52px] rounded-lg bg-white border-2 border-[#4A3728]/30 w-full sm:min-w-[280px] focus:outline-none focus:border-[#5C6F40]">
+        <button type="submit" class="btn btn-dark !min-h-[52px]">Send checklist</button>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer id="contact" class="bg-white pt-16 pb-10 border-t border-[#4A3728]/10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-14">
+      <div>
+        <div class="flex items-center gap-2 mb-4"><span class="w-8 h-8 rounded-full bg-[#5C6F40] flex items-center justify-center"><iconify-icon icon="lucide:leaf" class="text-white"></iconify-icon></span><span class="font-serif text-lg font-semibold">Soil Buddies</span></div>
+        <p class="text-[15px] text-[#4A3728]/80">A community-driven resource helping growers understand their land for a more sustainable future.</p>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4">Quick links</h4>
+        <ul class="space-y-2 text-[15px]"><li><a href="#seasons" class="hover:text-[#5C6F40]">Planting seasons</a></li><li><a href="#ph" class="hover:text-[#5C6F40]">Soil pH guide</a></li><li><a href="#guides" class="hover:text-[#5C6F40]">Nutrient deficiency</a></li><li><a href="#guides" class="hover:text-[#5C6F40]">Farmer resources</a></li></ul>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4">Contact us</h4>
+        <ul class="space-y-2 text-[15px]"><li>hello@soilbuddies.org</li><li>+1 (555) 123-4567</li><li>Northfield, VT 05663</li></ul>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4">Follow our journey</h4>
+        <div class="flex gap-3">
+          <a href="#" aria-label="Instagram" class="w-11 h-11 rounded-full border-2 border-[#4A3728]/30 flex items-center justify-center hover:bg-[#5C6F40] hover:border-[#5C6F40] hover:text-white"><iconify-icon icon="lucide:instagram" class="text-xl"></iconify-icon></a>
+          <a href="#" aria-label="Twitter" class="w-11 h-11 rounded-full border-2 border-[#4A3728]/30 flex items-center justify-center hover:bg-[#5C6F40] hover:border-[#5C6F40] hover:text-white"><iconify-icon icon="lucide:twitter" class="text-xl"></iconify-icon></a>
+          <a href="#" aria-label="Facebook" class="w-11 h-11 rounded-full border-2 border-[#4A3728]/30 flex items-center justify-center hover:bg-[#5C6F40] hover:border-[#5C6F40] hover:text-white"><iconify-icon icon="lucide:facebook" class="text-xl"></iconify-icon></a>
+        </div>
+      </div>
+    </div>
+    <div class="pt-6 border-t border-[#4A3728]/10 flex flex-col md:flex-row justify-between items-center gap-3 text-sm text-[#4A3728]/70">
+      <p>© 2024 Soil Buddies Collective. All rights reserved.</p>
+      <div class="flex gap-6"><a href="#" class="hover:text-[#4A3728]">Privacy</a><a href="#" class="hover:text-[#4A3728]">Terms</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const b=document.getElementById('menuBtn'),m=document.getElementById('mobileMenu');
+b.addEventListener('click',()=>{const o=m.classList.toggle('open');b.setAttribute('aria-expanded',o)});
+m.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{m.classList.remove('open');b.setAttribute('aria-expanded',false)}));
+</script>
 </body>
 </html>
