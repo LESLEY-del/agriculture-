@@ -532,52 +532,29 @@ function weatherIcon(code, isDay) {
 async function refreshLiveWeather() {
     try {
         const response = await fetch('/api/weather');
-        if (!response.ok) throw new Error('Failed to retrieve live weather data.');
+        if (!response.ok) throw new Error('Failed to load weather');
         
         const data = await response.json();
-
-        // Update the Live Microclimate card UI elements safely
-        if (document.getElementById('weather-temp')) document.getElementById('weather-temp').innerText = data.temp + '°';
-        if (document.getElementById('weather-humidity')) document.getElementById('weather-humidity').innerText = data.humidity + '%';
-        if (document.getElementById('weather-wind')) document.getElementById('weather-wind').innerText = data.windSpeed + ' km/h';
-        if (document.getElementById('weather-rain')) document.getElementById('weather-rain').innerText = data.rain48h + ' mm Rain';
-        if (document.getElementById('weather-city')) document.getElementById('weather-city').innerText = data.city || 'Polokwane';
         
+        // Update temperature and condition text across both cards
+        document.querySelectorAll('.weather-temp').forEach(el => el.innerText = data.temp + '°');
+        document.querySelectorAll('.weather-humidity').forEach(el => el.innerText = data.humidity + '%');
+        document.querySelectorAll('.weather-wind').forEach(el => el.innerText = data.windSpeed + ' km/h');
+        document.querySelectorAll('.weather-rain').forEach(el => el.innerText = data.rain48h + ' mm Rain');
+        document.querySelectorAll('.weather-city').forEach(el => el.innerText = data.city || 'Polokwane');
+
+        // Clear out any loading states or text labels
+        document.querySelectorAll('.weather-loading').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.weather-status').forEach(el => el.innerText = data.rain48h > 0 ? 'Rainfall detected. Exercise caution with readings.' : 'Clear conditions. Optimal for soil testing.');
+
     } catch (error) {
-        console.error("Weather refresh failed:", error);
+        console.error("Weather fetch error:", error);
+        document.querySelectorAll('.weather-loading').forEach(el => el.innerText = 'Unable to load live weather');
     }
 }
 
-// Call it on page load
 window.addEventListener('DOMContentLoaded', refreshLiveWeather);
-const originalSwitchView = switchView;
-switchView = function(id) { originalSwitchView(id); if (id === 'detail-weather' && Date.now() - weatherLastLoaded > 5 * 60 * 1000) refreshLiveWeather(); };
-refreshLiveWeather();
-setInterval(refreshLiveWeather, 10 * 60 * 1000);
 
-/* ===== AUTO LOCATION (every 10 minutes) ===== */
-const LOC_EVERY=10*60*1000;
-let lastLoc=0,locBusy=false;
-const setLoc=t=>{const l=$('loc-label');if(l)l.textContent=t};
-function updateLocation(manual){
-  if(!('geolocation' in navigator)){setLoc('Location not supported');return}
-  if(locBusy) return;
-  locBusy=true; setLoc('Locating...');
-  navigator.geolocation.getCurrentPosition(async pos=>{
-    try{
-      const r=await fetch('/api/location',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({latitude:pos.coords.latitude,longitude:pos.coords.longitude,accuracy:pos.coords.accuracy})});
-      if(r.ok){lastLoc=Date.now();setLoc('Location saved at '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}))}
-      else setLoc('Could not save location. Tap to retry');
-    }catch(e){setLoc('Could not save location. Tap to retry')}
-    locBusy=false;
-  },err=>{
-    locBusy=false;
-    setLoc(err.code===1?'Location blocked. Allow it in browser settings':'Location unavailable. Tap to retry');
-  },{enableHighAccuracy:false,timeout:15000,maximumAge:300000});
-}
-updateLocation();
-setInterval(updateLocation,LOC_EVERY);
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&Date.now()-lastLoc>LOC_EVERY)updateLocation()});
 </script>
 </body>
 </html>
