@@ -457,7 +457,7 @@ pi.addEventListener('input',()=>{pi.style.height='auto';pi.style.height=Math.min
 function b64ToU8(b){const p='='.repeat((4-b.length%4)%4),s=(b+p).replace(/-/g,'+').replace(/_/g,'/'),r=atob(s);return Uint8Array.from([...r].map(c=>c.charCodeAt(0)))}
 function updatePushUI(){
   const l=$('push-label'),btn=$('enable-push'); if(!l) return;
-  if(!('Notification' in window)){l.textContent='Notifications not supported here';btn.disabled=true;return}
+  if(!('Notification' in window)){l.textContent='Clear notifications';btn.disabled=true;return}
   if(Notification.permission==='denied'){l.textContent='Blocked: allow notifications in browser settings';btn.disabled=true;return}
   if(Notification.permission==='granted'){l.textContent=pushActive?'Push alerts are on':'Alerts on while this page is open';return}
   l.textContent='Turn on push alerts';
