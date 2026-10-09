@@ -139,6 +139,15 @@ app.get('/api/sensors/latest', authenticateToken, async (req, res) => {
     }
 });
 
+// Get current logged-in user profile info
+app.get('/api/me', authenticateToken, (req, res) => {
+    res.json({
+        id: req.user.id,
+        email: req.user.email,
+        fullname: req.user.fullname
+    });
+});
+
 // ==========================================
 // PROTECTED ROUTES & API ENDPOINTS
 // ==========================================
