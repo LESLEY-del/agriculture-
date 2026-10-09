@@ -33,12 +33,6 @@ try {
 } catch (e) { console.log('web-push not installed: push notifications disabled.'); }
 
 // --- STATIC HTML ROUTES (GET) ---
-
-
-app.get('/dashboard', authenticateToken, (req, res) => {
-    res.sendFile(path.join(__dirname, 'dashboard.html'));
-});
-
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
@@ -49,6 +43,25 @@ app.get('/login', (req, res) => {
 
 app.get('/register', (req, res) => {
     res.sendFile(path.join(__dirname, 'register.html'));
+});
+
+// ==========================================
+// SECURITY MIDDLEWARE
+// ==========================================
+const authenticateToken = (req, res, next) => {
+    const token = req.cookies.token;
+    if (!token) return res.redirect('/login');
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.redirect('/login');
+        req.user = user; 
+        next();
+    });
+};
+
+// --- PROTECTED DASHBOARD ROUTE ---
+app.get('/dashboard', authenticateToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
 // --- AUTHENTICATION ROUTES (POST) ---
@@ -105,20 +118,6 @@ app.get('/logout', (req, res) => {
     res.redirect('/login');
 });
 
-// ==========================================
-// SECURITY MIDDLEWARE
-// ==========================================
-const authenticateToken = (req, res, next) => {
-    const token = req.cookies.token;
-    if (!token) return res.redirect('/login');
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.redirect('/login');
-        req.user = user; 
-        next();
-    });
-};
-
 const DEFAULT_READING = { moisture_level: 45, ph_level: 6.2, nitrogen_status: 'Low' };
 
 // Get latest sensor telemetry for the dashboard UI
@@ -141,13 +140,13 @@ app.get('/api/sensors/latest', authenticateToken, async (req, res) => {
 });
 
 // ==========================================
+// PROTECTED ROUTES & API ENDPOINTS
+// ==========================================
 // ---------- LIVE WEATHER API (SUPABASE COORDINATES + OPEN-METEO) ----------
 app.get('/api/weather', authenticateToken, async (req, res) => {
     try {
         const farmerId = String(req.user.id);
 
-        // Query the farmer location table from Supabase
-        // (Checking both 'farmer_locations' or 'farmer_location' depending on your table name)
         let locRow = null;
         try {
             const { data } = await supabase
@@ -158,7 +157,6 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
                 .maybeSingle();
             locRow = data;
         } catch (e) {
-            // Fallback table name check
             const { data } = await supabase
                 .from('farmer_location')
                 .select('latitude, longitude')
@@ -168,7 +166,6 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
             locRow = data;
         }
 
-        // Default fallbacks if none stored yet
         let lat = -23.887; 
         let lon = 29.7361;
 
@@ -177,7 +174,6 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
             lon = Number(locRow.longitude);
         }
 
-        // Fetch live weather from Open-Meteo using the database coordinates
         const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&past_days=2&forecast_days=5&hourly=temperature_2m,weather_code,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`;
 
         const weatherRes = await fetch(weatherUrl);
@@ -188,7 +184,6 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
         const past48HoursRain = hourlyPrecip.slice(0, 48).reduce((acc, curr) => acc + curr, 0);
         const future48HoursRain = hourlyPrecip.slice(48, 96).reduce((acc, curr) => acc + curr, 0);
 
-        // Build hourly forecast list
         const nowIndex = data.hourly.time.findIndex(t => new Date(t) >= new Date()) || 0;
         const hourlyList = [];
         for (let i = 0; i < 6; i++) {
@@ -203,7 +198,6 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
             }
         }
 
-        // Build daily forecast list (5 days)
         const dailyList = [];
         const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         if (data.daily && data.daily.time) {
@@ -246,7 +240,7 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
     }
 });
 
-// ---------- FARMER LOCATION API ENDPOINTS (FIXES 404) ----------
+// ---------- FARMER LOCATION API ENDPOINTS ----------
 app.post('/api/location', authenticateToken, async (req, res) => {
     const lat = Number(req.body.latitude), lng = Number(req.body.longitude);
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
@@ -257,7 +251,6 @@ app.post('/api/location', authenticateToken, async (req, res) => {
         await supabase.from('farmer_locations').upsert(row, { onConflict: 'farmer_id' });
         res.json({ success: true, ...row });
     } catch (err) {
-        // If farmer_locations table isn't created in Supabase yet, gracefully return success to prevent crashing frontend
         res.json({ success: true, latitude: lat, longitude: lng });
     }
 });
@@ -462,15 +455,6 @@ function computeChange(cur, prev) {
     };
 }
 
-function describeChange(cur, ch) {
-    if (!ch) return 'No earlier reading is available to compare with.';
-    const parts = [];
-    parts.push(ch.ph ? `pH changed by ${ch.ph > 0 ? '+' : ''}${ch.ph}` : 'pH is unchanged');
-    parts.push(ch.moisture ? `moisture changed by ${ch.moisture > 0 ? '+' : ''}${ch.moisture} percentage points` : 'moisture is unchanged');
-    parts.push(ch.nitrogen_from ? `nitrogen went from ${ch.nitrogen_from} to ${cur.nitrogen_status}` : 'nitrogen is unchanged');
-    return parts.join('; ') + '.';
-}
-
 app.get('/api/alerts', authenticateToken, async (req, res) => {
     try {
         const [cur, prev] = await getReadings(2);
@@ -556,7 +540,7 @@ app.post('/api/problem-chat', authenticateToken, async (req, res) => {
         }
         return res.json({ reply });
     } catch (err) {
-        return res.json({ reply: `Hello ${user.fullname}. Latest soil readings: pH ${reading.ph_level}, moisture ${reading.moisture_level}%, nitrogen ${reading.nitrogen_status}.` });
+        return res.json({ reply: `Hello ${req.user.fullname}. Latest soil readings: pH ${reading.ph_level}, moisture ${reading.moisture_level}%, nitrogen ${reading.nitrogen_status}.` });
     }
 });
 
