@@ -33,6 +33,12 @@ try {
 } catch (e) { console.log('web-push not installed: push notifications disabled.'); }
 
 // --- STATIC HTML ROUTES (GET) ---
+
+
+app.get('/dashboard', authenticateToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
