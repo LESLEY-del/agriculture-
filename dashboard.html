@@ -530,30 +530,132 @@ function weatherIcon(code, isDay) {
   return 'lucide:cloud';
 }
 async function refreshLiveWeather() {
-    try {
-        const response = await fetch('/api/weather');
-        if (!response.ok) throw new Error('Failed to load weather');
-        
-        const data = await response.json();
-        
-        // Update temperature and condition text across both cards
-        document.querySelectorAll('.weather-temp').forEach(el => el.innerText = data.temp + '°');
-        document.querySelectorAll('.weather-humidity').forEach(el => el.innerText = data.humidity + '%');
-        document.querySelectorAll('.weather-wind').forEach(el => el.innerText = data.windSpeed + ' km/h');
-        document.querySelectorAll('.weather-rain').forEach(el => el.innerText = data.rain48h + ' mm Rain');
-        document.querySelectorAll('.weather-city').forEach(el => el.innerText = data.city || 'Polokwane');
+    const loadingMessage = 'Loading live weather…';
 
-        // Clear out any loading states or text labels
-        document.querySelectorAll('.weather-loading').forEach(el => el.style.display = 'none');
-        document.querySelectorAll('.weather-status').forEach(el => el.innerText = data.rain48h > 0 ? 'Rainfall detected. Exercise caution with readings.' : 'Clear conditions. Optimal for soil testing.');
+    const elements = {
+        temperature: document.getElementById('weather-temp'),
+        condition: document.getElementById('weather-condition'),
+        humidity: document.getElementById('weather-humidity'),
+        wind: document.getElementById('weather-wind'),
+        rain: document.getElementById('weather-rain48'),
+        status: document.getElementById('weather-rain-status'),
+        location: document.getElementById('weather-location'),
+        updated: document.getElementById('weather-updated'),
+        summaryTemp: document.getElementById('weather-summary-temp'),
+        summaryCondition: document.getElementById('weather-summary-condition'),
+        summaryRain: document.getElementById('weather-summary-rain')
+    };
+
+    function setText(element, text) {
+        if (element) {
+            element.textContent = text;
+        }
+    }
+
+    // Show a clear loading state.
+    setText(elements.condition, loadingMessage);
+    setText(elements.summaryCondition, loadingMessage);
+    setText(elements.updated, 'Connecting to the weather service…');
+    setText(elements.status, 'Checking rainfall conditions…');
+
+    const controller = new AbortController();
+
+    // Never allow the weather request to wait forever.
+    const timeout = setTimeout(() => {
+        controller.abort();
+    }, 12000);
+
+    try {
+        const response = await fetch('/api/weather', {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json'
+            },
+            signal: controller.signal
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                response.status === 401 || response.status === 403
+                    ? 'Your session may have expired. Please sign in again.'
+                    : `Weather service returned HTTP ${response.status}.`
+            );
+        }
+
+        const data = await response.json();
+
+        // Validate the response before updating the dashboard.
+        if (
+            typeof data.temp !== 'number' ||
+            typeof data.humidity !== 'number' ||
+            typeof data.windSpeed !== 'number' ||
+            typeof data.rain48h !== 'number'
+        ) {
+            throw new Error(
+                data.error || 'The weather service returned incomplete data.'
+            );
+        }
+
+        // Current weather.
+        setText(elements.temperature, `${Math.round(data.temp)}°`);
+        setText(elements.condition, data.condition || 'Current conditions');
+        setText(elements.humidity, `${Math.round(data.humidity)}%`);
+        setText(elements.wind, `${Math.round(data.windSpeed)} km/h`);
+
+        // Rainfall.
+        setText(elements.rain, data.rain48h.toFixed(1));
+        setText(
+            elements.status,
+            data.rain48h >= 20
+                ? 'Heavy rainfall detected. Check local soil conditions.'
+                : data.rain48h >= 5
+                    ? 'Rainfall detected. Monitor your soil conditions.'
+                    : 'No significant rainfall detected in the available data.'
+        );
+
+        // Settings summary card.
+        setText(elements.summaryTemp, `${Math.round(data.temp)}°`);
+        setText(
+            elements.summaryCondition,
+            data.condition || 'Current conditions'
+        );
+        setText(elements.summaryRain, data.rain48h.toFixed(1));
+
+        setText(
+            elements.location,
+            data.city || 'Saved farm location'
+        );
+
+        setText(
+            elements.updated,
+            `Weather updated successfully at ${new Date().toLocaleTimeString()}`
+        );
+
+        console.log('Live weather loaded successfully:', data);
 
     } catch (error) {
-        console.error("Weather fetch error:", error);
-        document.querySelectorAll('.weather-loading').forEach(el => el.innerText = 'Unable to load live weather');
+        console.error('Live weather error:', error);
+
+        const message = error.name === 'AbortError'
+            ? 'Weather request timed out. Please try again.'
+            : error.message || 'Could not load weather data.';
+
+        setText(elements.condition, 'Weather unavailable');
+        setText(elements.summaryCondition, 'Weather unavailable');
+        setText(elements.updated, message);
+        setText(elements.status, message);
+
+    } finally {
+        clearTimeout(timeout);
     }
 }
 
-window.addEventListener('DOMContentLoaded', refreshLiveWeather);
+// Load weather when the dashboard script runs.
+refreshLiveWeather();
+
+// Refresh every 10 minutes.
+setInterval(refreshLiveWeather, 10 * 60 * 1000);
 
 </script>
 </body>
