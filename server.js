@@ -151,7 +151,7 @@ app.get('/api/me', authenticateToken, (req, res) => {
 // ==========================================
 // PROTECTED ROUTES & API ENDPOINTS
 // ==========================================
-// ---------- ROBUST LIVE WEATHER API ----------
+// ---------- ROBUST LIVE WEATHER API WITH POPULATED FORECASTS ----------
 app.get('/api/weather', authenticateToken, async (req, res) => {
     try {
         const farmerId = String(req.user.id);
@@ -175,7 +175,6 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
             locRow = data;
         }
 
-        // Default to Polokwane, South Africa coordinates if none stored yet
         let lat = -23.887; 
         let lon = 29.7361;
 
@@ -184,7 +183,6 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
             lon = Number(locRow.longitude);
         }
 
-        // Simplified Open-Meteo request URL without past_days complexity
         const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
 
         const weatherRes = await fetch(weatherUrl);
@@ -192,19 +190,25 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
 
         const data = await weatherRes.json();
         const hourlyPrecip = data.hourly && data.hourly.precipitation ? data.hourly.precipitation : [];
-        
-        // Use safe slice estimates for rain calculation
         const past48HoursRain = hourlyPrecip.slice(0, 24).reduce((acc, curr) => acc + curr, 0);
         const future48HoursRain = hourlyPrecip.slice(24, 72).reduce((acc, curr) => acc + curr, 0);
 
-        const nowIndex = 0;
+        // Find the current hour index to populate the next 6 hours accurately
+        const nowTime = new Date().getTime();
+        let nowIndex = 0;
+        if (data.hourly && data.hourly.time) {
+            const foundIdx = data.hourly.time.findIndex(t => new Date(t).getTime() >= nowTime);
+            if (foundIdx !== -1) nowIndex = foundIdx;
+        }
+
         const hourlyList = [];
         for (let i = 0; i < 6; i++) {
             const idx = nowIndex + i;
             if (data.hourly && data.hourly.time && idx < data.hourly.time.length) {
-                const hourStr = new Date(data.hourly.time[idx]).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: false });
+                const hourDate = new Date(data.hourly.time[idx]);
+                const hourStr = i === 0 ? 'Now' : hourDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: false });
                 hourlyList.push({
-                    time: i === 0 ? 'Now' : hourStr,
+                    time: hourStr,
                     temp: Math.round(data.hourly.temperature_2m[idx]),
                     code: data.hourly.weather_code[idx]
                 });
@@ -236,8 +240,8 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
 
         res.json({
             temp: data.current ? Math.round(data.current.temperature_2m) : 22,
-            high: dailyList.length ? dailyList[0].max : 25,
-            low: dailyList.length ? dailyList[0].min : 15,
+            high: dailyList.length ? dailyList[0].max : 26,
+            low: dailyList.length ? dailyList[0].min : 14,
             humidity: data.current ? data.current.relative_humidity_2m : 50,
             windSpeed: data.current ? data.current.wind_speed_10m : 5,
             rain48h: parseFloat(past48HoursRain.toFixed(1)),
@@ -249,12 +253,7 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
         });
     } catch (err) {
         console.error("Live Weather API Error:", err.message);
-        // Fallback JSON so frontend never stays on loading state
-        res.json({
-            temp: 22, high: 26, low: 14, humidity: 45, windSpeed: 6,
-            rain48h: 0.0, rainFuture48h: 0.0, condition: "Clear Sky",
-            hourly: [], daily: [], city: "Synced Farm Location"
-        });
+        res.status(500).json({ error: "Failed to fetch live weather" });
     }
 });
 
