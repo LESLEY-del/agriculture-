@@ -549,6 +549,29 @@ app.post('/api/problem-chat', authenticateToken, async (req, res) => {
     }
 });
 
+// ---------- INTERACTIVE PLOT GUIDE TUTOR API ----------
+app.post('/api/tutor-chat', authenticateToken, async (req, res) => {
+    try {
+        const { crop, stepTitle, stepText, userConfusion, language, soilData } = req.body;
+
+        const prompt = `You are an expert, patient agricultural tutor guiding a farmer step-by-step. 
+The farmer is working on planting ${crop}.
+Current Soil Telemetry: ${soilData}.
+Current Step: ${stepTitle} - "${stepText}".
+The farmer stated they are confused or stuck by saying: "${userConfusion}".
+Respond in ${language || 'English'}. Explain this step clearly like a personal tutor, addressing their specific confusion, explaining the 'why', and teaching them how to execute it simply without getting overwhelmed.`;
+
+        const chat = model.startChat({ history: [] });
+        const result = await chat.sendMessage(prompt);
+        const reply = await result.response.text();
+
+        res.json({ reply });
+    } catch (err) {
+        console.error("Tutor AI Error:", err.message);
+        res.status(500).json({ error: "Failed to get tutor response" });
+    }
+});
+
 app.post('/api/sensors/data', async (req, res) => {
     try {
         const { farmer_id, moisture_level, ph_level, nitrogen_status } = req.body;
