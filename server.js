@@ -142,38 +142,45 @@ app.get('/dashboard', authenticateToken, (req, res) => {
 });
 
 // ---------- OPEN-METEO WEATHER API ROUTE (BULLETPROOF) ----------
+// ---------- OPEN-METEO WEATHER API ROUTE (WITH CONDITIONS) ----------
 app.get('/api/weather', authenticateToken, async (req, res) => {
     try {
-        let lat = -23.9045; // Polokwane latitude
-        let lon = 29.4688; // Polokwane longitude
+        let lat = req.query.lat ? Number(req.query.lat) : -23.9045;
+        let lon = req.query.lon ? Number(req.query.lon) : 29.4688;
 
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&past_days=2&hourly=precipitation`;
 
         const weatherRes = await fetch(url);
-        
-        if (!weatherRes.ok) {
-            throw new Error(`Open-Meteo returned status ${weatherRes.status}`);
-        }
+        if (!weatherRes.ok) throw new Error(`Open-Meteo returned status ${weatherRes.status}`);
 
         const data = await weatherRes.json();
         const hourlyPrecip = data.hourly && data.hourly.precipitation ? data.hourly.precipitation : [];
         const past48HoursRain = hourlyPrecip.slice(0, 48).reduce((acc, curr) => acc + curr, 0);
+
+        // Convert WMO weather code to readable text
+        const code = data.current.weather_code;
+        let condition = "Clear Sky";
+        if ([1, 2, 3].includes(code)) condition = "Partly Cloudy";
+        else if ([45, 48].includes(code)) condition = "Foggy";
+        else if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) condition = "Rain Showers";
+        else if ([95, 96, 99].includes(code)) condition = "Thunderstorm";
 
         res.json({
             temp: Math.round(data.current.temperature_2m),
             humidity: data.current.relative_humidity_2m,
             windSpeed: data.current.wind_speed_10m,
             rain48h: parseFloat(past48HoursRain.toFixed(1)),
-            city: "Polokwane"
+            condition: condition,
+            city: lat === -23.9045 ? "Polokwane" : "Live GPS Location"
         });
     } catch (err) {
-        console.error("Open-Meteo API Error Details:", err.message || err);
-        // Fallback default weather response so the dashboard never breaks or errors out
+        console.error("Open-Meteo API Error:", err.message || err);
         res.json({
             temp: 24,
             humidity: 45,
             windSpeed: 12,
             rain48h: 0.0,
+            condition: "Partly Cloudy",
             city: "Polokwane"
         });
     }
