@@ -195,7 +195,7 @@ body.chat-open #chat-fab{display:none}
       <div onclick="switchView('detail-weather')" class="p-6 sm:p-8 rounded-3xl border border-slate-200 bg-white hover:border-indigo-300 transition-all cursor-pointer group flex flex-col justify-between gap-6 min-h-[250px] shadow-sm hover:shadow-md">
         <div class="flex justify-between items-start"><div class="w-14 h-14 rounded-2xl bg-[#EBEFFF] flex items-center justify-center"><iconify-icon icon="lucide:cloud-drizzle" class="text-2xl text-[#6366F1]"></iconify-icon></div><div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-slate-100 text-slate-400"><iconify-icon icon="lucide:arrow-up-right" class="text-xl"></iconify-icon></div></div>
         <div><h2 class="text-2xl font-bold text-slate-900 mb-1 font-heading">Microclimate</h2><p class="text-sm font-medium text-slate-500 mb-4">Live Weather API</p>
-          <div class="flex items-center justify-between"><div><p class="text-5xl font-black text-slate-800 tracking-tighter">24°</p><p class="text-sm font-bold text-[#4338CA] mt-1">Partly Cloudy</p></div><div class="text-right"><p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">48h Rain</p><p class="text-2xl font-bold text-slate-800">0<span class="text-sm text-slate-500">mm</span></p></div></div></div>
+          <div class="flex items-center justify-between"><div><p id="weather-summary-temp" class="text-5xl font-black text-slate-800 tracking-tighter">--°</p><p id="weather-summary-condition" class="text-sm font-bold text-[#4338CA] mt-1">Loading weather…</p></div><div class="text-right"><p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">48h Rain</p><p id="weather-summary-rain" class="text-2xl font-bold text-slate-800">--<span class="text-sm text-slate-500">mm</span></p></div></div></div>
       </div>
     </div>
   </div>
@@ -208,18 +208,18 @@ body.chat-open #chat-fab{display:none}
     <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold font-heading text-slate-900 flex items-center gap-3 mb-8"><span class="p-3 bg-[#EBEFFF] text-[#6366F1] rounded-xl flex"><iconify-icon icon="lucide:cloud-drizzle"></iconify-icon></span>Live Microclimate</h2>
     <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
       <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-6 sm:p-10 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20">
-        <p class="text-sm font-bold text-blue-300 uppercase tracking-widest mb-6">Current Location</p>
-        <div class="flex items-center gap-5 mb-8"><iconify-icon icon="lucide:sun" class="text-6xl sm:text-7xl text-amber-400"></iconify-icon><div><p class="text-6xl sm:text-7xl font-black tracking-tighter">24°</p><p class="text-lg sm:text-xl text-slate-300 font-medium">Partly Cloudy</p></div></div>
-        <div class="grid grid-cols-2 gap-4 border-t border-white/10 pt-6"><div><p class="text-xs text-slate-300 font-bold uppercase mb-1">Humidity</p><p class="text-lg font-bold">42%</p></div><div><p class="text-xs text-slate-300 font-bold uppercase mb-1">Wind Speed</p><p class="text-lg font-bold">12 km/h</p></div></div>
+        <p class="text-sm font-bold text-blue-300 uppercase tracking-widest mb-2">Current Location</p><p id="weather-location" class="text-xs text-slate-300 mb-5">Using your saved farm location</p>
+        <div class="flex items-center gap-5 mb-8"><iconify-icon id="weather-icon" icon="lucide:cloud-sun" class="text-6xl sm:text-7xl text-amber-400"></iconify-icon><div><p id="weather-temp" class="text-6xl sm:text-7xl font-black tracking-tighter">--°</p><p id="weather-condition" class="text-lg sm:text-xl text-slate-300 font-medium">Loading live weather…</p></div></div>
+        <div class="grid grid-cols-2 gap-4 border-t border-white/10 pt-6"><div><p class="text-xs text-slate-300 font-bold uppercase mb-1">Humidity</p><p id="weather-humidity" class="text-lg font-bold">--%</p></div><div><p class="text-xs text-slate-300 font-bold uppercase mb-1">Wind Speed</p><p id="weather-wind" class="text-lg font-bold">-- km/h</p></div></div><p id="weather-updated" class="text-xs text-slate-400 mt-5">Weather data has not loaded yet.</p>
       </div>
       <div class="flex flex-col justify-center">
         <h3 class="text-sm uppercase tracking-widest font-bold text-slate-500 mb-5">Rain Dilution API Logic</h3>
         <div class="bg-white p-6 rounded-2xl border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.15)] mb-6">
           <p class="text-sm font-bold text-slate-500 uppercase mb-2">Past 48 Hours</p>
-          <p class="text-3xl font-black text-slate-800 mb-4">0.0 <span class="text-lg text-slate-500 font-bold">mm Rain</span></p>
-          <p class="text-sm font-bold text-emerald-700 bg-emerald-50 py-2 px-4 rounded-lg inline-block">Clear to test. Surface pH is completely stable.</p>
+          <p class="text-3xl font-black text-slate-800 mb-4"><span id="weather-rain48">--</span> <span class="text-lg text-slate-500 font-bold">mm Rain</span></p>
+          <p id="weather-rain-status" class="text-sm font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg inline-block">Checking rainfall conditions…</p>
         </div>
-        <p class="text-sm text-slate-600 font-medium leading-relaxed">Our system connects to the Open-Meteo API. If heavy rainfall is detected, you will be warned to hold off on stick readings to prevent false data caused by nutrient washout and temporary water acidification.</p>
+        <p class="text-sm text-slate-600 font-medium leading-relaxed">Weather is supplied by Open-Meteo and refreshed automatically. Recent rainfall is an environmental indicator only; follow your soil sensor guidance and local conditions before testing.</p>
       </div>
     </div>
   </div>
@@ -516,6 +516,60 @@ document.addEventListener('error',e=>{
 refreshAlerts(); setInterval(refreshAlerts,60000);
 const alertParam=new URLSearchParams(location.search).get('alert');
 if(alertParam){window.history.replaceState(null,'',location.pathname);openProblem(alertParam)}
+
+/* ===== LIVE OPEN-METEO WEATHER ===== */
+let weatherBusy = false, weatherLastLoaded = 0;
+const weatherText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+function weatherIcon(code, isDay) {
+  if ([0].includes(Number(code))) return isDay ? 'lucide:sun' : 'lucide:moon';
+  if ([1,2].includes(Number(code))) return isDay ? 'lucide:cloud-sun' : 'lucide:cloud-moon';
+  if ([45,48].includes(Number(code))) return 'lucide:cloud-fog';
+  if ([51,53,55,56,57,61,63,65,66,67,80,81,82].includes(Number(code))) return 'lucide:cloud-rain';
+  if ([95,96,99].includes(Number(code))) return 'lucide:cloud-lightning';
+  if ([71,73,75,77,85,86].includes(Number(code))) return 'lucide:cloud-snow';
+  return 'lucide:cloud';
+}
+async function refreshLiveWeather() {
+  if (weatherBusy) return; weatherBusy = true;
+  try {
+    let url = '/api/weather';
+    // If a saved location is not yet available, use browser coordinates for this request.
+    let response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    if (response.status === 409 && navigator.geolocation) {
+      const pos = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }));
+      url += '?latitude=' + encodeURIComponent(pos.coords.latitude) + '&longitude=' + encodeURIComponent(pos.coords.longitude);
+      response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    }
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Weather could not be loaded');
+    const c = data.current || {}, temp = c.temperature == null ? '--' : Math.round(c.temperature), rain = data.rain48HoursMm;
+    weatherText('weather-temp', temp + '°'); weatherText('weather-condition', c.condition || 'Conditions unavailable');
+    weatherText('weather-humidity', c.humidity == null ? '--%' : Math.round(c.humidity) + '%');
+    weatherText('weather-wind', c.windSpeed == null ? '-- km/h' : Math.round(c.windSpeed) + ' km/h');
+    weatherText('weather-rain48', rain == null ? 'Unavailable' : Number(rain).toFixed(1));
+    weatherText('weather-summary-temp', temp + '°'); weatherText('weather-summary-condition', c.condition || 'Conditions unavailable');
+    const sr = document.getElementById('weather-summary-rain'); if (sr) sr.innerHTML = (rain == null ? '--' : Number(rain).toFixed(1)) + '<span class="text-sm text-slate-500">mm</span>';
+    const icon = document.getElementById('weather-icon'); if (icon) icon.setAttribute('icon', weatherIcon(c.weatherCode, c.isDay));
+    const status = document.getElementById('weather-rain-status');
+    if (status) {
+      if (data.rainStatus === 'limited' || rain == null) { status.className='text-sm font-bold text-amber-800 bg-amber-50 py-2 px-4 rounded-lg inline-block'; status.textContent='Recent rainfall data is incomplete. Use caution.'; }
+      else if (data.rainStatus === 'heavy') { status.className='text-sm font-bold text-amber-800 bg-amber-50 py-2 px-4 rounded-lg inline-block'; status.textContent='Rainfall is elevated. Consider delaying soil testing and re-checking conditions.'; }
+      else { status.className='text-sm font-bold text-emerald-700 bg-emerald-50 py-2 px-4 rounded-lg inline-block'; status.textContent='No heavy rainfall detected in the available 48-hour data.'; }
+    }
+    const loc = data.location || {}; weatherText('weather-location', Number(loc.latitude).toFixed(3) + ', ' + Number(loc.longitude).toFixed(3) + (loc.timezone ? ' · ' + loc.timezone : ''));
+    weatherText('weather-updated', 'Updated ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + ' · Open-Meteo');
+    weatherLastLoaded = Date.now();
+  } catch (e) {
+    console.error('Weather refresh failed:', e);
+    weatherText('weather-condition', 'Weather unavailable'); weatherText('weather-summary-condition', 'Weather unavailable');
+    weatherText('weather-updated', e.message || 'Could not load live weather. Check location permission and connection.');
+    weatherText('weather-rain-status', 'Weather data unavailable. Try refreshing.');
+  } finally { weatherBusy = false; }
+}
+const originalSwitchView = switchView;
+switchView = function(id) { originalSwitchView(id); if (id === 'detail-weather' && Date.now() - weatherLastLoaded > 5 * 60 * 1000) refreshLiveWeather(); };
+refreshLiveWeather();
+setInterval(refreshLiveWeather, 10 * 60 * 1000);
 
 /* ===== AUTO LOCATION (every 10 minutes) ===== */
 const LOC_EVERY=10*60*1000;
