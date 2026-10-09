@@ -523,6 +523,46 @@ app.post('/api/problem-chat', authenticateToken, async (req, res) => {
     }
 });
 
+// ==========================================
+// FARMER LOCATION (used for weather)
+// ==========================================
+async function getFarmerLocation(farmerId) {
+    const { data } = await supabase.from('farmer_locations').select('*').eq('farmer_id', String(farmerId)).maybeSingle();
+    return data || null;
+}
+
+app.post('/api/location', authenticateToken, async (req, res) => {
+    const lat = Number(req.body.latitude), lng = Number(req.body.longitude);
+    const acc = req.body.accuracy == null ? null : Number(req.body.accuracy);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+        return res.status(400).json({ error: 'Invalid coordinates.' });
+    }
+    const row = {
+        farmer_id: String(req.user.id),
+        latitude: +lat.toFixed(4),   // about 10 m precision, plenty for weather
+        longitude: +lng.toFixed(4),
+        accuracy_m: Number.isFinite(acc) ? Math.round(acc) : null,
+        updated_at: new Date().toISOString()
+    };
+    try {
+        const { error } = await supabase.from('farmer_locations').upsert(row, { onConflict: 'farmer_id' });
+        if (error) throw error;
+        res.json({ success: true, latitude: row.latitude, longitude: row.longitude, updated_at: row.updated_at });
+    } catch (err) {
+        console.error('Location save error:', err.message || err);
+        res.status(500).json({ error: 'Could not save location.' });
+    }
+});
+
+app.get('/api/location', authenticateToken, async (req, res) => {
+    try {
+        res.json({ location: await getFarmerLocation(req.user.id) });
+    } catch (err) {
+        console.error('Location read error:', err.message || err);
+        res.status(500).json({ error: 'Could not load location.' });
+    }
+});
+
 // Hardware Ingestion Endpoint (Called by your moisture sensor device)
 app.post('/api/sensors/data', async (req, res) => {
     try {
