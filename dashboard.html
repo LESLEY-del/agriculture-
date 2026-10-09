@@ -15,7 +15,6 @@
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden;max-width:100%}
 body{font-family:'Inter',sans-serif;background:#F8FAFC;color:#0F172A;font-size:16px;overflow-x:hidden;max-width:100%}
 h1,h2,h3,h4,.font-heading{font-family:'Plus Jakarta Sans',sans-serif}
-/* 16px inputs = no iOS auto-zoom on focus */
 html{touch-action:manipulation}
 input,select,textarea{font-size:16px!important;line-height:1.4;-webkit-text-size-adjust:100%;touch-action:manipulation}
 #chat-input,#problem-input,#crop-input{font-size:16px!important}
@@ -35,7 +34,6 @@ button{touch-action:manipulation}
 .chat-bubble-ai p{margin:0 0 .5rem}.chat-bubble-ai p:last-child{margin:0}
 .chat-bubble-ai ul{list-style:disc;padding-left:1.2rem}.chat-bubble-ai ol{list-style:decimal;padding-left:1.2rem}
 .chat-scroll::-webkit-scrollbar{width:6px}.chat-scroll::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:10px}
-/* Chat window: full screen, closes with X */
 .chat-overlay{position:fixed;top:0;left:0;right:0;width:100%;height:100vh;height:100dvh;display:flex;flex-direction:column;border-radius:0!important;border:0!important;opacity:0;transform:translateY(24px);pointer-events:none;visibility:hidden;transition:opacity .25s,transform .25s,visibility .25s}
 .chat-overlay.open{opacity:1;transform:none;pointer-events:auto;visibility:visible}
 .chat-overlay .chat-pad{padding-left:max(1rem,calc((100% - 768px)/2));padding-right:max(1rem,calc((100% - 768px)/2))}
@@ -88,7 +86,7 @@ body.chat-open #chat-fab{display:none}
     </div>
     <div class="self-start flex flex-wrap gap-2">
       <div class="flex items-center gap-2 text-sm font-semibold text-emerald-700 bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-100"><span class="w-2 h-2 rounded-full bg-emerald-500 pulse-ring"></span> System Online</div>
-      <button id="loc-pill" onclick="updateLocation(true)" class="flex items-center gap-2 text-sm font-semibold text-slate-700 bg-white px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50"><iconify-icon icon="lucide:map-pin" class="text-base"></iconify-icon><span id="loc-label">Locating...</span></button>
+      <button id="loc-pill" onclick="refreshLiveWeather()" class="flex items-center gap-2 text-sm font-semibold text-slate-700 bg-white px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50"><iconify-icon icon="lucide:map-pin" class="text-base"></iconify-icon><span id="loc-label">GPS Active</span></button>
     </div>
   </div>
 
@@ -137,7 +135,7 @@ body.chat-open #chat-fab{display:none}
         <div class="p-6 flex flex-col flex-grow"><h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Roma Tomatoes</h3><p class="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">Optimal for your current pH of 6.2. High yield expected in the current temperature cycle.</p>
           <button class="w-full min-h-[48px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2"><iconify-icon icon="lucide:sprout"></iconify-icon> Prepare Plot</button></div>
       </div>
-<div class="advanced-card rounded-3xl overflow-hidden group flex flex-col">
+      <div class="advanced-card rounded-3xl overflow-hidden group flex flex-col">
         <div class="h-48 sm:h-52 overflow-hidden relative"><img src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&q=80&w=800" alt="Carrots" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"><span class="absolute top-4 right-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">92% Match</span></div>
         <div class="p-6 flex flex-col flex-grow"><h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Root Carrots</h3><p class="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">Current 45% moisture level provides ideal density resistance for deep root development.</p>
           <button class="w-full min-h-[48px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2"><iconify-icon icon="lucide:sprout"></iconify-icon> Prepare Plot</button></div>
@@ -208,7 +206,7 @@ body.chat-open #chat-fab{display:none}
     <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold font-heading text-slate-900 flex items-center gap-3 mb-8"><span class="p-3 bg-[#EBEFFF] text-[#6366F1] rounded-xl flex"><iconify-icon icon="lucide:cloud-drizzle"></iconify-icon></span>Live Microclimate</h2>
     <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
       <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-6 sm:p-10 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20">
-        <p class="text-sm font-bold text-blue-300 uppercase tracking-widest mb-2">Current Location</p><p id="weather-location" class="text-xs text-slate-300 mb-5">Using your saved farm location</p>
+        <p class="text-sm font-bold text-blue-300 uppercase tracking-widest mb-2">Current Location</p><p id="weather-location" class="text-xs text-slate-300 mb-5">Live GPS Location</p>
         <div class="flex items-center gap-5 mb-8"><iconify-icon id="weather-icon" icon="lucide:cloud-sun" class="text-6xl sm:text-7xl text-amber-400"></iconify-icon><div><p id="weather-temp" class="text-6xl sm:text-7xl font-black tracking-tighter">--°</p><p id="weather-condition" class="text-lg sm:text-xl text-slate-300 font-medium">Loading live weather…</p></div></div>
         <div class="grid grid-cols-2 gap-4 border-t border-white/10 pt-6"><div><p class="text-xs text-slate-300 font-bold uppercase mb-1">Humidity</p><p id="weather-humidity" class="text-lg font-bold">--%</p></div><div><p class="text-xs text-slate-300 font-bold uppercase mb-1">Wind Speed</p><p id="weather-wind" class="text-lg font-bold">-- km/h</p></div></div><p id="weather-updated" class="text-xs text-slate-400 mt-5">Weather data has not loaded yet.</p>
       </div>
@@ -382,8 +380,7 @@ async function saveCrop(){
   await refreshAlerts();
   if(v) sendProblem(`I planted ${v}. Is my soil okay for it, and is anything changing that could harm it?`);
 }
-$('crop-input').value=getCrop();
-$('crop-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveCrop()}});
+$('crop-input').value=getCrop();$('crop-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveCrop()}});
 const SEEN_KEY='sb_seen_alerts';
 const getSeen=()=>{try{return JSON.parse(localStorage.getItem(SEEN_KEY)||'[]')}catch(e){return[]}};
 const addSeen=ids=>{try{localStorage.setItem(SEEN_KEY,JSON.stringify([...new Set([...getSeen(),...ids])].slice(-50)))}catch(e){}};
@@ -517,21 +514,8 @@ refreshAlerts(); setInterval(refreshAlerts,60000);
 const alertParam=new URLSearchParams(location.search).get('alert');
 if(alertParam){window.history.replaceState(null,'',location.pathname);openProblem(alertParam)}
 
-/* ===== LIVE OPEN-METEO WEATHER ===== */
-let weatherBusy = false, weatherLastLoaded = 0;
-const weatherText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
-function weatherIcon(code, isDay) {
-  if ([0].includes(Number(code))) return isDay ? 'lucide:sun' : 'lucide:moon';
-  if ([1,2].includes(Number(code))) return isDay ? 'lucide:cloud-sun' : 'lucide:cloud-moon';
-  if ([45,48].includes(Number(code))) return 'lucide:cloud-fog';
-  if ([51,53,55,56,57,61,63,65,66,67,80,81,82].includes(Number(code))) return 'lucide:cloud-rain';
-  if ([95,96,99].includes(Number(code))) return 'lucide:cloud-lightning';
-  if ([71,73,75,77,85,86].includes(Number(code))) return 'lucide:cloud-snow';
-  return 'lucide:cloud';
-}
+/* ===== LIVE OPEN-METEO WEATHER (GPS + FALLBACK) ===== */
 async function refreshLiveWeather() {
-    const loadingMessage = 'Loading live weather…';
-
     const elements = {
         temperature: document.getElementById('weather-temp'),
         condition: document.getElementById('weather-condition'),
@@ -546,117 +530,49 @@ async function refreshLiveWeather() {
         summaryRain: document.getElementById('weather-summary-rain')
     };
 
-    function setText(element, text) {
-        if (element) {
-            element.textContent = text;
+    function setText(el, txt) { if (el) el.textContent = txt; }
+
+    setText(elements.condition, 'Locating GPS...');
+    setText(elements.summaryCondition, 'Locating GPS...');
+
+    let url = '/api/weather';
+
+    if ("geolocation" in navigator) {
+        try {
+            const position = await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 4000, maximumAge: 60000 });
+            });
+            url = `/api/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
+            setText(elements.location, 'Live GPS Location');
+        } catch (e) {
+            setText(elements.location, 'Saved farm location');
         }
     }
 
-    // Show a clear loading state.
-    setText(elements.condition, loadingMessage);
-    setText(elements.summaryCondition, loadingMessage);
-    setText(elements.updated, 'Connecting to the weather service…');
-    setText(elements.status, 'Checking rainfall conditions…');
-
-    const controller = new AbortController();
-
-    // Never allow the weather request to wait forever.
-    const timeout = setTimeout(() => {
-        controller.abort();
-    }, 12000);
-
     try {
-        const response = await fetch('/api/weather', {
-            method: 'GET',
-            credentials: 'same-origin',
-            headers: {
-                'Accept': 'application/json'
-            },
-            signal: controller.signal
-        });
-
-        if (!response.ok) {
-            throw new Error(
-                response.status === 401 || response.status === 403
-                    ? 'Your session may have expired. Please sign in again.'
-                    : `Weather service returned HTTP ${response.status}.`
-            );
-        }
-
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Weather request failed');
         const data = await response.json();
 
-        // Validate the response before updating the dashboard.
-        if (
-            typeof data.temp !== 'number' ||
-            typeof data.humidity !== 'number' ||
-            typeof data.windSpeed !== 'number' ||
-            typeof data.rain48h !== 'number'
-        ) {
-            throw new Error(
-                data.error || 'The weather service returned incomplete data.'
-            );
-        }
-
-        // Current weather.
         setText(elements.temperature, `${Math.round(data.temp)}°`);
         setText(elements.condition, data.condition || 'Current conditions');
         setText(elements.humidity, `${Math.round(data.humidity)}%`);
         setText(elements.wind, `${Math.round(data.windSpeed)} km/h`);
-
-        // Rainfall.
         setText(elements.rain, data.rain48h.toFixed(1));
-        setText(
-            elements.status,
-            data.rain48h >= 20
-                ? 'Heavy rainfall detected. Check local soil conditions.'
-                : data.rain48h >= 5
-                    ? 'Rainfall detected. Monitor your soil conditions.'
-                    : 'No significant rainfall detected in the available data.'
-        );
-
-        // Settings summary card.
         setText(elements.summaryTemp, `${Math.round(data.temp)}°`);
-        setText(
-            elements.summaryCondition,
-            data.condition || 'Current conditions'
-        );
+        setText(elements.summaryCondition, data.condition || 'Current conditions');
         setText(elements.summaryRain, data.rain48h.toFixed(1));
 
-        setText(
-            elements.location,
-            data.city || 'Saved farm location'
-        );
-
-        setText(
-            elements.updated,
-            `Weather updated successfully at ${new Date().toLocaleTimeString()}`
-        );
-
-        console.log('Live weather loaded successfully:', data);
-
-    } catch (error) {
-        console.error('Live weather error:', error);
-
-        const message = error.name === 'AbortError'
-            ? 'Weather request timed out. Please try again.'
-            : error.message || 'Could not load weather data.';
-
+        setText(elements.status, data.rain48h >= 20 ? 'Heavy rainfall detected.' : data.rain48h >= 5 ? 'Moderate rainfall detected.' : 'Clear conditions. Optimal for soil testing.');
+        setText(elements.updated, `Updated at ${new Date().toLocaleTimeString()}`);
+    } catch (err) {
         setText(elements.condition, 'Weather unavailable');
         setText(elements.summaryCondition, 'Weather unavailable');
-        setText(elements.updated, message);
-        setText(elements.status, message);
-
-    } finally {
-        clearTimeout(timeout);
     }
 }
 
-// Load weather when the dashboard script runs.
 refreshLiveWeather();
-
-// Refresh every 10 minutes.
 setInterval(refreshLiveWeather, 10 * 60 * 1000);
-
 </script>
 </body>
 </html>
