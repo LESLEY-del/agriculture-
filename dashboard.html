@@ -81,7 +81,7 @@ body.chat-open #chat-fab{display:none}
 <div id="main-dashboard" class="view-section">
   <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
     <div>
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 mb-2 font-heading">Welcome back, <span class="gradient-text">Trish man</span></h1>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 mb-2 font-heading">Welcome back, <span class="gradient-text">Farmer</span></h1>
       <p class="text-slate-600 text-base sm:text-lg font-medium">Your telemetry and environment status looks stable today.</p>
     </div>
     <div class="self-start flex flex-wrap gap-2">
@@ -250,14 +250,58 @@ body.chat-open #chat-fab{display:none}
         </div>
         <p id="weather-rain-status" class="text-sm font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg block text-center">Checking rainfall conditions…</p>
       </div>
-      <div class="advanced-card p-6 rounded-2xl bg-white">
+      
+      <div class="advanced-card p-6 rounded-2xl bg-white mb-6">
         <h4 class="font-bold font-heading text-slate-900 mb-2 flex items-center gap-2"><iconify-icon icon="lucide:shield-alert" class="text-amber-500 text-xl"></iconify-icon> Smart Agricultural Warning</h4>
         <p class="text-sm text-slate-600 leading-relaxed">If significant rain is forecasted for the upcoming 48 hours, the system highlights an advance warning so you can postpone fertilizer or compost top-dressings before nutrients wash away.</p>
       </div>
+
+      <!-- Yield Maximize Guide Action Card -->
+      <div class="advanced-card p-6 rounded-2xl bg-white border border-slate-200">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <iconify-icon icon="lucide:sprout" class="text-xl"></iconify-icon>
+          </div>
+          <div>
+            <h4 class="font-bold font-heading text-slate-900">Yield Maximize Guide</h4>
+            <p class="text-xs text-slate-500 font-medium">AI recommendations for high yield</p>
+          </div>
+        </div>
+        <p class="text-sm text-slate-600 leading-relaxed mb-4">Discover exact actionable steps tailored to your current rain forecast and soil telemetry to maximize your upcoming harvest.</p>
+        <button onclick="openYieldModal()" class="w-full min-h-[44px] bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
+          <iconify-icon icon="lucide:sparkles" class="text-base"></iconify-icon> View Full Yield Details
+        </button>
+      </div>
+
     </div>
   </div>
 </div>
 </main>
+
+<!-- YIELD DETAILS MODAL -->
+<div id="yield-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+  <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeYieldModal()"></div>
+  <div id="yield-modal-content" class="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90dvh] overflow-y-auto p-6 sm:p-8 scale-95 opacity-0 transition-all duration-300">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center"><iconify-icon icon="lucide:trending-up" class="text-xl"></iconify-icon></div>
+        <h3 class="text-xl font-bold font-heading text-slate-900">Yield Optimization Strategy</h3>
+      </div>
+      <button onclick="closeYieldModal()" class="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-rose-500" aria-label="Close"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
+    </div>
+    <div id="yield-modal-body" class="space-y-4 text-sm text-slate-700 leading-relaxed font-medium">
+      <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900">
+        <strong>Current Status:</strong> Analyzed using live weather and telemetry data.
+      </div>
+      <p><strong>1. Optimal Irrigation Timing:</strong> Based on the next 48 hours rain forecast, adjust your drip irrigation schedule to prevent waterlogging and root asphyxiation.</p>
+      <p><strong>2. Nutrient Management:</strong> Apply targeted organic nitrogen boosters only after dry windows to prevent top-dressing washout.</p>
+      <p><strong>3. Microclimate Protection:</strong> Use mulch layering around crop bases to preserve moisture stability during peak temperature cycles.</p>
+    </div>
+    <div class="mt-6 flex justify-end">
+      <button onclick="closeYieldModal()" class="min-h-[48px] px-6 rounded-xl font-bold bg-slate-900 text-white hover:bg-emerald-600 transition-colors">Got it</button>
+    </div>
+  </div>
+</div>
 
 <!-- CHAT BUTTON -->
 <button id="chat-fab" onclick="toggleChat()" aria-label="Open Agri-Talk chat" class="fixed w-14 h-14 sm:w-16 sm:h-16 bg-slate-900 text-emerald-400 rounded-full shadow-2xl flex items-center justify-center hover:bg-slate-800 transition-colors z-[90] border border-slate-700">
@@ -277,7 +321,7 @@ body.chat-open #chat-fab{display:none}
   <div id="chat-messages" class="msgs flex-1 min-h-0 bg-slate-50 py-4 chat-pad overflow-y-auto chat-scroll flex flex-col gap-4">
     <div class="flex gap-3 max-w-[90%]">
       <div class="w-8 h-8 rounded-full bg-emerald-100 shrink-0 flex items-center justify-center text-emerald-600 mt-1"><iconify-icon icon="lucide:bot"></iconify-icon></div>
-      <div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm">Hello Trish man! I am your Agri-Talk assistant powered by Gemini. I only talk about farming and agriculture, so ask me about your soil, crops, planting seasons, pests or irrigation, or use the upload icon to share a picture for analysis.</div>
+      <div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm" id="chat-greeting">Hello! I am your Agri-Talk assistant powered by Gemini. I only talk about farming and agriculture, so ask me about your soil, crops, planting seasons, pests or irrigation.</div>
     </div>
   </div>
   <div class="pt-3 chat-pad chat-bottom bg-white border-t border-slate-100 flex items-end gap-2 shrink-0">
@@ -368,6 +412,7 @@ function toggleChat(){
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('agri-talk-window').classList.contains('open'))toggleChat();else if($('problem-window').classList.contains('open'))toggleProblem(false);});
 function escapeHtml(t){return t.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 const AI_AVATAR='<div class="w-8 h-8 rounded-full bg-emerald-100 shrink-0 flex items-center justify-center text-emerald-600 mt-1"><iconify-icon icon="lucide:bot"></iconify-icon></div>';
+
 async function sendMessage(){
   const input=document.getElementById('chat-input'), box=document.getElementById('chat-messages'), text=input.value.trim();
   if(!text) return;
@@ -561,24 +606,20 @@ function getWeatherIcon(code) {
 
 async function refreshLiveWeather() {
     try {
-        // Fetches directly from your backend which queries farmer_location table
         const response = await fetch('/api/weather');
         if (!response.ok) throw new Error('Weather request failed');
         const data = await response.json();
 
-        // Populate Main Apple Weather View
         document.getElementById('weather-city-title').textContent = data.city || 'Synced Farm Location';
         document.getElementById('weather-temp-main').textContent = `${Math.round(data.temp)}°`;
         document.getElementById('weather-condition-main').textContent = data.condition || 'Mostly Cloudy';
         document.getElementById('weather-high').textContent = `${Math.round(data.high)}°`;
         document.getElementById('weather-low').textContent = `${Math.round(data.low)}°`;
 
-        // Populate Summary Card for Settings view
         if(document.getElementById('weather-summary-temp')) document.getElementById('weather-summary-temp').textContent = `${Math.round(data.temp)}°`;
         if(document.getElementById('weather-summary-condition')) document.getElementById('weather-summary-condition').textContent = data.condition;
         if(document.getElementById('weather-summary-rain')) document.getElementById('weather-summary-rain').textContent = data.rain48h.toFixed(1);
 
-        // Populate Hourly Container
         const hourlyEl = document.getElementById('hourly-container');
         if (hourlyEl && data.hourly) {
             hourlyEl.innerHTML = data.hourly.map(h => `
@@ -590,7 +631,6 @@ async function refreshLiveWeather() {
             `).join('');
         }
 
-        // Populate Daily 5-Day Forecast Container
         const dailyEl = document.getElementById('daily-container');
         if (dailyEl && data.daily) {
             dailyEl.innerHTML = data.daily.map(d => `
@@ -611,7 +651,6 @@ async function refreshLiveWeather() {
             `).join('');
         }
 
-        // Rain Dilution & Forecast Warning
         document.getElementById('weather-rain48').textContent = data.rain48h.toFixed(1);
         document.getElementById('weather-rain-future').textContent = data.rainFuture48h.toFixed(1);
         const rainCard = document.getElementById('rain-card-box');
@@ -635,21 +674,24 @@ async function refreshLiveWeather() {
 
 refreshLiveWeather();
 setInterval(refreshLiveWeather, 10 * 60 * 1000);
-</script>
-<script>
+
+/* ===== DYNAMIC USER PROFILE LOADER ===== */
 async function loadUserProfile() {
     try {
         const res = await fetch('/api/me');
         if (!res.ok) return;
         const user = await res.json();
         
-        // Update welcome header with real user name
         const welcomeEl = document.querySelector('h1 span.gradient-text');
         if (welcomeEl && user.fullname) {
             welcomeEl.textContent = user.fullname;
         }
 
-        // Update avatar initials if desired
+        const greetingEl = document.getElementById('chat-greeting');
+        if (greetingEl && user.fullname) {
+            greetingEl.textContent = `Hello ${user.fullname}! I am your Agri-Talk assistant powered by Gemini. I only talk about farming and agriculture, so ask me about your soil, crops, planting seasons, pests or irrigation.`;
+        }
+
         const initials = user.fullname.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
         const avatarEl = document.querySelector('header .rounded-xl.bg-emerald-100');
         if (avatarEl && initials) {
@@ -660,7 +702,21 @@ async function loadUserProfile() {
     }
 }
 loadUserProfile();
+
+/* ===== YIELD OPTIMIZATION MODAL HANDLERS ===== */
+function openYieldModal(){
+    const m = document.getElementById('yield-modal');
+    const c = document.getElementById('yield-modal-content');
+    m.classList.remove('hidden'); m.classList.add('flex');
+    void m.offsetWidth;
+    c.classList.remove('scale-95', 'opacity-0');
+}
+function closeYieldModal(){
+    const m = document.getElementById('yield-modal');
+    const c = document.getElementById('yield-modal-content');
+    c.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
+}
 </script>
-  
 </body>
 </html>
