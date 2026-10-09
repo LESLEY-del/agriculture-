@@ -86,7 +86,7 @@ body.chat-open #chat-fab{display:none}
     </div>
     <div class="self-start flex flex-wrap gap-2">
       <div class="flex items-center gap-2 text-sm font-semibold text-emerald-700 bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-100"><span class="w-2 h-2 rounded-full bg-emerald-500 pulse-ring"></span> System Online</div>
-      <button id="loc-pill" onclick="refreshLiveWeather()" class="flex items-center gap-2 text-sm font-semibold text-slate-700 bg-white px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50"><iconify-icon icon="lucide:map-pin" class="text-base"></iconify-icon><span id="loc-label">GPS Active</span></button>
+      <div class="flex items-center gap-2 text-sm font-semibold text-slate-700 bg-white px-4 py-2 rounded-lg border border-slate-200"><iconify-icon icon="lucide:map-pin" class="text-base text-emerald-600"></iconify-icon><span>DB Synced GPS</span></div>
     </div>
   </div>
 
@@ -205,11 +205,11 @@ body.chat-open #chat-fab{display:none}
   
   <div class="grid lg:grid-cols-3 gap-8">
     <!-- LEFT: Apple Weather Card -->
-    <div class="lg:col-span-2 bg-[#1E2538] rounded-[2.5pax] sm:rounded-[2.5rem] p-6 sm:p-10 text-white shadow-2xl relative overflow-hidden flex flex-col justify-between">
+    <div class="lg:col-span-2 bg-[#1E2538] rounded-[2.5rem] p-6 sm:p-10 text-white shadow-2xl relative overflow-hidden flex flex-col justify-between">
       <div>
         <!-- City Header -->
         <div class="text-center my-6">
-          <h2 id="weather-city-title" class="text-3xl sm:text-4xl font-light tracking-wide text-white/90">Polokwane</h2>
+          <h2 id="weather-city-title" class="text-3xl sm:text-4xl font-light tracking-wide text-white/90">Synced Farm Location</h2>
           <p id="weather-temp-main" class="text-7xl sm:text-8xl font-thin tracking-tighter my-2">--°</p>
           <p id="weather-condition-main" class="text-lg font-medium text-slate-300">Loading conditions...</p>
           <p class="text-sm text-slate-400 mt-1">H: <span id="weather-high">--°</span>&nbsp;&nbsp; L: <span id="weather-low">--°</span></p>
@@ -231,7 +231,7 @@ body.chat-open #chat-fab{display:none}
           </div>
         </div>
       </div>
-      <p id="weather-updated" class="text-xs text-slate-400 mt-8 text-center">Weather supplied by Open-Meteo API.</p>
+      <p id="weather-updated" class="text-xs text-slate-400 mt-8 text-center">Weather supplied by Open-Meteo API using database coordinates.</p>
     </div>
 
     <!-- RIGHT: Soil Dilution & Forecast Warning Box -->
@@ -549,7 +549,7 @@ refreshAlerts(); setInterval(refreshAlerts,60000);
 const alertParam=new URLSearchParams(location.search).get('alert');
 if(alertParam){window.history.replaceState(null,'',location.pathname);openProblem(alertParam)}
 
-/* ===== APPLE WEATHER UI RENDERER ===== */
+/* ===== APPLE WEATHER UI RENDERER (DB COORDINATES) ===== */
 function getWeatherIcon(code) {
     if ([0].includes(Number(code))) return 'lucide:sun';
     if ([1, 2].includes(Number(code))) return 'lucide:cloud-sun';
@@ -560,29 +560,18 @@ function getWeatherIcon(code) {
 }
 
 async function refreshLiveWeather() {
-    let url = '/api/weather';
-    if ("geolocation" in navigator) {
-        try {
-            const position = await new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 4000, maximumAge: 60000 });
-            });
-            url = `/api/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
-        } catch (e) {}
-    }
-
     try {
-        const response = await fetch(url);
+        const response = await fetch('/api/weather');
         if (!response.ok) throw new Error('Weather request failed');
         const data = await response.json();
 
-        // Populate Main Apple Weather View
-        document.getElementById('weather-city-title').textContent = data.city || 'Polokwane';
+        // Populate Apple Weather View using database coordinates data
+        document.getElementById('weather-city-title').textContent = data.city || 'Synced Farm Location';
         document.getElementById('weather-temp-main').textContent = `${Math.round(data.temp)}°`;
         document.getElementById('weather-condition-main').textContent = data.condition || 'Mostly Cloudy';
         document.getElementById('weather-high').textContent = `${Math.round(data.high)}°`;
         document.getElementById('weather-low').textContent = `${Math.round(data.low)}°`;
 
-        // Populate Summary Card for Settings view
         if(document.getElementById('weather-summary-temp')) document.getElementById('weather-summary-temp').textContent = `${Math.round(data.temp)}°`;
         if(document.getElementById('weather-summary-condition')) document.getElementById('weather-summary-condition').textContent = data.condition;
         if(document.getElementById('weather-summary-rain')) document.getElementById('weather-summary-rain').textContent = data.rain48h.toFixed(1);
@@ -636,7 +625,7 @@ async function refreshLiveWeather() {
             rainStatus.className = "text-sm font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg block text-center";
         }
 
-        document.getElementById('weather-updated').textContent = `Weather updated at ${new Date().toLocaleTimeString()}`;
+        document.getElementById('weather-updated').textContent = `Live data synced at ${new Date().toLocaleTimeString()}`;
     } catch (err) {
         console.error("Weather error:", err);
     }
