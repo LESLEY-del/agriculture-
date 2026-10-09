@@ -141,55 +141,79 @@ app.get('/dashboard', authenticateToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
-// ---------- OPEN-METEO WEATHER API ROUTE (PAST & FUTURE RAIN) ----------
+// ---------- OPEN-METEO WEATHER API ROUTE (FULL APPLE WEATHER STYLE) ----------
 app.get('/api/weather', authenticateToken, async (req, res) => {
     try {
         let lat = req.query.lat ? Number(req.query.lat) : -23.9045;
         let lon = req.query.lon ? Number(req.query.lon) : 29.4688;
 
-        // Fetch past 2 days and forecast for future days
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&past_days=2&forecast_days=3&hourly=precipitation`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&past_days=2&forecast_days=5&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
 
         const weatherRes = await fetch(url);
         if (!weatherRes.ok) throw new Error(`Open-Meteo returned status ${weatherRes.status}`);
 
         const data = await weatherRes.json();
         const hourlyPrecip = data.hourly && data.hourly.precipitation ? data.hourly.precipitation : [];
-        
-        // Open-Meteo returns hourly data: 2 days past (48h) + current hour + forecast days
-        // Assuming hourlyPrecip starts 48 hours in the past:
-        // Indices 0 to 47 = Past 48 hours
-        // Index 48 onwards = Future hours
         const past48HoursRain = hourlyPrecip.slice(0, 48).reduce((acc, curr) => acc + curr, 0);
         const future48HoursRain = hourlyPrecip.slice(48, 96).reduce((acc, curr) => acc + curr, 0);
 
-        // Convert WMO weather code to text
+        // Map hourly items (next 6 hours starting from current time index)
+        const nowIndex = data.hourly.time.findIndex(t => new Date(t) >= new Date()) || 0;
+        const hourlyList = [];
+        for (let i = 0; i < 6; i++) {
+            const idx = nowIndex + i;
+            if (idx < data.hourly.time.length) {
+                const hourStr = new Date(data.hourly.time[idx]).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: false });
+                hourlyList.push({
+                    time: i === 0 ? 'Now' : hourStr,
+                    temp: Math.round(data.hourly.temperature_2m[idx]),
+                    code: data.hourly.weather_code[idx]
+                });
+            }
+        }
+
+        // Map daily forecast items (5 days)
+        const dailyList = [];
+        const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        if (data.daily && data.daily.time) {
+            for (let i = 0; i < data.daily.time.length; i++) {
+                const d = new Date(data.daily.time[i]);
+                const dayName = i === 0 ? 'Today' : daysOfWeek[d.getDay()];
+                dailyList.push({
+                    day: dayName,
+                    max: Math.round(data.daily.temperature_2m_max[i]),
+                    min: Math.round(data.daily.temperature_2m_min[i]),
+                    code: data.daily.weather_code[i],
+                    pop: data.daily.precipitation_probability_max ? data.daily.precipitation_probability_max[i] : 0
+                });
+            }
+        }
+
         const code = data.current.weather_code;
         let condition = "Clear Sky";
-        if ([1, 2, 3].includes(code)) condition = "Partly Cloudy";
+        if ([1, 2, 3].includes(code)) condition = "Mostly Cloudy";
         else if ([45, 48].includes(code)) condition = "Foggy";
         else if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) condition = "Rain Showers";
         else if ([95, 96, 99].includes(code)) condition = "Thunderstorm";
 
         res.json({
             temp: Math.round(data.current.temperature_2m),
+            high: dailyList.length ? dailyList[0].max : Math.round(data.current.temperature_2m + 3),
+            low: dailyList.length ? dailyList[0].min : Math.round(data.current.temperature_2m - 4),
             humidity: data.current.relative_humidity_2m,
             windSpeed: data.current.wind_speed_10m,
             rain48h: parseFloat(past48HoursRain.toFixed(1)),
             rainFuture48h: parseFloat(future48HoursRain.toFixed(1)),
             condition: condition,
+            hourly: hourlyList,
+            daily: dailyList,
             city: lat === -23.9045 ? "Polokwane" : "Live GPS Location"
         });
     } catch (err) {
         console.error("Open-Meteo API Error:", err.message || err);
         res.json({
-            temp: 24,
-            humidity: 45,
-            windSpeed: 12,
-            rain48h: 0.0,
-            rainFuture48h: 0.0,
-            condition: "Partly Cloudy",
-            city: "Polokwane"
+            temp: 24, high: 27, low: 16, humidity: 45, windSpeed: 12, rain48h: 0.0, rainFuture48h: 0.0,
+            condition: "Mostly Cloudy", hourly: [], daily: [], city: "Polokwane"
         });
     }
 });
