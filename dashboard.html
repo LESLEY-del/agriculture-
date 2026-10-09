@@ -7,6 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -17,7 +18,7 @@ h1,h2,h3,h4,.font-heading{font-family:'Plus Jakarta Sans',sans-serif}
 /* 16px inputs = no iOS auto-zoom on focus */
 html{touch-action:manipulation}
 input,select,textarea{font-size:16px!important;line-height:1.4;-webkit-text-size-adjust:100%;touch-action:manipulation}
-#chat-input{font-size:16px!important}
+#chat-input,#problem-input{font-size:16px!important}
 button{touch-action:manipulation}
 .glass-nav{background:rgba(255,255,255,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(226,232,240,.8)}
 .advanced-card{background:#fff;border:1px solid rgba(226,232,240,.9);box-shadow:0 4px 6px -1px rgba(0,0,0,.03),0 10px 15px -3px rgba(0,0,0,.03);transition:transform .3s,box-shadow .3s,border-color .3s}
@@ -35,11 +36,11 @@ button{touch-action:manipulation}
 .chat-bubble-ai ul{list-style:disc;padding-left:1.2rem}.chat-bubble-ai ol{list-style:decimal;padding-left:1.2rem}
 .chat-scroll::-webkit-scrollbar{width:6px}.chat-scroll::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:10px}
 /* Chat window: full screen, closes with X */
-#agri-talk-window{position:fixed;top:0;left:0;right:0;width:100%;height:100vh;height:100dvh;display:flex;flex-direction:column;border-radius:0!important;border:0!important;opacity:0;transform:translateY(24px);pointer-events:none;visibility:hidden;transition:opacity .25s,transform .25s,visibility .25s}
-#agri-talk-window.open{opacity:1;transform:none;pointer-events:auto;visibility:visible}
-#agri-talk-window .chat-pad{padding-left:max(1rem,calc((100% - 768px)/2));padding-right:max(1rem,calc((100% - 768px)/2))}
-#agri-talk-window .chat-top{padding-top:calc(.75rem + env(safe-area-inset-top,0px))}
-#agri-talk-window .chat-bottom{padding-bottom:calc(.75rem + env(safe-area-inset-bottom,0px))}
+.chat-overlay{position:fixed;top:0;left:0;right:0;width:100%;height:100vh;height:100dvh;display:flex;flex-direction:column;border-radius:0!important;border:0!important;opacity:0;transform:translateY(24px);pointer-events:none;visibility:hidden;transition:opacity .25s,transform .25s,visibility .25s}
+.chat-overlay.open{opacity:1;transform:none;pointer-events:auto;visibility:visible}
+.chat-overlay .chat-pad{padding-left:max(1rem,calc((100% - 768px)/2));padding-right:max(1rem,calc((100% - 768px)/2))}
+.chat-overlay .chat-top{padding-top:calc(.75rem + env(safe-area-inset-top,0px))}
+.chat-overlay .chat-bottom{padding-bottom:calc(.75rem + env(safe-area-inset-bottom,0px))}
 body.chat-open{overflow:hidden;position:fixed;width:100%}
 body.chat-open #chat-fab{display:none}
 #chat-fab{right:1rem;bottom:calc(1rem + env(safe-area-inset-bottom,0px))}
@@ -47,6 +48,7 @@ body.chat-open #chat-fab{display:none}
 .btn-icon{padding:.65rem;border-radius:.75rem;background:#F1F5F9;color:#475569;transition:background .2s}
 .btn-icon:hover{background:#E2E8F0}
 :focus-visible{outline:3px solid #059669;outline-offset:2px}
+.chat-bubble-ai strong{font-weight:700}
 </style>
 </head>
 <body class="min-h-screen">
@@ -56,15 +58,23 @@ body.chat-open #chat-fab{display:none}
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 h-[72px] flex items-center justify-between">
     <div class="flex items-center gap-3 cursor-pointer group" onclick="switchView('main-dashboard')">
       <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-emerald-500/30"><iconify-icon icon="lucide:cpu" class="text-white text-xl"></iconify-icon></div>
-      <span class="text-xl sm:text-2xl font-bold tracking-tight font-heading text-slate-800">Soil<span class="text-emerald-600">Buddies</span></span>
+      <span class="hidden min-[430px]:inline text-xl sm:text-2xl font-bold tracking-tight font-heading text-slate-800">Soil<span class="text-emerald-600">Buddies</span></span>
     </div>
-    <div class="flex items-center gap-2 sm:gap-4">
+    <div class="flex items-center gap-2 sm:gap-3">
+      <button onclick="openProblem()" class="flex items-center gap-2 h-11 px-3 sm:px-4 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 font-bold text-sm" aria-label="Problem AI"><iconify-icon icon="lucide:message-square-warning" class="text-xl"></iconify-icon><span class="hidden sm:inline">Problem AI</span></button>
       <button onclick="switchView('settings-view')" class="btn-icon" aria-label="Settings"><iconify-icon icon="lucide:settings" class="text-xl"></iconify-icon></button>
-      <button class="btn-icon relative" aria-label="Notifications"><iconify-icon icon="lucide:bell" class="text-xl"></iconify-icon><span class="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white pulse-ring"></span></button>
-      <div class="w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-700 font-bold font-heading">TM</div>
+      <button id="bell-btn" onclick="toggleNotif()" class="btn-icon relative" aria-label="Notifications"><iconify-icon icon="lucide:bell" class="text-xl"></iconify-icon><span id="bell-badge" style="display:none" class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 rounded-full bg-rose-500 text-white text-xs font-bold items-center justify-center border-2 border-white pulse-ring">0</span></button>
+      <a href="/logout" class="btn-icon flex items-center gap-2" aria-label="Log out" title="Log out"><iconify-icon icon="lucide:log-out" class="text-xl"></iconify-icon></a>
+      <div class="hidden sm:flex w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-200 items-center justify-center text-emerald-700 font-bold font-heading">TM</div>
     </div>
   </div>
 </header>
+
+<div id="notif-panel" style="display:none" class="fixed z-[80] top-[78px] left-3 right-3 sm:left-auto sm:right-6 sm:w-[390px] bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+  <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><h3 class="font-bold font-heading text-slate-900">Crop alerts</h3><button onclick="toggleNotif(false)" class="w-9 h-9 flex items-center justify-center text-slate-500" aria-label="Close alerts"><iconify-icon icon="lucide:x" class="text-xl"></iconify-icon></button></div>
+  <div id="notif-list" class="max-h-[55vh] overflow-y-auto"></div>
+  <div class="p-3 border-t border-slate-100"><button id="enable-push" onclick="enablePush()" class="w-full min-h-[44px] rounded-xl bg-slate-900 text-white text-sm font-bold hover:bg-emerald-700 flex items-center justify-center gap-2"><iconify-icon icon="lucide:bell-ring"></iconify-icon><span id="push-label">Turn on push alerts</span></button></div>
+</div>
 
 <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-12 py-8 lg:py-12 pb-32">
 
@@ -106,7 +116,7 @@ body.chat-open #chat-fab{display:none}
         <p class="text-sm font-medium text-slate-500 mb-4">Machine Learning Matches</p>
         <div class="space-y-2">
           <div class="flex items-center gap-3 bg-slate-50 p-2.5 rounded-lg border border-slate-100"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><p class="text-sm font-bold text-slate-700">Tomatoes <span class="text-xs font-medium text-slate-500 ml-2">98% Match</span></p></div>
-          <div class="flex items-center gap-3 bg-slate-50 p-2.5 rounded-lg border border-slate-100"><span class="w-2 h-2 rounded-full bg-amber-500"></span><p class="text-sm font-bold text-slate-700">Peppers <span class="text-xs font-medium text-slate-500 ml-2">Fix N-Level</span></p></div>
+          <div class="flex items-center gap-3 bg-slate-50 p-2.5 rounded-lg border border-slate-100"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><p class="text-sm font-bold text-slate-700">Carrots <span class="text-xs font-medium text-slate-500 ml-2">92% Match</span></p></div>
         </div>
       </div>
     </div>
@@ -117,18 +127,13 @@ body.chat-open #chat-fab{display:none}
       <div><h2 class="text-2xl font-bold font-heading text-slate-900">Recommended for Planting</h2><p class="text-slate-600 font-medium mt-1">Crops verified for your current soil parameters.</p></div>
       <button class="hidden sm:block shrink-0 text-sm font-bold text-emerald-700 hover:text-emerald-800">View All Plans &rarr;</button>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-8">
       <div class="advanced-card rounded-3xl overflow-hidden group flex flex-col">
         <div class="h-48 sm:h-52 overflow-hidden relative"><img src="https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&q=80&w=800" alt="Tomatoes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"><span class="absolute top-4 right-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">98% Match</span></div>
         <div class="p-6 flex flex-col flex-grow"><h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Roma Tomatoes</h3><p class="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">Optimal for your current pH of 6.2. High yield expected in the current temperature cycle.</p>
           <button class="w-full min-h-[48px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2"><iconify-icon icon="lucide:sprout"></iconify-icon> Prepare Plot</button></div>
       </div>
-      <div class="advanced-card rounded-3xl overflow-hidden group flex flex-col">
-        <div class="h-48 sm:h-52 overflow-hidden relative"><img src="https://images.unsplash.com/photo-1563514222080-60a52dfdb6a2?auto=format&fit=crop&q=80&w=800" alt="Bell Peppers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"><span class="absolute top-4 right-4 bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">Needs Nitrogen</span></div>
-        <div class="p-6 flex flex-col flex-grow"><h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Bell Peppers</h3><p class="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">Requires a nitrogen compost amendment prior to planting to maximize structural growth.</p>
-          <button class="w-full min-h-[48px] bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2"><iconify-icon icon="lucide:flask-conical"></iconify-icon> View Treatment</button></div>
-      </div>
-      <div class="advanced-card rounded-3xl overflow-hidden group flex flex-col">
+<div class="advanced-card rounded-3xl overflow-hidden group flex flex-col">
         <div class="h-48 sm:h-52 overflow-hidden relative"><img src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&q=80&w=800" alt="Carrots" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"><span class="absolute top-4 right-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">92% Match</span></div>
         <div class="p-6 flex flex-col flex-grow"><h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Root Carrots</h3><p class="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">Current 45% moisture level provides ideal density resistance for deep root development.</p>
           <button class="w-full min-h-[48px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2"><iconify-icon icon="lucide:sprout"></iconify-icon> Prepare Plot</button></div>
@@ -166,8 +171,8 @@ body.chat-open #chat-fab{display:none}
         <button class="min-h-[48px] px-6 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-emerald-600 transition-colors">Initialize Plot</button>
       </div>
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white">
-        <div class="flex items-center gap-4 sm:gap-6"><div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-green-100 rounded-2xl flex items-center justify-center text-green-600"><iconify-icon icon="lucide:carrot" class="text-3xl"></iconify-icon></div><div><div class="flex flex-wrap items-center gap-2 mb-1"><h3 class="font-bold font-heading text-xl text-slate-900">Bell Peppers</h3><span class="px-2.5 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-md">Action Required</span></div><p class="text-sm font-medium text-slate-600">Requires nitrogen amendment before planting.</p></div></div>
-        <button class="min-h-[48px] px-6 bg-amber-500 text-white text-sm font-bold rounded-xl hover:bg-amber-600 transition-colors">View Amendment Guide</button>
+        <div class="flex items-center gap-4 sm:gap-6"><div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-green-100 rounded-2xl flex items-center justify-center text-green-600"><iconify-icon icon="lucide:carrot" class="text-3xl"></iconify-icon></div><div><div class="flex flex-wrap items-center gap-2 mb-1"><h3 class="font-bold font-heading text-xl text-slate-900">Root Carrots</h3><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-md">92% Match</span></div><p class="text-sm font-medium text-slate-600">Moisture at 45% suits deep root growth.</p></div></div>
+        <button class="min-h-[48px] px-6 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-emerald-600 transition-colors">Initialize Plot</button>
       </div>
     </div>
   </div>
@@ -224,7 +229,7 @@ body.chat-open #chat-fab{display:none}
 </button>
 
 <!-- CHAT WINDOW -->
-<div id="agri-talk-window" class="bg-white z-[90] overflow-hidden" role="dialog" aria-label="Agri-Talk AI">
+<div id="agri-talk-window" class="chat-overlay bg-white z-[90] overflow-hidden" role="dialog" aria-label="Agri-Talk AI">
   <div class="bg-slate-900 text-white py-3 chat-pad chat-top flex items-center justify-between shrink-0">
     <div class="flex items-center gap-3 min-w-0">
       <div class="w-10 h-10 shrink-0 rounded-full bg-emerald-500/20 flex items-center justify-center"><iconify-icon icon="lucide:bot" class="text-emerald-400 text-2xl"></iconify-icon></div>
@@ -232,7 +237,7 @@ body.chat-open #chat-fab{display:none}
     </div>
     <button onclick="toggleChat()" class="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-white" aria-label="Close chat"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
   </div>
-  <div id="chat-messages" class="flex-1 min-h-0 bg-slate-50 py-4 chat-pad overflow-y-auto chat-scroll flex flex-col gap-4">
+  <div id="chat-messages" class="msgs flex-1 min-h-0 bg-slate-50 py-4 chat-pad overflow-y-auto chat-scroll flex flex-col gap-4">
     <div class="flex gap-3 max-w-[90%]">
       <div class="w-8 h-8 rounded-full bg-emerald-100 shrink-0 flex items-center justify-center text-emerald-600 mt-1"><iconify-icon icon="lucide:bot"></iconify-icon></div>
       <div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm">Hello Trish man! I am your Agri-Talk assistant powered by Gemini. I only talk about farming and agriculture, so ask me about your soil, crops, planting seasons, pests or irrigation, or use the upload icon to share a picture for analysis.</div>
@@ -244,6 +249,30 @@ body.chat-open #chat-fab{display:none}
       <textarea id="chat-input" rows="1" class="w-full bg-transparent border-none px-3 py-2.5 focus:outline-none resize-none font-medium text-slate-800 max-h-28" placeholder="Ask about soil, crops, planting..." enterkeyhint="send" autocomplete="off" autocorrect="on"></textarea>
     </div>
     <button id="send-btn" onclick="sendMessage()" class="w-11 h-11 shrink-0 flex items-center justify-center bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 shadow-md" aria-label="Send"><iconify-icon icon="lucide:send" class="text-xl"></iconify-icon></button>
+  </div>
+</div>
+
+<!-- PROBLEM AI WINDOW -->
+<div id="problem-window" class="chat-overlay bg-white z-[90] overflow-hidden" role="dialog" aria-label="Problem AI">
+  <div class="bg-slate-900 text-white py-3 chat-pad chat-top flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-10 h-10 shrink-0 rounded-full bg-rose-500/20 flex items-center justify-center"><iconify-icon icon="lucide:message-square-warning" class="text-rose-400 text-2xl"></iconify-icon></div>
+      <div class="min-w-0"><h3 class="font-bold font-heading text-lg leading-tight">Problem AI</h3><p class="text-xs text-rose-300">Crop alerts from your sensors</p></div>
+    </div>
+    <button onclick="toggleProblem(false)" class="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-white" aria-label="Close Problem AI"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
+  </div>
+  <div id="problem-messages" class="msgs flex-1 min-h-0 bg-slate-50 py-4 chat-pad overflow-y-auto chat-scroll flex flex-col gap-4">
+    <div id="problem-summary"></div>
+    <div class="flex gap-3 max-w-[90%]">
+      <div class="w-8 h-8 rounded-full bg-rose-100 shrink-0 flex items-center justify-center text-rose-600 mt-1"><iconify-icon icon="lucide:message-square-warning"></iconify-icon></div>
+      <div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm">I only discuss problems your sensors find on crops you have already planted. Tap an alert above, or ask me about it.</div>
+    </div>
+  </div>
+  <div class="pt-3 chat-pad chat-bottom bg-white border-t border-slate-100 flex items-end gap-2 shrink-0">
+    <div class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-2xl focus-within:border-rose-500 focus-within:ring-2 focus-within:ring-rose-200">
+      <textarea id="problem-input" rows="1" class="w-full bg-transparent border-none px-3 py-2.5 focus:outline-none resize-none font-medium text-slate-800 max-h-28" placeholder="Ask about this problem..." enterkeyhint="send" autocomplete="off"></textarea>
+    </div>
+    <button onclick="sendProblem()" class="w-11 h-11 shrink-0 flex items-center justify-center bg-rose-600 text-white rounded-xl hover:bg-rose-700 shadow-md" aria-label="Send"><iconify-icon icon="lucide:send" class="text-xl"></iconify-icon></button>
   </div>
 </div>
 
@@ -278,10 +307,10 @@ function switchView(id){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function setVV(){
-  const w=document.getElementById('agri-talk-window'), vv=window.visualViewport;
-  if(!vv||!w.classList.contains('open')) return;
+  const w=document.querySelector('.chat-overlay.open'), vv=window.visualViewport;
+  if(!vv||!w) return;
   w.style.top=vv.offsetTop+'px'; w.style.height=vv.height+'px';
-  const m=document.getElementById('chat-messages'); m.scrollTop=m.scrollHeight;
+  const m=w.querySelector('.msgs'); if(m) m.scrollTop=m.scrollHeight;
 }
 if(window.visualViewport){visualViewport.addEventListener('resize',setVV);visualViewport.addEventListener('scroll',setVV)}
 ['gesturestart','gesturechange','gestureend'].forEach(ev=>document.addEventListener(ev,e=>e.preventDefault()));
@@ -291,7 +320,7 @@ function toggleChat(){
   if(open){savedY=window.scrollY;document.body.style.top=-savedY+'px';document.body.classList.add('chat-open');w.classList.add('open');setVV();}
   else{w.classList.remove('open');w.style.top='';w.style.height='';document.body.classList.remove('chat-open');document.body.style.top='';window.scrollTo(0,savedY);document.activeElement&&document.activeElement.blur();}
 }
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('agri-talk-window').classList.contains('open'))toggleChat()});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('agri-talk-window').classList.contains('open'))toggleChat();else if($('problem-window').classList.contains('open'))toggleProblem(false);});
 function escapeHtml(t){return t.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 const AI_AVATAR='<div class="w-8 h-8 rounded-full bg-emerald-100 shrink-0 flex items-center justify-center text-emerald-600 mt-1"><iconify-icon icon="lucide:bot"></iconify-icon></div>';
 async function sendMessage(){
@@ -307,7 +336,7 @@ async function sendMessage(){
     const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text})});
     const d=await r.json(); l.remove();
     if(!r.ok) throw new Error(d.error||'Something went wrong');
-    const html=window.marked?marked.parse(d.reply):escapeHtml(d.reply);
+    const html=md(d.reply);
     const a=document.createElement('div'); a.className='flex gap-3 max-w-[90%]';
     a.innerHTML=AI_AVATAR+`<div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm text-slate-700 leading-relaxed min-w-0">${html}</div>`;
     box.appendChild(a);
@@ -325,6 +354,142 @@ ci.addEventListener('focus',()=>{setTimeout(setVV,150);setTimeout(setVV,400)});
 ci.addEventListener('input',()=>{ci.style.height='auto';ci.style.height=Math.min(ci.scrollHeight,112)+'px'});
 function openModal(id){const m=document.getElementById(id),c=document.getElementById(id+'-content');m.classList.remove('hidden');m.classList.add('flex');void m.offsetWidth;c.classList.remove('scale-95','opacity-0');}
 function closeModal(id){const m=document.getElementById(id),c=document.getElementById(id+'-content');c.classList.add('scale-95','opacity-0');setTimeout(()=>{m.classList.add('hidden');m.classList.remove('flex')},300);}
+
+/* ===== PROBLEM AI, ALERTS, PUSH ===== */
+const $=id=>document.getElementById(id);
+const md=t=>{const h=window.marked?marked.parse(t):escapeHtml(t);return window.DOMPurify?DOMPurify.sanitize(h):h};
+let alertsState=[],readingState=null,pushActive=false,problemHistory=[];
+const SEEN_KEY='sb_seen_alerts';
+const getSeen=()=>{try{return JSON.parse(localStorage.getItem(SEEN_KEY)||'[]')}catch(e){return[]}};
+const addSeen=ids=>{try{localStorage.setItem(SEEN_KEY,JSON.stringify([...new Set([...getSeen(),...ids])].slice(-50)))}catch(e){}};
+const sevClass=a=>a.severity==='critical'?{box:'bg-rose-50 border-rose-200',ico:'bg-rose-100 text-rose-600',txt:'text-rose-700'}:{box:'bg-amber-50 border-amber-200',ico:'bg-amber-100 text-amber-600',txt:'text-amber-700'};
+
+async function refreshAlerts(){
+  try{
+    const r=await fetch('/api/alerts'); if(!r.ok) return;
+    const d=await r.json();
+    alertsState=d.alerts||[]; readingState=d.reading||null;
+    renderBell(); renderProblemSummary();
+    const fresh=alertsState.filter(a=>!getSeen().includes(a.id));
+    if(fresh.length){
+      if(!pushActive&&'Notification' in window&&Notification.permission==='granted') fresh.forEach(localNotify);
+      addSeen(fresh.map(a=>a.id));
+    }
+  }catch(e){console.error('Alerts error:',e)}
+}
+function localNotify(a){
+  const o={body:a.detail,tag:a.id,requireInteraction:true,data:{url:'/dashboard?alert='+encodeURIComponent(a.id)}};
+  if('serviceWorker' in navigator) navigator.serviceWorker.ready.then(r=>r.showNotification(a.title,o)).catch(()=>{try{new Notification(a.title,o)}catch(e){}});
+}
+function renderBell(){
+  const n=alertsState.length,b=$('bell-badge'); b.textContent=n; b.style.display=n?'flex':'none';
+  const list=$('notif-list');
+  list.innerHTML=n?alertsState.map((a,i)=>{const c=sevClass(a);return `<button data-open="${i}" class="w-full text-left p-4 flex gap-3 hover:bg-slate-50 border-b border-slate-100"><span class="w-10 h-10 shrink-0 rounded-xl ${c.ico} flex items-center justify-center"><iconify-icon icon="lucide:alert-triangle" class="text-xl"></iconify-icon></span><span class="min-w-0"><span class="block font-bold text-slate-900 text-sm">${escapeHtml(a.title)}</span><span class="block text-sm text-slate-600">${escapeHtml(a.detail)}</span><span class="block text-xs font-bold ${c.txt} mt-1">Tap to get help from Problem AI</span></span></button>`}).join(''):'<p class="p-6 text-sm text-center text-slate-600 font-medium">No problems detected. Your crops look healthy.</p>';
+  list.querySelectorAll('[data-open]').forEach(btn=>btn.addEventListener('click',()=>{toggleNotif(false);openProblem(alertsState[btn.dataset.open].id)}));
+}
+function renderProblemSummary(){
+  const el=$('problem-summary'); if(!el) return;
+  const r=readingState||{};
+  const chip=(l,v)=>`<div class="bg-white border border-slate-200 rounded-xl px-3 py-2"><p class="text-[11px] font-bold text-slate-500 uppercase">${l}</p><p class="text-lg font-black text-slate-800">${escapeHtml(String(v))}</p></div>`;
+  let h=`<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Live sensor readings</p><div class="grid grid-cols-3 gap-2 mb-4">${chip('pH',r.ph_level??'-')}${chip('Moisture',r.moisture_level!=null?r.moisture_level+'%':'-')}${chip('Nitrogen',r.nitrogen_status??'-')}</div>`;
+  if(!alertsState.length) h+='<div class="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-sm font-semibold text-emerald-800">No problems detected. Your planted crops look healthy.</div>';
+  else h+='<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Active alerts</p>'+alertsState.map((a,i)=>{const c=sevClass(a);return `<button data-ask="${i}" class="w-full text-left mb-2 rounded-xl border p-4 ${c.box}"><span class="flex items-center justify-between gap-2"><span class="font-bold text-slate-900">${escapeHtml(a.crop)}: ${escapeHtml(a.label)}</span><span class="text-xs font-bold uppercase ${c.txt}">${a.severity}</span></span><span class="block text-sm text-slate-700 mt-1">${escapeHtml(a.detail)}</span><span class="block text-sm font-bold ${c.txt} mt-2">Get help</span></button>`}).join('');
+  el.innerHTML=h;
+  el.querySelectorAll('[data-ask]').forEach(b=>b.addEventListener('click',()=>askAlert(alertsState[b.dataset.ask])));
+}
+function toggleNotif(force){
+  const p=$('notif-panel'),open=force!==undefined?force:p.style.display==='none';
+  p.style.display=open?'block':'none'; if(open) updatePushUI();
+}
+document.addEventListener('click',e=>{if(!e.target.closest('#notif-panel,#bell-btn'))$('notif-panel').style.display='none'});
+
+let savedY2=0;
+function toggleProblem(force){
+  const w=$('problem-window'),open=force!==undefined?force:!w.classList.contains('open');
+  if(open===w.classList.contains('open')) return;
+  if(open){
+    if($('agri-talk-window').classList.contains('open')) toggleChat();
+    toggleNotif(false);
+    savedY2=window.scrollY; document.body.style.top=-savedY2+'px'; document.body.classList.add('chat-open'); w.classList.add('open'); setVV();
+  }else{
+    w.classList.remove('open'); w.style.top=''; w.style.height=''; document.body.classList.remove('chat-open'); document.body.style.top=''; window.scrollTo(0,savedY2); document.activeElement&&document.activeElement.blur();
+  }
+}
+async function openProblem(alertId){
+  toggleProblem(true);
+  await refreshAlerts();
+  if(alertId){const a=alertsState.find(x=>x.id===alertId); if(a) askAlert(a);}
+}
+function askAlert(a){ if(a) sendProblem(`${a.crop}: ${a.label}. What should I do?`); }
+
+const PAVATAR='<div class="w-8 h-8 rounded-full bg-rose-100 shrink-0 flex items-center justify-center text-rose-600 mt-1"><iconify-icon icon="lucide:message-square-warning"></iconify-icon></div>';
+async function sendProblem(preset){
+  const input=$('problem-input'),box=$('problem-messages'),text=(preset||input.value).trim();
+  if(!text) return;
+  const u=document.createElement('div'); u.className='flex justify-end';
+  u.innerHTML=`<div class="chat-bubble-user p-4 text-sm font-medium shadow-sm max-w-[90%]">${escapeHtml(text)}</div>`;
+  box.appendChild(u); if(!preset){input.value='';input.style.height='auto'}
+  const l=document.createElement('div'); l.className='flex gap-3 max-w-[90%]';
+  l.innerHTML=PAVATAR+'<div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm text-slate-500">Problem AI is checking your readings...</div>';
+  box.appendChild(l); box.scrollTop=box.scrollHeight;
+  try{
+    const r=await fetch('/api/problem-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,history:problemHistory.slice(-8)})});
+    const d=await r.json(); l.remove();
+    if(!r.ok) throw new Error(d.error||'Something went wrong');
+    problemHistory.push({role:'user',text},{role:'ai',text:d.reply});
+    const a=document.createElement('div'); a.className='flex gap-3 max-w-[90%]';
+    a.innerHTML=PAVATAR+`<div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm text-slate-700 leading-relaxed min-w-0">${md(d.reply)}</div>`;
+    box.appendChild(a);
+  }catch(e){
+    console.error('Problem AI error:',e); l.remove();
+    const x=document.createElement('div'); x.className='flex gap-3 max-w-[90%]';
+    x.innerHTML=PAVATAR+'<div class="chat-bubble-ai p-4 text-sm font-medium text-rose-700 shadow-sm">Could not reach the server. Please check your connection and try again.</div>';
+    box.appendChild(x);
+  }
+  box.scrollTop=box.scrollHeight;
+}
+const pi=$('problem-input');
+pi.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendProblem()}});
+pi.addEventListener('focus',()=>{setTimeout(setVV,150);setTimeout(setVV,400)});
+pi.addEventListener('input',()=>{pi.style.height='auto';pi.style.height=Math.min(pi.scrollHeight,112)+'px'});
+
+/* Push notifications */
+function b64ToU8(b){const p='='.repeat((4-b.length%4)%4),s=(b+p).replace(/-/g,'+').replace(/_/g,'/'),r=atob(s);return Uint8Array.from([...r].map(c=>c.charCodeAt(0)))}
+function updatePushUI(){
+  const l=$('push-label'),btn=$('enable-push'); if(!l) return;
+  if(!('Notification' in window)){l.textContent='Notifications not supported here';btn.disabled=true;return}
+  if(Notification.permission==='denied'){l.textContent='Blocked: allow notifications in browser settings';btn.disabled=true;return}
+  if(Notification.permission==='granted'){l.textContent=pushActive?'Push alerts are on':'Alerts on while this page is open';return}
+  l.textContent='Turn on push alerts';
+}
+async function enablePush(){
+  if(!('Notification' in window)) return;
+  if(Notification.permission!=='granted'){ await Notification.requestPermission(); }
+  if(Notification.permission==='granted'&&'serviceWorker' in navigator&&'PushManager' in window){
+    try{
+      const reg=await navigator.serviceWorker.ready;
+      const k=await (await fetch('/api/push/key')).json();
+      if(k.key){
+        const sub=(await reg.pushManager.getSubscription())||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToU8(k.key)});
+        await fetch('/api/push/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(sub)});
+        pushActive=true;
+      }
+    }catch(e){console.error('Push setup error:',e)}
+  }
+  updatePushUI();
+}
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').then(async reg=>{
+    try{pushActive=!!(await reg.pushManager.getSubscription())}catch(e){}
+    updatePushUI();
+  }).catch(()=>{});
+}
+document.addEventListener('error',e=>{
+  if(e.target&&e.target.tagName==='IMG'){e.target.style.display='none';e.target.parentElement.classList.add('bg-gradient-to-br','from-emerald-100','to-emerald-50')}
+},true);
+refreshAlerts(); setInterval(refreshAlerts,60000);
+const alertParam=new URLSearchParams(location.search).get('alert');
+if(alertParam){window.history.replaceState(null,'',location.pathname);openProblem(alertParam)}
 </script>
 </body>
 </html>
