@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Advanced Dashboard | Soil Buddies</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
@@ -15,7 +15,9 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden;max-w
 body{font-family:'Inter',sans-serif;background:#F8FAFC;color:#0F172A;font-size:16px;overflow-x:hidden;max-width:100%}
 h1,h2,h3,h4,.font-heading{font-family:'Plus Jakarta Sans',sans-serif}
 /* 16px inputs = no iOS auto-zoom on focus */
-input,select,textarea{font-size:16px!important}
+html{touch-action:manipulation}
+input,select,textarea{font-size:16px!important;line-height:1.4;-webkit-text-size-adjust:100%;touch-action:manipulation}
+#chat-input{font-size:16px!important}
 button{touch-action:manipulation}
 .glass-nav{background:rgba(255,255,255,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(226,232,240,.8)}
 .advanced-card{background:#fff;border:1px solid rgba(226,232,240,.9);box-shadow:0 4px 6px -1px rgba(0,0,0,.03),0 10px 15px -3px rgba(0,0,0,.03);transition:transform .3s,box-shadow .3s,border-color .3s}
@@ -33,7 +35,7 @@ button{touch-action:manipulation}
 .chat-bubble-ai ul{list-style:disc;padding-left:1.2rem}.chat-bubble-ai ol{list-style:decimal;padding-left:1.2rem}
 .chat-scroll::-webkit-scrollbar{width:6px}.chat-scroll::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:10px}
 /* Chat window: full screen, closes with X */
-#agri-talk-window{position:fixed;top:0;left:0;right:0;width:100%;height:100vh;height:var(--vvh,100dvh);display:flex;flex-direction:column;border-radius:0!important;border:0!important;opacity:0;transform:translateY(24px);pointer-events:none;visibility:hidden;transition:opacity .25s,transform .25s,visibility .25s}
+#agri-talk-window{position:fixed;top:0;left:0;right:0;width:100%;height:100vh;height:100dvh;display:flex;flex-direction:column;border-radius:0!important;border:0!important;opacity:0;transform:translateY(24px);pointer-events:none;visibility:hidden;transition:opacity .25s,transform .25s,visibility .25s}
 #agri-talk-window.open{opacity:1;transform:none;pointer-events:auto;visibility:visible}
 #agri-talk-window .chat-pad{padding-left:max(1rem,calc((100% - 768px)/2));padding-right:max(1rem,calc((100% - 768px)/2))}
 #agri-talk-window .chat-top{padding-top:calc(.75rem + env(safe-area-inset-top,0px))}
@@ -233,13 +235,13 @@ body.chat-open #chat-fab{display:none}
   <div id="chat-messages" class="flex-1 min-h-0 bg-slate-50 py-4 chat-pad overflow-y-auto chat-scroll flex flex-col gap-4">
     <div class="flex gap-3 max-w-[90%]">
       <div class="w-8 h-8 rounded-full bg-emerald-100 shrink-0 flex items-center justify-center text-emerald-600 mt-1"><iconify-icon icon="lucide:bot"></iconify-icon></div>
-      <div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm">Hello Trish man! I am your Agri-Talk assistant powered by Gemini. You can ask me questions about your soil, or click the upload icon below to share a picture for analysis.</div>
+      <div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm">Hello Trish man! I am your Agri-Talk assistant powered by Gemini. I only talk about farming and agriculture, so ask me about your soil, crops, planting seasons, pests or irrigation, or use the upload icon to share a picture for analysis.</div>
     </div>
   </div>
   <div class="pt-3 chat-pad chat-bottom bg-white border-t border-slate-100 flex items-end gap-2 shrink-0">
     <button onclick="openModal('upload-modal')" class="w-11 h-11 shrink-0 flex items-center justify-center text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl" aria-label="Upload image"><iconify-icon icon="lucide:image-plus" class="text-xl"></iconify-icon></button>
     <div class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-2xl focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-200">
-      <textarea id="chat-input" rows="1" class="w-full bg-transparent border-none px-3 py-2.5 focus:outline-none resize-none font-medium text-slate-800 max-h-28" placeholder="Ask about your crops..."></textarea>
+      <textarea id="chat-input" rows="1" class="w-full bg-transparent border-none px-3 py-2.5 focus:outline-none resize-none font-medium text-slate-800 max-h-28" placeholder="Ask about soil, crops, planting..." enterkeyhint="send" autocomplete="off" autocorrect="on"></textarea>
     </div>
     <button id="send-btn" onclick="sendMessage()" class="w-11 h-11 shrink-0 flex items-center justify-center bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 shadow-md" aria-label="Send"><iconify-icon icon="lucide:send" class="text-xl"></iconify-icon></button>
   </div>
@@ -275,13 +277,19 @@ function switchView(id){
   const v=document.getElementById(id); if(v) v.classList.remove('hidden');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function setVV(){document.documentElement.style.setProperty('--vvh',(window.visualViewport?window.visualViewport.height:window.innerHeight)+'px');window.scrollTo(0,0)}
-if(window.visualViewport){visualViewport.addEventListener('resize',setVV);visualViewport.addEventListener('scroll',()=>window.scrollTo(0,0))}
+function setVV(){
+  const w=document.getElementById('agri-talk-window'), vv=window.visualViewport;
+  if(!vv||!w.classList.contains('open')) return;
+  w.style.top=vv.offsetTop+'px'; w.style.height=vv.height+'px';
+  const m=document.getElementById('chat-messages'); m.scrollTop=m.scrollHeight;
+}
+if(window.visualViewport){visualViewport.addEventListener('resize',setVV);visualViewport.addEventListener('scroll',setVV)}
+['gesturestart','gesturechange','gestureend'].forEach(ev=>document.addEventListener(ev,e=>e.preventDefault()));
 let savedY=0;
 function toggleChat(){
   const w=document.getElementById('agri-talk-window'), open=!w.classList.contains('open');
-  if(open){savedY=window.scrollY;setVV();document.body.style.top=-savedY+'px';document.body.classList.add('chat-open');w.classList.add('open');}
-  else{w.classList.remove('open');document.body.classList.remove('chat-open');document.body.style.top='';window.scrollTo(0,savedY);document.activeElement&&document.activeElement.blur();}
+  if(open){savedY=window.scrollY;document.body.style.top=-savedY+'px';document.body.classList.add('chat-open');w.classList.add('open');setVV();}
+  else{w.classList.remove('open');w.style.top='';w.style.height='';document.body.classList.remove('chat-open');document.body.style.top='';window.scrollTo(0,savedY);document.activeElement&&document.activeElement.blur();}
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('agri-talk-window').classList.contains('open'))toggleChat()});
 function escapeHtml(t){return t.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
@@ -313,6 +321,7 @@ async function sendMessage(){
 }
 const ci=document.getElementById('chat-input');
 ci.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}});
+ci.addEventListener('focus',()=>{setTimeout(setVV,150);setTimeout(setVV,400)});
 ci.addEventListener('input',()=>{ci.style.height='auto';ci.style.height=Math.min(ci.scrollHeight,112)+'px'});
 function openModal(id){const m=document.getElementById(id),c=document.getElementById(id+'-content');m.classList.remove('hidden');m.classList.add('flex');void m.offsetWidth;c.classList.remove('scale-95','opacity-0');}
 function closeModal(id){const m=document.getElementById(id),c=document.getElementById(id+'-content');c.classList.add('scale-95','opacity-0');setTimeout(()=>{m.classList.add('hidden');m.classList.remove('flex')},300);}
