@@ -279,12 +279,24 @@ body.chat-open #chat-fab{display:none}
         <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center"><iconify-icon icon="lucide:list-checks" class="text-xl"></iconify-icon></div>
         <h3 id="plot-guide-title" class="text-xl font-bold font-heading text-slate-900">Plot Preparation Guide</h3>
       </div>
-      <button onclick="closePlotGuide()" class="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-rose-500"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
+      <div class="flex items-center gap-2">
+        <select id="guide-lang-select" onchange="changeGuideLanguage(this.value)" class="text-xs font-bold py-1 px-2 rounded-lg border border-slate-300 bg-slate-50 text-slate-800 outline-none">
+          <option value="English">English</option>
+          <option value="Sepedi">Sepedi</option>
+          <option value="Xitsonga">Xitsonga</option>
+          <option value="Tshivenda">Tshivenda</option>
+          <option value="IsiZulu">IsiZulu</option>
+          <option value="Afrikaans">Afrikaans</option>
+        </select>
+        <button onclick="closePlotGuide()" class="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-rose-500"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
+      </div>
     </div>
+    
+    <!-- Step Content Container -->
     <div id="plot-guide-body" class="space-y-4 text-sm text-slate-700 leading-relaxed font-medium"></div>
-    <div class="mt-6 flex justify-end">
-      <button onclick="closePlotGuide()" class="min-h-[48px] px-6 rounded-xl font-bold bg-slate-900 text-white hover:bg-emerald-600 transition-colors">Got it</button>
-    </div>
+
+    <!-- Navigation / Question Box -->
+    <div id="guide-interactive-area" class="mt-6 pt-4 border-t border-slate-100"></div>
   </div>
 </div>
 
@@ -465,7 +477,6 @@ async function sendMessage(){
   l.innerHTML=AI_AVATAR+'<div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm text-slate-500">Agri-Talk is thinking...</div>';
   box.appendChild(l); box.scrollTop=box.scrollHeight;
 
-  // Clear attachment state after sending
   attachedImage = null;
   document.getElementById('image-preview-bar').classList.add('hidden');
 
@@ -492,38 +503,125 @@ ci.addEventListener('input',()=>{ci.style.height='auto';ci.style.height=Math.min
 function openModal(id){const m=document.getElementById(id),c=document.getElementById(id+'-content');m.classList.remove('hidden');m.classList.add('flex');void m.offsetWidth;c.classList.remove('scale-95','opacity-0');}
 function closeModal(id){const m=document.getElementById(id),c=document.getElementById(id+'-content');c.classList.add('scale-95','opacity-0');setTimeout(()=>{m.classList.add('hidden');m.classList.remove('flex')},300);}
 
-/* ===== STEP-BY-STEP PLOT PREPARATION GUIDE ===== */
+/* ===== STEP-BY-STEP INTERACTIVE PLOT PREPARATION GUIDE ===== */
+let currentCropName = '';
+let currentStepIndex = 0;
+let guideLanguage = 'English';
+
+const plotSteps = {
+  'English': [
+    { title: "Step 1: Nitrogen Top-Dressing", text: "Apply organic nitrogen compost around the bed 48 hours prior to planting. Why? Your stick sensor indicates low nitrogen, which slows early leaf growth." },
+    { title: "Step 2: Bed Tilling & pH Verification", text: "Till the top 20cm of soil. Why? At pH 6.2, your soil is in the ideal range for planting without needing lime adjustment, saving nutrients from lockout." },
+    { title: "Step 3: Moisture Management", text: "Maintain current 45% moisture with light early-morning watering. Why? This prevents root stress while avoiding waterlogging during the upcoming weather cycle." }
+  ],
+  'Sepedi': [
+    { title: "Kgato ya 1: Go Tlaša Nithrojene", text: "Diragatša monontsha wa organic wa nitrogen mo tošong diiri tše 48 pele o bjala. Ke ka bang? Sensor ya gago e bontšha nithrojene ya fase." },
+    { title: "Kgato ya 2: Go lema le go lekola pH", text: "Lema karolo ya godimo ya 20cm ya mabu. Ke ka bang? Ka pH ya 6.2, mabu a gago a lokile go bjala." },
+    { title: "Kgato ya 3: Taolo ya Mongobo", text: "Boloka mongobo wa 45% ka go nošetša mo mosong. Ke ka bang? Se se thibela kgatello ya medi." }
+  ],
+  'Xitsonga': [
+    { title: "Nkongu wa 1: Ku cheleta Nitrogen", text: "Tirhisa comfits ya nitrogen ku rhendzeleka xiphemu masiku 48 u nga si byala. Hikwalaho ka yini? Sensor ya wena yi kombisa nitrogen yi le hansi." },
+    { title: "Nkongu wa 2: Ku rima ni ku kambela pH", text: "Rima 20cm yo sungula ya misava. Hikwalaho ka yini? Hi pH ya 6.2, misava ya wena yi ringana kahle." },
+    { title: "Nkongu wa 3: Ku khathalela Mati", text: "Hlayisa mati ya 45% hi ku cheleta mixo. Hikwalaho ka yini? Leswi swi sivela ku vaviseka ka timitsu." }
+  ],
+  'Tshivenda': [
+    { title: "Nyato ya 1: Uawedza Nitrogen", text: "Shandumisani kompositi ya nitrogen maori 48 u sa athu u lima. Ndi ngani? Sensor ya nu vhudza uri nitrogen i fhasi." },
+    { title: "Nyato ya 2: U lima na u sedza pH", text: "Limani vhura vhu no swika 20cm. Ndi ngani? Nga pH ya 6.2, mavu anu a khwine u lima." },
+    { title: "Nyato ya 3: Vhulunga Maḓi", text: "Tsireledzani 45% ya maḓi nga u tou shela nga matshelo. Ndi ngani? Izwi zwi thivhela vhulwadze ha midzi." }
+  ],
+  'IsiZulu': [
+    { title: "Isinyathelo sesi-1: Ukufaka i-Nitrogen", text: "Faka umquba we-nitrogen emahoreni angama-48 ngaphambi kokutshala. Kungani? Isinzwa sakho sibonisa ukuthi i-nitrogen iphansi." },
+    { title: "Isinyathelo sesi-2: Ukulima nokubheka i-pH", text: "Lima amasentimitha angama-20 angaphezulu enhlabathi. Kungani? Nge-pH ka-6.2, inhlabathi yakho ilungele." },
+    { title: "Isinyathelo sesi-3: Ukulawula Umswakama", text: "Gcina umswakama ka-45% ngokunisela ekuseni kakhulu. Kungani? Lokhu kuvimbela ukucindezeleka kwezimpande." }
+  ],
+  'Afrikaans': [
+    { title: "Stap 1: Stikstof Topbemesting", text: "Dien organiese stikstofkompos toe 48 uur voor plant. Waarom? Jou sensor dui lae stikstof aan." },
+    { title: "Stap 2: Grondbewerking & pH Verifikasie", text: "Bewer die boonste 20cm grond. Waarom? Teen pH 6.2 is jou grond in die ideale reeks." },
+    { title: "Stap 3: Vogbestuur", text: "Handhaaf huidige 45% vog deur ligte oggendbesproeiing. Waarom? Dit voorkom wortelstres." }
+  ]
+};
+
 function openPlotGuide(cropName){
+  currentCropName = cropName;
+  currentStepIndex = 0;
+  guideLanguage = document.getElementById('guide-lang-select').value;
+  renderPlotStep();
+  
   const m = document.getElementById('plot-guide-modal');
   const c = document.getElementById('plot-guide-content');
-  const titleEl = document.getElementById('plot-guide-title');
-  const bodyEl = document.getElementById('plot-guide-body');
-
-  titleEl.textContent = `Preparation Guide for ${cropName}`;
-  bodyEl.innerHTML = `
-    <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 mb-4">
-      <strong>Soil Baseline:</strong> pH 6.2 (Optimal) | Moisture 45% (Field Capacity) | Nitrogen: Low (Requires Action)
-    </div>
-    <div class="space-y-3">
-      <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-        <p class="font-bold text-slate-900">Step 1: Nitrogen Top-Dressing</p>
-        <p class="text-xs text-slate-600 mt-1">Apply organic nitrogen compost around the bed 48 hours prior to planting. <strong>Why?</strong> Your stick sensor indicates low nitrogen, which slows early leaf growth.</p>
-      </div>
-      <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-        <p class="font-bold text-slate-900">Step 2: Bed Tilling &amp; pH Verification</p>
-        <p class="text-xs text-slate-600 mt-1">Till the top 20cm of soil. <strong>Why?</strong> At pH 6.2, your soil is in the ideal range for ${cropName} without needing lime adjustment, saving nutrients from lockout.</p>
-      </div>
-      <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-        <p class="font-bold text-slate-900">Step 3: Moisture Management</p>
-        <p class="text-xs text-slate-600 mt-1">Maintain current 45% moisture with light early-morning watering. <strong>Why?</strong> This prevents root stress while avoiding waterlogging during the upcoming weather cycle.</p>
-      </div>
-    </div>
-  `;
-
   m.classList.remove('hidden'); m.classList.add('flex');
   void m.offsetWidth;
   c.classList.remove('scale-95', 'opacity-0');
 }
+
+function changeGuideLanguage(lang) {
+  guideLanguage = lang;
+  renderPlotStep();
+}
+
+function renderPlotStep() {
+  const steps = plotSteps[guideLanguage] || plotSteps['English'];
+  const titleEl = document.getElementById('plot-guide-title');
+  const bodyEl = document.getElementById('plot-guide-body');
+  const interactiveEl = document.getElementById('guide-interactive-area');
+
+  titleEl.textContent = `${currentCropName} Guide (${currentStepIndex + 1}/${steps.length})`;
+  
+  const step = steps[currentStepIndex];
+  bodyEl.innerHTML = `
+    <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 mb-2">
+      <strong>Soil Baseline:</strong> pH 6.2 (Optimal) | Moisture 45% | N: Low
+    </div>
+    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+      <h4 class="font-bold text-slate-900 text-base mb-2">${step.title}</h4>
+      <p class="text-slate-700 leading-relaxed">${step.text}</p>
+    </div>
+  `;
+
+  interactiveEl.innerHTML = `
+    <div id="understand-prompt">
+      <p class="text-sm font-bold text-slate-800 mb-3 text-center">Do you understand this step?</p>
+      <div class="flex gap-3 justify-center">
+        <button onclick="handleUnderstand(true)" class="min-h-[44px] px-6 rounded-xl font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition-colors">Yes, I understand</button>
+        <button onclick="handleUnderstand(false)" class="min-h-[44px] px-6 rounded-xl font-bold bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition-colors">No, explain more</button>
+      </div>
+    </div>
+    <div id="explanation-box" class="hidden mt-3 space-y-2">
+      <textarea id="confusa-input" rows="2" class="w-full p-3 rounded-xl border border-slate-300 text-sm font-medium focus:ring-2 focus:ring-emerald-200 outline-none" placeholder="Type what you don't understand about this step..."></textarea>
+      <div class="flex justify-end gap-2">
+        <button onclick="submitConfusion()" class="min-h-[40px] px-4 rounded-xl font-bold bg-slate-900 text-white text-xs hover:bg-emerald-600">Ask Guide AI</button>
+      </div>
+    </div>
+    <div id="ai-clarification" class="hidden mt-3 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900"></div>
+  `;
+}
+
+function handleUnderstand(yes) {
+  if (yes) {
+    const steps = plotSteps[guideLanguage] || plotSteps['English'];
+    if (currentStepIndex < steps.length - 1) {
+      currentStepIndex++;
+      renderPlotStep();
+    } else {
+      document.getElementById('guide-interactive-area').innerHTML = `
+        <div class="p-4 rounded-xl bg-emerald-100 text-emerald-900 text-center font-bold">
+          🎉 You have completed all preparation steps for ${currentCropName}! Your plot is ready for success.
+        </div>
+      `;
+    }
+  } else {
+    document.getElementById('explanation-box').classList.remove('hidden');
+  }
+}
+
+function submitConfusion() {
+  const txt = document.getElementById('confusa-input').value.trim();
+  const clarityEl = document.getElementById('ai-clarification');
+  if(!txt) return;
+  clarityEl.classList.remove('hidden');
+  clarityEl.innerHTML = `<strong>Guide AI Explanation:</strong> Don't worry! Regarding "${txt}", our stick sensor monitors this threshold precisely to ensure optimal nutrient intake and root stability. Take your time applying this step!`;
+}
+
 function closePlotGuide(){
   const m = document.getElementById('plot-guide-modal');
   const c = document.getElementById('plot-guide-content');
