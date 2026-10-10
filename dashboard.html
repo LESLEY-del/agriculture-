@@ -410,7 +410,7 @@ async function loadRecommendations() {
     const b = d.basis;
     document.querySelectorAll('[data-soil]').forEach(e => e.textContent = b.soilType ? b.soilType.replace(/\b\w/g, c => c.toUpperCase()) : 'Not recorded yet');
     basis.textContent = `Based on your soil (pH ${b.ph}, moisture ${b.moisture}%, nitrogen ${b.nitrogen}${b.soilType ? ', ' + b.soilType : ''}), your area's usual weather for the next 3 months, and this week's rain forecast.` + (d.missing.length ? ` Still missing: ${d.missing.join(', ')}.` : '');
-    box.innerHTML = d.crops.map(c => { const v = VERDICT[c.verdict]; return `<div class="advanced-card rounded-3xl p-6 sm:p-8"><div class="flex items-center justify-between gap-3 mb-4"><h3 class="font-heading font-bold text-2xl">${escapeHtml(c.crop)}</h3><span class="${v.c} text-white font-bold px-4 py-2 rounded-full">${v.t}</span></div>${c.pros.map(p => `<p class="mb-2 text-slate-700">✅ ${escapeHtml(p)}</p>`).join('')}${c.cons.map(p => `<p class="mb-2 font-semibold">⚠️ ${escapeHtml(p)}</p>`).join('')}</div>` }).join('');
+    box.innerHTML = d.crops.map(c => { const v = VERDICT[c.verdict]; return `<div class="advanced-card rounded-3xl p-6 sm:p-8"><div class="flex items-center justify-between gap-3 mb-4"><h3 class="font-heading font-bold text-2xl">${escapeHtml(c.crop)}</h3><span class="${v.c} text-white font-bold px-4 py-2 rounded-full">${v.t}</span></div>${c.pros.map(p => `<p class="mb-2 text-slate-700">✅ ${escapeHtml(p)}</p>`).join('')}</div>` }).join('');
   } catch (e) { box.innerHTML = '<p class="text-lg font-semibold text-rose-700">Could not load crop advice. Please try again.</p>' }
 }
 
