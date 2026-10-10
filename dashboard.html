@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,113 +38,113 @@ body.chat-open{overflow:hidden;position:fixed;width:100%}body.chat-open #chat-fa
 <body class="min-h-screen">
 
 <header class="sticky top-0 z-50 glass-nav">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 h-[72px] flex items-center justify-between">
-    <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('main-dashboard')">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center"><iconify-icon icon="lucide:sprout" class="text-white text-xl"></iconify-icon></div>
-      <span class="hidden min-[430px]:inline text-2xl font-bold font-heading text-slate-800">Soil<span class="text-emerald-600">Buddies</span></span>
-    </div>
-    <div class="flex items-center gap-2 sm:gap-3">
-      <button onclick="toggleTextSize()" class="btn-icon font-bold text-lg" aria-label="Bigger text">A+</button>
-      <button onclick="openProblem()" class="flex items-center gap-2 h-11 px-3 sm:px-4 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 font-bold" aria-label="Problem AI"><iconify-icon icon="lucide:message-square-warning" class="text-xl"></iconify-icon><span class="hidden sm:inline">Problem AI</span></button>
-      <button onclick="switchView('settings-view')" class="btn-icon" aria-label="Settings"><iconify-icon icon="lucide:settings" class="text-xl"></iconify-icon></button>
-      <button id="bell-btn" onclick="toggleNotif()" class="btn-icon relative" aria-label="Notifications"><iconify-icon icon="lucide:bell" class="text-xl"></iconify-icon><span id="bell-badge" style="display:none" class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 rounded-full bg-rose-500 text-white text-xs font-bold items-center justify-center border-2 border-white pulse-ring">0</span></button>
-      <a href="/logout" class="btn-icon" aria-label="Log out" title="Log out"><iconify-icon icon="lucide:log-out" class="text-xl"></iconify-icon></a>
-      <div id="avatar" class="hidden sm:flex w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-200 items-center justify-center text-emerald-700 font-bold font-heading">SB</div>
-    </div>
-  </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 h-[72px] flex items-center justify-between">
+    <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('main-dashboard')">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center"><iconify-icon icon="lucide:sprout" class="text-white text-xl"></iconify-icon></div>
+      <span class="hidden min-[430px]:inline text-2xl font-bold font-heading text-slate-800">Soil<span class="text-emerald-600">Buddies</span></span>
+    </div>
+    <div class="flex items-center gap-2 sm:gap-3">
+      <button onclick="toggleTextSize()" class="btn-icon font-bold text-lg" aria-label="Bigger text">A+</button>
+      <button onclick="openProblem()" class="flex items-center gap-2 h-11 px-3 sm:px-4 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 font-bold" aria-label="Problem AI"><iconify-icon icon="lucide:message-square-warning" class="text-xl"></iconify-icon><span class="hidden sm:inline">Problem AI</span></button>
+      <button onclick="switchView('settings-view')" class="btn-icon" aria-label="Settings"><iconify-icon icon="lucide:settings" class="text-xl"></iconify-icon></button>
+      <button id="bell-btn" onclick="toggleNotif()" class="btn-icon relative" aria-label="Notifications"><iconify-icon icon="lucide:bell" class="text-xl"></iconify-icon><span id="bell-badge" style="display:none" class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 rounded-full bg-rose-500 text-white text-xs font-bold items-center justify-center border-2 border-white pulse-ring">0</span></button>
+      <a href="/logout" class="btn-icon" aria-label="Log out" title="Log out"><iconify-icon icon="lucide:log-out" class="text-xl"></iconify-icon></a>
+      <div id="avatar" class="hidden sm:flex w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-200 items-center justify-center text-emerald-700 font-bold font-heading">SB</div>
+    </div>
+  </div>
 </header>
 
 <div id="notif-panel" style="display:none" class="fixed z-[80] top-[78px] left-3 right-3 sm:left-auto sm:right-6 sm:w-[390px] bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
-  <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><h3 class="font-bold font-heading">Soil alerts</h3><button onclick="toggleNotif(false)" class="w-9 h-9 flex items-center justify-center text-slate-500" aria-label="Close alerts"><iconify-icon icon="lucide:x" class="text-xl"></iconify-icon></button></div>
-  <div id="notif-list" class="max-h-[55vh] overflow-y-auto"></div>
-  <div class="p-3 border-t border-slate-100"><button id="enable-push" onclick="enablePush()" class="w-full min-h-[44px] rounded-xl bg-slate-900 text-white text-sm font-bold hover:bg-emerald-700 flex items-center justify-center gap-2"><iconify-icon icon="lucide:bell-ring"></iconify-icon><span id="push-label">Turn on push alerts</span></button></div>
+  <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><h3 class="font-bold font-heading">Soil alerts</h3><button onclick="toggleNotif(false)" class="w-9 h-9 flex items-center justify-center text-slate-500" aria-label="Close alerts"><iconify-icon icon="lucide:x" class="text-xl"></iconify-icon></button></div>
+  <div id="notif-list" class="max-h-[55vh] overflow-y-auto"></div>
+  <div class="p-3 border-t border-slate-100"><button id="enable-push" onclick="enablePush()" class="w-full min-h-[44px] rounded-xl bg-slate-900 text-white text-sm font-bold hover:bg-emerald-700 flex items-center justify-center gap-2"><iconify-icon icon="lucide:bell-ring"></iconify-icon><span id="push-label">Turn on push alerts</span></button></div>
 </div>
 
 <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-12 py-8 lg:py-12 pb-32">
 
 <!-- HOME -->
 <div id="main-dashboard" class="view-section">
-  <div class="mb-6">
-    <p class="text-sm font-bold uppercase tracking-widest text-emerald-700">My Farm</p>
-    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3 font-heading">Welcome back, <span class="gradient-text" id="welcome-name">Farmer</span></h1>
-    <button onclick="speakHome()" class="min-h-[56px] px-6 rounded-2xl bg-slate-900 text-white font-bold text-lg hover:bg-emerald-700 flex items-center gap-3"><span class="text-2xl">🔊</span> Listen to my dashboard</button>
-  </div>
-  <h2 class="text-2xl font-bold font-heading mt-10 mb-4">My Farm at a Glance</h2>
-  <div id="home-glance" class="space-y-3"></div>
-  <h2 class="text-2xl font-bold font-heading mt-10 mb-4">What should I do next?</h2>
-  <div id="home-next" class="space-y-3"></div>
-  <h2 class="text-2xl font-bold font-heading mt-10 mb-4">My Farm Information</h2>
-  <div id="home-tiles" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-  <h2 class="text-2xl font-bold font-heading mt-10 mb-4">Learn About My Farm</h2>
-  <button onclick="showArea('learn')" class="w-full min-h-[72px] rounded-2xl bg-white border-2 border-emerald-200 hover:border-emerald-500 p-4 text-left font-bold text-lg">📚 Understanding your soil, your water and your crop. Tap to start a short lesson.</button>
-  <h2 class="text-2xl font-bold font-heading mt-10 mb-4">My Farm Report</h2>
-  <div class="grid sm:grid-cols-2 gap-4"><button onclick="showArea('report')" class="min-h-[56px] rounded-2xl bg-emerald-600 text-white font-bold text-lg">VIEW MY REPORT</button><button onclick="showArea('report');setTimeout(()=>window.print(),400)" class="min-h-[56px] rounded-2xl bg-white border-2 border-slate-300 font-bold text-lg">DOWNLOAD OR PRINT</button></div>
-  <h2 class="text-2xl font-bold font-heading mt-10 mb-4">Need help?</h2>
-  <div class="grid sm:grid-cols-2 gap-4"><button onclick="askPreset('Help me understand my soil.')" class="min-h-[56px] rounded-2xl bg-slate-900 text-white font-bold text-lg">ASK ABOUT MY FARM</button><button onclick="openProblem()" class="min-h-[56px] rounded-2xl bg-rose-50 text-rose-700 border-2 border-rose-200 font-bold text-lg">PROBLEM AI</button></div>
+  <div class="mb-6">
+    <p class="text-sm font-bold uppercase tracking-widest text-emerald-700">My Farm</p>
+    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3 font-heading">Welcome back, <span class="gradient-text" id="welcome-name">Farmer</span></h1>
+    <button onclick="speakHome()" class="min-h-[56px] px-6 rounded-2xl bg-slate-900 text-white font-bold text-lg hover:bg-emerald-700 flex items-center gap-3"><span class="text-2xl">🔊</span> Listen to my dashboard</button>
+  </div>
+  <h2 class="text-2xl font-bold font-heading mt-10 mb-4">My Farm at a Glance</h2>
+  <div id="home-glance" class="space-y-3"></div>
+  <h2 class="text-2xl font-bold font-heading mt-10 mb-4">What should I do next?</h2>
+  <div id="home-next" class="space-y-3"></div>
+  <h2 class="text-2xl font-bold font-heading mt-10 mb-4">My Farm Information</h2>
+  <div id="home-tiles" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+  <h2 class="text-2xl font-bold font-heading mt-10 mb-4">Learn About My Farm</h2>
+  <button onclick="showArea('learn')" class="w-full min-h-[72px] rounded-2xl bg-white border-2 border-emerald-200 hover:border-emerald-500 p-4 text-left font-bold text-lg">📚 Understanding your soil, your water and your crop. Tap to start a short lesson.</button>
+  <h2 class="text-2xl font-bold font-heading mt-10 mb-4">My Farm Report</h2>
+  <div class="grid sm:grid-cols-2 gap-4"><button onclick="showArea('report')" class="min-h-[56px] rounded-2xl bg-emerald-600 text-white font-bold text-lg">VIEW MY REPORT</button><button onclick="showArea('report');setTimeout(()=>window.print(),400)" class="min-h-[56px] rounded-2xl bg-white border-2 border-slate-300 font-bold text-lg">DOWNLOAD OR PRINT</button></div>
+  <h2 class="text-2xl font-bold font-heading mt-10 mb-4">Need help?</h2>
+  <div class="grid sm:grid-cols-2 gap-4"><button onclick="askPreset('Help me understand my soil.')" class="min-h-[56px] rounded-2xl bg-slate-900 text-white font-bold text-lg">ASK ABOUT MY FARM</button><button onclick="openProblem()" class="min-h-[56px] rounded-2xl bg-rose-50 text-rose-700 border-2 border-rose-200 font-bold text-lg">PROBLEM AI</button></div>
 </div>
 
 <!-- MY FARM MENU -->
 <div id="view-myfarm" class="view-section hidden">
-  <h1 class="text-3xl font-bold font-heading mb-6">My Farm</h1>
-  <div id="farm-tiles" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+  <h1 class="text-3xl font-bold font-heading mb-6">My Farm</h1>
+  <div id="farm-tiles" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
 </div>
 
 <!-- DETAIL (filled by JS) -->
 <div id="view-detail" class="view-section hidden">
-  <button onclick="switchView('main-dashboard')" class="flex items-center gap-2 min-h-[48px] font-bold text-lg text-slate-600 mb-4 hover:text-emerald-700 no-print">&larr; Back to Home</button>
-  <h1 id="detail-title" class="text-3xl font-bold font-heading mb-6"></h1>
-  <div id="detail-body"></div>
+  <button onclick="switchView('main-dashboard')" class="flex items-center gap-2 min-h-[48px] font-bold text-lg text-slate-600 mb-4 hover:text-emerald-700 no-print">&larr; Back to Home</button>
+  <h1 id="detail-title" class="text-3xl font-bold font-heading mb-6"></h1>
+  <div id="detail-body"></div>
 </div>
 
 <!-- SETTINGS -->
 <div id="settings-view" class="view-section hidden">
-  <button onclick="switchView('main-dashboard')" class="flex items-center gap-2 min-h-[44px] font-bold text-slate-600 mb-4 hover:text-slate-900"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Back</button>
-  <div class="advanced-card p-6 sm:p-10 rounded-[2rem]">
-    <h2 class="text-3xl font-bold font-heading mb-8">Settings</h2>
-    <div class="grid lg:grid-cols-2 gap-6">
-      <div class="p-6 rounded-2xl border border-slate-200">
-        <h3 class="font-bold font-heading text-xl mb-2">My farm location</h3>
-        <p class="text-slate-600 mb-4">Needed for accurate weather, rain warnings and crop advice. Stand on your farm and tap the button.</p>
-        <button onclick="setLocation()" class="w-full min-h-[52px] rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 flex items-center justify-center gap-2"><iconify-icon icon="lucide:map-pin"></iconify-icon> Use my current location</button>
-        <p id="loc-status" class="mt-3 font-semibold text-slate-700"></p>
-      </div>
-      <div onclick="switchView('detail-weather')" class="p-6 rounded-2xl border border-slate-200 hover:border-indigo-300 cursor-pointer">
-        <h3 class="font-bold font-heading text-xl mb-2">Weather &amp; climate</h3>
-        <p id="weather-summary-temp" class="text-5xl font-black">--°</p>
-        <p id="weather-summary-condition" class="font-bold text-indigo-700 mt-1">Loading weather...</p>
-        <p class="mt-2 text-slate-600">Rain, past 48h: <strong id="weather-summary-rain">--</strong> mm. Tap for forecast and climate.</p>
-      </div>
-    </div>
-  </div>
+  <button onclick="switchView('main-dashboard')" class="flex items-center gap-2 min-h-[44px] font-bold text-slate-600 mb-4 hover:text-slate-900"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Back</button>
+  <div class="advanced-card p-6 sm:p-10 rounded-[2rem]">
+    <h2 class="text-3xl font-bold font-heading mb-8">Settings</h2>
+    <div class="grid lg:grid-cols-2 gap-6">
+      <div class="p-6 rounded-2xl border border-slate-200">
+        <h3 class="font-bold font-heading text-xl mb-2">My farm location</h3>
+        <p class="text-slate-600 mb-4">Needed for accurate weather, rain warnings and crop advice. Stand on your farm and tap the button.</p>
+        <button onclick="setLocation()" class="w-full min-h-[52px] rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 flex items-center justify-center gap-2"><iconify-icon icon="lucide:map-pin"></iconify-icon> Use my current location</button>
+        <p id="loc-status" class="mt-3 font-semibold text-slate-700"></p>
+      </div>
+      <div onclick="switchView('detail-weather')" class="p-6 rounded-2xl border border-slate-200 hover:border-indigo-300 cursor-pointer">
+        <h3 class="font-bold font-heading text-xl mb-2">Weather &amp; climate</h3>
+        <p id="weather-summary-temp" class="text-5xl font-black">--°</p>
+        <p id="weather-summary-condition" class="font-bold text-indigo-700 mt-1">Loading weather...</p>
+        <p class="mt-2 text-slate-600">Rain, past 48h: <strong id="weather-summary-rain">--</strong> mm. Tap for forecast and climate.</p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- WEATHER -->
 <div id="detail-weather" class="view-section hidden">
-  <button onclick="switchView('view-myfarm')" class="flex items-center gap-2 min-h-[44px] font-bold text-slate-600 mb-4"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Back</button>
-  <div class="grid lg:grid-cols-3 gap-8">
-    <div class="lg:col-span-2 bg-[#1E2538] rounded-[2.5rem] p-6 sm:p-10 text-white shadow-2xl">
-      <div class="text-center my-6">
-        <h2 id="weather-city-title" class="text-3xl font-light text-white/90">Your farm</h2>
-        <p id="weather-temp-main" class="text-8xl font-thin tracking-tighter my-2">--°</p>
-        <p id="weather-condition-main" class="text-lg font-medium text-slate-300">Loading...</p>
-        <p class="text-sm text-slate-400 mt-1">H: <span id="weather-high">--°</span>&nbsp;&nbsp; L: <span id="weather-low">--°</span></p>
-      </div>
-      <div class="mt-8 bg-black/20 rounded-2xl p-4"><p class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-4">Next hours</p><div id="hourly-container" class="grid grid-cols-6 gap-2 text-center"></div></div>
-      <div class="mt-6 bg-black/20 rounded-2xl p-5"><p class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-4">5-day forecast</p><div id="daily-container" class="space-y-3"></div></div>
-      <p id="weather-updated" class="text-xs text-slate-400 mt-8 text-center">Weather by Open-Meteo.</p>
-    </div>
-    <div>
-      <h3 class="text-sm uppercase tracking-widest font-bold text-slate-500 mb-5">Rain check</h3>
-      <div id="rain-card-box" class="bg-white p-6 rounded-2xl border-2 border-emerald-500 mb-6">
-        <div class="grid grid-cols-2 gap-4 mb-4">
-          <div><p class="text-xs font-bold text-slate-500 uppercase mb-1">Past 48 hours</p><p class="text-2xl font-black"><span id="weather-rain48">--</span> <span class="text-sm text-slate-500">mm</span></p></div>
-          <div><p class="text-xs font-bold text-slate-500 uppercase mb-1">Next 48 hours</p><p class="text-2xl font-black"><span id="weather-rain-future">--</span> <span class="text-sm text-slate-500">mm</span></p></div>
-        </div>
-        <p id="weather-rain-status" class="font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg text-center">Checking rainfall...</p>
-      </div>
-      <div id="climate-card" class="advanced-card p-6 rounded-2xl text-base text-slate-700 leading-relaxed">Loading your area's climate...</div>
-    </div>
-  </div>
+  <button onclick="switchView('view-myfarm')" class="flex items-center gap-2 min-h-[44px] font-bold text-slate-600 mb-4"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Back</button>
+  <div class="grid lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 bg-[#1E2538] rounded-[2.5rem] p-6 sm:p-10 text-white shadow-2xl">
+      <div class="text-center my-6">
+        <h2 id="weather-city-title" class="text-3xl font-light text-white/90">Your farm</h2>
+        <p id="weather-temp-main" class="text-8xl font-thin tracking-tighter my-2">--°</p>
+        <p id="weather-condition-main" class="text-lg font-medium text-slate-300">Loading...</p>
+        <p class="text-sm text-slate-400 mt-1">H: <span id="weather-high">--°</span>&nbsp;&nbsp; L: <span id="weather-low">--°</span></p>
+      </div>
+      <div class="mt-8 bg-black/20 rounded-2xl p-4"><p class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-4">Next hours</p><div id="hourly-container" class="grid grid-cols-6 gap-2 text-center"></div></div>
+      <div class="mt-6 bg-black/20 rounded-2xl p-5"><p class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-4">5-day forecast</p><div id="daily-container" class="space-y-3"></div></div>
+      <p id="weather-updated" class="text-xs text-slate-400 mt-8 text-center">Weather by Open-Meteo.</p>
+    </div>
+    <div>
+      <h3 class="text-sm uppercase tracking-widest font-bold text-slate-500 mb-5">Rain check</h3>
+      <div id="rain-card-box" class="bg-white p-6 rounded-2xl border-2 border-emerald-500 mb-6">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div><p class="text-xs font-bold text-slate-500 uppercase mb-1">Past 48 hours</p><p class="text-2xl font-black"><span id="weather-rain48">--</span> <span class="text-sm text-slate-500">mm</span></p></div>
+          <div><p class="text-xs font-bold text-slate-500 uppercase mb-1">Next 48 hours</p><p class="text-2xl font-black"><span id="weather-rain-future">--</span> <span class="text-sm text-slate-500">mm</span></p></div>
+        </div>
+        <p id="weather-rain-status" class="font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg text-center">Checking rainfall...</p>
+      </div>
+      <div id="climate-card" class="advanced-card p-6 rounded-2xl text-base text-slate-700 leading-relaxed">Loading your area's climate...</div>
+    </div>
+  </div>
 </div>
 </main>
 
@@ -159,49 +158,49 @@ body.chat-open{overflow:hidden;position:fixed;width:100%}body.chat-open #chat-fa
 
 <!-- QUIZ -->
 <div id="quiz-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
-  <div class="absolute inset-0 bg-slate-900/60" onclick="closeQuizModal()"></div>
-  <div class="relative bg-slate-900 text-white rounded-3xl shadow-2xl w-full max-w-xl max-h-[90dvh] overflow-y-auto p-6 sm:p-8 border border-slate-700">
-    <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/10"><div><h3 class="text-lg font-bold font-heading">Know Your Land Quiz</h3><p id="quiz-score" class="text-sm text-emerald-400 font-semibold">0 / 3 correct</p></div><button onclick="closeQuizModal()" class="w-10 h-10 flex items-center justify-center text-slate-300 rounded-full bg-white/5" aria-label="Close"><iconify-icon icon="lucide:x" class="text-xl"></iconify-icon></button></div>
-    <div id="quiz-container"></div>
-  </div>
+  <div class="absolute inset-0 bg-slate-900/60" onclick="closeQuizModal()"></div>
+  <div class="relative bg-slate-900 text-white rounded-3xl shadow-2xl w-full max-w-xl max-h-[90dvh] overflow-y-auto p-6 sm:p-8 border border-slate-700">
+    <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/10"><div><h3 class="text-lg font-bold font-heading">Know Your Land Quiz</h3><p id="quiz-score" class="text-sm text-emerald-400 font-semibold">0 / 3 correct</p></div><button onclick="closeQuizModal()" class="w-10 h-10 flex items-center justify-center text-slate-300 rounded-full bg-white/5" aria-label="Close"><iconify-icon icon="lucide:x" class="text-xl"></iconify-icon></button></div>
+    <div id="quiz-container"></div>
+  </div>
 </div>
 
 <!-- AGRI-TALK -->
 <button id="chat-fab" onclick="toggleChat()" aria-label="Open Agri-Talk chat" class="fixed w-16 h-16 bg-slate-900 text-emerald-400 rounded-full shadow-2xl flex items-center justify-center hover:bg-slate-800 z-[90] border border-slate-700"><iconify-icon icon="lucide:message-square-plus" class="text-3xl"></iconify-icon></button>
 <div id="agri-talk-window" class="chat-overlay bg-white z-[90] overflow-hidden" role="dialog" aria-label="Agri-Talk AI">
-  <div class="bg-slate-900 text-white py-3 chat-pad chat-top flex items-center justify-between shrink-0">
-    <div><h3 class="font-bold font-heading text-lg">Agri-Talk AI</h3><p class="text-xs text-emerald-400">Ask about soil, crops, pests, irrigation</p></div>
-    <button onclick="toggleChat()" class="w-10 h-10 flex items-center justify-center text-slate-300" aria-label="Close chat"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
-  </div>
-  <div id="chat-messages" class="msgs flex-1 min-h-0 bg-slate-50 py-4 chat-pad overflow-y-auto flex flex-col gap-4">
-    <div class="chat-bubble-ai p-4 font-medium shadow-sm max-w-[90%]" id="chat-greeting">Hello! Ask me about your soil, crops, planting seasons, pests, or irrigation. You can ask in your own language.</div>
-  </div>
-  <div class="pt-3 chat-pad chat-bottom bg-white border-t border-slate-100 flex items-end gap-2 shrink-0">
-    <div class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-2xl focus-within:border-emerald-500"><textarea id="chat-input" rows="1" class="w-full bg-transparent border-none px-3 py-2.5 focus:outline-none resize-none font-medium max-h-28" placeholder="Ask about soil, crops, planting..." enterkeyhint="send"></textarea></div>
-    <button onclick="startVoice()" class="w-12 h-12 shrink-0 flex items-center justify-center bg-slate-200 rounded-xl text-xl" aria-label="Speak your question">🎤</button>
-    <button onclick="sendMessage()" class="w-12 h-12 shrink-0 flex items-center justify-center bg-emerald-600 text-white rounded-xl hover:bg-emerald-700" aria-label="Send"><iconify-icon icon="lucide:send" class="text-xl"></iconify-icon></button>
-  </div>
+  <div class="bg-slate-900 text-white py-3 chat-pad chat-top flex items-center justify-between shrink-0">
+    <div><h3 class="font-bold font-heading text-lg">Agri-Talk AI</h3><p class="text-xs text-emerald-400">Ask about soil, crops, pests, irrigation</p></div>
+    <button onclick="toggleChat()" class="w-10 h-10 flex items-center justify-center text-slate-300" aria-label="Close chat"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
+  </div>
+  <div id="chat-messages" class="msgs flex-1 min-h-0 bg-slate-50 py-4 chat-pad overflow-y-auto flex flex-col gap-4">
+    <div class="chat-bubble-ai p-4 font-medium shadow-sm max-w-[90%]" id="chat-greeting">Hello! Ask me about your soil, crops, planting seasons, pests, or irrigation. You can ask in your own language.</div>
+  </div>
+  <div class="pt-3 chat-pad chat-bottom bg-white border-t border-slate-100 flex items-end gap-2 shrink-0">
+    <div class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-2xl focus-within:border-emerald-500"><textarea id="chat-input" rows="1" class="w-full bg-transparent border-none px-3 py-2.5 focus:outline-none resize-none font-medium max-h-28" placeholder="Ask about soil, crops, planting..." enterkeyhint="send"></textarea></div>
+    <button onclick="startVoice()" class="w-12 h-12 shrink-0 flex items-center justify-center bg-slate-200 rounded-xl text-xl" aria-label="Speak your question">🎤</button>
+    <button onclick="sendMessage()" class="w-12 h-12 shrink-0 flex items-center justify-center bg-emerald-600 text-white rounded-xl hover:bg-emerald-700" aria-label="Send"><iconify-icon icon="lucide:send" class="text-xl"></iconify-icon></button>
+  </div>
 </div>
 
 <!-- PROBLEM AI -->
 <div id="problem-window" class="chat-overlay bg-white z-[90] overflow-hidden" role="dialog" aria-label="Problem AI">
-  <div class="bg-slate-900 text-white py-3 chat-pad chat-top flex items-center justify-between shrink-0">
-    <div><h3 class="font-bold font-heading text-lg">Problem AI</h3><p class="text-xs text-rose-300">Soil alerts from your sensor</p></div>
-    <button onclick="toggleProblem(false)" class="w-10 h-10 flex items-center justify-center text-slate-300" aria-label="Close Problem AI"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
-  </div>
-  <div id="problem-messages" class="msgs flex-1 min-h-0 bg-slate-50 py-4 chat-pad overflow-y-auto flex flex-col gap-4">
-    <div>
-      <label for="crop-input" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">What did you plant? (optional)</label>
-      <div class="flex gap-2"><input id="crop-input" type="text" maxlength="60" autocomplete="off" placeholder="e.g. Tomatoes, Maize" class="flex-1 min-w-0 min-h-[48px] px-3 rounded-xl border border-slate-300 bg-white font-medium focus:border-rose-500 outline-none"><button onclick="saveCrop()" class="min-h-[48px] px-5 rounded-xl bg-rose-600 text-white font-bold hover:bg-rose-700">Save</button></div>
-      <p id="crop-note" class="text-sm text-slate-600 font-medium mt-2"></p>
-    </div>
-    <div id="problem-summary"></div>
-    <div class="chat-bubble-ai p-4 font-medium shadow-sm max-w-[90%]">I report soil issues from your sensor. Tell me what you planted and I will tell you if the soil could harm it.</div>
-  </div>
-  <div class="pt-3 chat-pad chat-bottom bg-white border-t border-slate-100 flex items-end gap-2 shrink-0">
-    <div class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-2xl focus-within:border-rose-500"><textarea id="problem-input" rows="1" class="w-full bg-transparent border-none px-3 py-2.5 focus:outline-none resize-none font-medium max-h-28" placeholder="Ask about this problem..." enterkeyhint="send"></textarea></div>
-    <button onclick="sendProblem()" class="w-12 h-12 shrink-0 flex items-center justify-center bg-rose-600 text-white rounded-xl hover:bg-rose-700" aria-label="Send"><iconify-icon icon="lucide:send" class="text-xl"></iconify-icon></button>
-  </div>
+  <div class="bg-slate-900 text-white py-3 chat-pad chat-top flex items-center justify-between shrink-0">
+    <div><h3 class="font-bold font-heading text-lg">Problem AI</h3><p class="text-xs text-rose-300">Soil alerts from your sensor</p></div>
+    <button onclick="toggleProblem(false)" class="w-10 h-10 flex items-center justify-center text-slate-300" aria-label="Close Problem AI"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
+  </div>
+  <div id="problem-messages" class="msgs flex-1 min-h-0 bg-slate-50 py-4 chat-pad overflow-y-auto flex flex-col gap-4">
+    <div>
+      <label for="crop-input" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">What did you plant? (optional)</label>
+      <div class="flex gap-2"><input id="crop-input" type="text" maxlength="60" autocomplete="off" placeholder="e.g. Tomatoes, Maize" class="flex-1 min-w-0 min-h-[48px] px-3 rounded-xl border border-slate-300 bg-white font-medium focus:border-rose-500 outline-none"><button onclick="saveCrop()" class="min-h-[48px] px-5 rounded-xl bg-rose-600 text-white font-bold hover:bg-rose-700">Save</button></div>
+      <p id="crop-note" class="text-sm text-slate-600 font-medium mt-2"></p>
+    </div>
+    <div id="problem-summary"></div>
+    <div class="chat-bubble-ai p-4 font-medium shadow-sm max-w-[90%]">I report soil issues from your sensor. Tell me what you planted and I will tell you if the soil could harm it.</div>
+  </div>
+  <div class="pt-3 chat-pad chat-bottom bg-white border-t border-slate-100 flex items-end gap-2 shrink-0">
+    <div class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-2xl focus-within:border-rose-500"><textarea id="problem-input" rows="1" class="w-full bg-transparent border-none px-3 py-2.5 focus:outline-none resize-none font-medium max-h-28" placeholder="Ask about this problem..." enterkeyhint="send"></textarea></div>
+    <button onclick="sendProblem()" class="w-12 h-12 shrink-0 flex items-center justify-center bg-rose-600 text-white rounded-xl hover:bg-rose-700" aria-label="Send"><iconify-icon icon="lucide:send" class="text-xl"></iconify-icon></button>
+  </div>
 </div>
 
 <script>
@@ -212,14 +211,14 @@ const md = t => { let h; try { h = window.marked && marked.parse ? marked.parse(
 const post = (url, body) => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
 
 function switchView(id) {
-  document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
-  const v = $(id); if (v) v.classList.remove('hidden');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
+  const v = $(id); if (v) v.classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function setVV() {
-  const w = document.querySelector('.chat-overlay.open'), vv = window.visualViewport; if (!vv || !w) return;
-  w.style.top = vv.offsetTop + 'px'; w.style.height = vv.height + 'px';
-  const m = w.querySelector('.msgs'); if (m) m.scrollTop = m.scrollHeight;
+  const w = document.querySelector('.chat-overlay.open'), vv = window.visualViewport; if (!vv || !w) return;
+  w.style.top = vv.offsetTop + 'px'; w.style.height = vv.height + 'px';
+  const m = w.querySelector('.msgs'); if (m) m.scrollTop = m.scrollHeight;
 }
 if (window.visualViewport) { visualViewport.addEventListener('resize', setVV); visualViewport.addEventListener('scroll', setVV) }
 let savedY = 0;
@@ -227,23 +226,23 @@ function openOverlay(w) { savedY = window.scrollY; document.body.style.top = -sa
 function closeOverlay(w) { w.classList.remove('open'); w.style.top = ''; w.style.height = ''; document.body.classList.remove('chat-open'); document.body.style.top = ''; window.scrollTo(0, savedY); document.activeElement && document.activeElement.blur(); }
 function toggleChat() { const w = $('agri-talk-window'); w.classList.contains('open') ? closeOverlay(w) : openOverlay(w); }
 function toggleProblem(force) {
-  const w = $('problem-window'), open = force !== undefined ? force : !w.classList.contains('open');
-  if (open === w.classList.contains('open')) return;
-  if (open) { if ($('agri-talk-window').classList.contains('open')) closeOverlay($('agri-talk-window')); toggleNotif(false); openOverlay(w); } else closeOverlay(w);
+  const w = $('problem-window'), open = force !== undefined ? force : !w.classList.contains('open');
+  if (open === w.classList.contains('open')) return;
+  if (open) { if ($('agri-talk-window').classList.contains('open')) closeOverlay($('agri-talk-window')); toggleNotif(false); openOverlay(w); } else closeOverlay(w);
 }
 document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if ($('agri-talk-window').classList.contains('open')) toggleChat(); else if ($('problem-window').classList.contains('open')) toggleProblem(false); });
 
 /* ---------- Agri-Talk ---------- */
 async function sendMessage() {
-  const input = $('chat-input'), box = $('chat-messages'), text = input.value.trim(); if (!text) return;
-  box.insertAdjacentHTML('beforeend', `<div class="flex justify-end"><div class="chat-bubble-user p-4 font-medium shadow-sm max-w-[90%]">${escapeHtml(text)}</div></div>`);
-  input.value = ''; input.style.height = 'auto';
-  const l = document.createElement('div'); l.className = 'chat-bubble-ai p-4 font-medium shadow-sm text-slate-500 max-w-[90%]'; l.textContent = 'Thinking...'; box.appendChild(l); box.scrollTop = box.scrollHeight;
-  try {
-    const r = await post('/api/chat', { message: text + langNote() }), d = await r.json(); if (!r.ok) throw new Error(d.error);
-    l.className = 'chat-bubble-ai p-4 font-medium shadow-sm text-slate-700 leading-relaxed max-w-[90%]'; l.innerHTML = md(d.reply);
-  } catch (e) { l.className = 'chat-bubble-ai p-4 font-medium text-rose-700 max-w-[90%]'; l.textContent = 'Could not reach the server. Please check your connection and try again.'; }
-  box.scrollTop = box.scrollHeight;
+  const input = $('chat-input'), box = $('chat-messages'), text = input.value.trim(); if (!text) return;
+  box.insertAdjacentHTML('beforeend', `<div class="flex justify-end"><div class="chat-bubble-user p-4 font-medium shadow-sm max-w-[90%]">${escapeHtml(text)}</div></div>`);
+  input.value = ''; input.style.height = 'auto';
+  const l = document.createElement('div'); l.className = 'chat-bubble-ai p-4 font-medium shadow-sm text-slate-500 max-w-[90%]'; l.textContent = 'Thinking...'; box.appendChild(l); box.scrollTop = box.scrollHeight;
+  try {
+    const r = await post('/api/chat', { message: text + langNote() }), d = await r.json(); if (!r.ok) throw new Error(d.error);
+    l.className = 'chat-bubble-ai p-4 font-medium shadow-sm text-slate-700 leading-relaxed max-w-[90%]'; l.innerHTML = md(d.reply);
+  } catch (e) { l.className = 'chat-bubble-ai p-4 font-medium text-rose-700 max-w-[90%]'; l.textContent = 'Could not reach the server. Please check your connection and try again.'; }
+  box.scrollTop = box.scrollHeight;
 }
 const ci = $('chat-input');
 ci.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() } });
@@ -252,29 +251,29 @@ ci.addEventListener('input', () => { ci.style.height = 'auto'; ci.style.height =
 
 /* ---------- Quiz ---------- */
 const QUIZ = [
-  { q: 'A soil test shows pH 6.2 in a sandy loam. What does this mean for vegetables?', o: ['It is a good range for most vegetables.', 'It is too acidic and burns roots.', 'Water will never drain.'], a: 0, e: 'pH 6.0 to 7.0 suits most vegetables, and sandy loam drains well.' },
-  { q: 'Your sensor reports low nitrogen. What is the safest step?', o: ['Add organic compost about 2 days before planting.', 'Spray chemicals during a rainstorm.', 'Ignore it.'], a: 0, e: 'Compost adds nitrogen gently. Rain would wash fertiliser away, and nitrogen drives leaf growth.' },
-  { q: 'Heavy rain is forecast in the next 48 hours. What about fertiliser?', o: ['Wait until the rain has passed.', 'Apply double now.', 'Stop checking the weather.'], a: 0, e: 'Rain washes nutrients out of the soil, so you lose money and feed.' }
+  { q: 'A soil test shows pH 6.2 in a sandy loam. What does this mean for vegetables?', o: ['It is a good range for most vegetables.', 'It is too acidic and burns roots.', 'Water will never drain.'], a: 0, e: 'pH 6.0 to 7.0 suits most vegetables, and sandy loam drains well.' },
+  { q: 'Your sensor reports low temperature. What is the safest step?', o: ['Add organic compost about 2 days before planting.', 'Spray chemicals during a rainstorm.', 'Ignore it.'], a: 0, e: 'Compost adds stability gently. Rain would wash fertiliser away, and temperature helps track conditions.' },
+  { q: 'Heavy rain is forecast in the next 48 hours. What about fertiliser?', o: ['Wait until the rain has passed.', 'Apply double now.', 'Stop checking the weather.'], a: 0, e: 'Rain washes nutrients out of the soil, so you lose money and plant food.' }
 ];
 let qi = 0, qs = 0, qDone = false;
 function openQuizModal() { qi = 0; qs = 0; renderQuiz(); const m = $('quiz-modal'); m.classList.remove('hidden'); m.classList.add('flex'); }
 function closeQuizModal() { const m = $('quiz-modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
 function renderQuiz() {
-  const q = QUIZ[qi]; qDone = false; $('quiz-score').textContent = `${qs} / ${QUIZ.length} correct`;
-  $('quiz-container').innerHTML = `<p class="text-sm font-bold uppercase text-emerald-400 mb-2">Question ${qi + 1} of ${QUIZ.length}</p><h3 class="text-xl font-bold font-heading mb-5">${escapeHtml(q.q)}</h3>
-    <div class="space-y-3 mb-5">${q.o.map((t, i) => `<button id="qo-${i}" onclick="answerQuiz(${i})" class="w-full text-left p-4 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 font-medium text-base">${escapeHtml(t)}</button>`).join('')}</div>
-    <div id="q-fb" class="hidden p-4 rounded-xl border text-base mb-4"></div>
-    <div id="q-next" class="hidden flex justify-end"><button onclick="nextQuiz()" class="min-h-[48px] px-6 rounded-xl font-bold bg-emerald-500 text-slate-950">${qi < QUIZ.length - 1 ? 'Next question' : 'Finish'}</button></div>`;
+  const q = QUIZ[qi]; qDone = false; $('quiz-score').textContent = `${qs} / ${QUIZ.length} correct`;
+  $('quiz-container').innerHTML = `<p class="text-sm font-bold uppercase text-emerald-400 mb-2">Question ${qi + 1} of ${QUIZ.length}</p><h3 class="text-xl font-bold font-heading mb-5">${escapeHtml(q.q)}</h3>
+    <div class="space-y-3 mb-5">${q.o.map((t, i) => `<button id="qo-${i}" onclick="answerQuiz(${i})" class="w-full text-left p-4 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 font-medium text-base">${escapeHtml(t)}</button>`).join('')}</div>
+    <div id="q-fb" class="hidden p-4 rounded-xl border text-base mb-4"></div>
+    <div id="q-next" class="hidden flex justify-end"><button onclick="nextQuiz()" class="min-h-[48px] px-6 rounded-xl font-bold bg-emerald-500 text-slate-950">${qi < QUIZ.length - 1 ? 'Next question' : 'Finish'}</button></div>`;
 }
 function answerQuiz(i) {
-  if (qDone) return; qDone = true; const q = QUIZ[qi], ok = i === q.a; if (ok) qs++;
-  q.o.forEach((_, k) => { const b = $('qo-' + k); b.disabled = true; if (k === q.a) b.className = 'w-full text-left p-4 rounded-xl border border-emerald-500 bg-emerald-500/20 text-emerald-100 font-bold text-base'; else if (k === i) b.className = 'w-full text-left p-4 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-100 text-base'; });
-  const fb = $('q-fb'); fb.className = `p-4 rounded-xl border text-base mb-4 ${ok ? 'border-emerald-500/40 bg-emerald-500/20 text-emerald-100' : 'border-rose-500/40 bg-rose-500/20 text-rose-100'}`;
-  fb.innerHTML = `<strong>${ok ? 'Correct!' : 'Not quite.'}</strong> ${escapeHtml(q.e)}`; $('q-next').classList.remove('hidden'); $('quiz-score').textContent = `${qs} / ${QUIZ.length} correct`;
+  if (qDone) return; qDone = true; const q = QUIZ[qi], ok = i === q.a; if (ok) qs++;
+  q.o.forEach((_, k) => { const b = $('qo-' + k); b.disabled = true; if (k === q.a) b.className = 'w-full text-left p-4 rounded-xl border border-emerald-500 bg-emerald-500/20 text-emerald-100 font-bold text-base'; else if (k === i) b.className = 'w-full text-left p-4 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-100 text-base'; });
+  const fb = $('q-fb'); fb.className = `p-4 rounded-xl border text-base mb-4 ${ok ? 'border-emerald-500/40 bg-emerald-500/20 text-emerald-100' : 'border-rose-500/40 bg-rose-500/20 text-rose-100'}`;
+  fb.innerHTML = `<strong>${ok ? 'Correct!' : 'Not quite.'}</strong> ${escapeHtml(q.e)}`; $('q-next').classList.remove('hidden');$('quiz-score').textContent = `${qs} / ${QUIZ.length} correct`;
 }
 function nextQuiz() {
-  if (++qi < QUIZ.length) return renderQuiz();
-  $('quiz-container').innerHTML = `<div class="text-center py-6"><h3 class="text-2xl font-bold font-heading mb-2">Quiz complete!</h3><p class="text-slate-300 mb-6">You scored <strong class="text-emerald-400">${qs} out of ${QUIZ.length}</strong>.</p><div class="flex gap-3 justify-center"><button onclick="openQuizModal()" class="min-h-[48px] px-6 rounded-xl font-bold bg-white/10">Retake</button><button onclick="closeQuizModal()" class="min-h-[48px] px-6 rounded-xl font-bold bg-emerald-500 text-slate-950">Close</button></div></div>`;
+  if (++qi < QUIZ.length) return renderQuiz();
+  $('quiz-container').innerHTML = `<div class="text-center py-6"><h3 class="text-2xl font-bold font-heading mb-2">Quiz complete!</h3><p class="text-slate-300 mb-6">You scored <strong class="text-emerald-400">${qs} out of ${QUIZ.length}</strong>.</p><div class="flex gap-3 justify-center"><button onclick="openQuizModal()" class="min-h-[48px] px-6 rounded-xl font-bold bg-white/10">Retake</button><button onclick="closeQuizModal()" class="min-h-[48px] px-6 rounded-xl font-bold bg-emerald-500 text-slate-950">Close</button></div></div>`;
 }
 
 /* ---------- Live soil readings, alerts, Problem AI ---------- */
@@ -287,58 +286,58 @@ const sevClass = a => a.severity === 'critical' ? { box: 'bg-rose-50 border-rose
 
 function paintReadings() {}
 async function refreshAlerts() {
-  try {
-    const r = await fetch('/api/alerts' + (getCrop() ? '?crop=' + encodeURIComponent(getCrop()) : '')); if (!r.ok) return;
-    const d = await r.json(); alertsState = d.alerts || []; readingState = d.reading || null; changeState = d.change || null;
-    renderBell(); renderProblemSummary(); paintReadings();
-    const fresh = alertsState.filter(a => !getSeen().includes(a.id));
-    if (fresh.length) { if (!pushActive && 'Notification' in window && Notification.permission === 'granted') fresh.forEach(localNotify); addSeen(fresh.map(a => a.id)); }
-  } catch (e) { console.error('Alerts error:', e) }
+  try {
+    const r = await fetch('/api/alerts' + (getCrop() ? '?crop=' + encodeURIComponent(getCrop()) : '')); if (!r.ok) return;
+    const d = await r.json(); alertsState = d.alerts || []; readingState = d.reading || null; changeState = d.change || null;
+    renderBell(); renderProblemSummary(); paintReadings();
+    const fresh = alertsState.filter(a => !getSeen().includes(a.id));
+    if (fresh.length) { if (!pushActive && 'Notification' in window && Notification.permission === 'granted') fresh.forEach(localNotify); addSeen(fresh.map(a => a.id)); }
+  } catch (e) { console.error('Alerts error:', e) }
 }
 function localNotify(a) {
-  const o = { body: a.detail + (a.harm ? ' ' + a.harm : ''), tag: a.id, requireInteraction: true, data: { url: '/dashboard?alert=' + encodeURIComponent(a.id) } };
-  if ('serviceWorker' in navigator) navigator.serviceWorker.ready.then(r => r.showNotification(a.title, o)).catch(() => { try { new Notification(a.title, o) } catch (e) {} });
+  const o = { body: a.detail + (a.harm ? ' ' + a.harm : ''), tag: a.id, requireInteraction: true, data: { url: '/dashboard?alert=' + encodeURIComponent(a.id) } };
+  if ('serviceWorker' in navigator) navigator.serviceWorker.ready.then(r => r.showNotification(a.title, o)).catch(() => { try { new Notification(a.title, o) } catch (e) {} });
 }
 function renderBell() {
-  const n = alertsState.length, b = $('bell-badge'); b.textContent = n; b.style.display = n ? 'flex' : 'none';
-  const list = $('notif-list');
-  list.innerHTML = n ? alertsState.map((a, i) => { const c = sevClass(a); return `<button data-open="${i}" class="w-full text-left p-4 flex gap-3 hover:bg-slate-50 border-b border-slate-100"><span class="w-10 h-10 shrink-0 rounded-xl ${c.ico} flex items-center justify-center"><iconify-icon icon="lucide:alert-triangle" class="text-xl"></iconify-icon></span><span class="min-w-0"><span class="block font-bold text-sm">${escapeHtml(a.title)}</span><span class="block text-sm text-slate-600">${escapeHtml(a.detail)}</span>${a.harm ? `<span class="block text-sm font-semibold ${c.txt} mt-1">${escapeHtml(a.harm)}</span>` : ''}<span class="block text-xs font-bold ${c.txt} mt-1">Tap to get help from Problem AI</span></span></button>` }).join('') : '<p class="p-6 text-center text-slate-600 font-medium">No soil problems detected.</p>';
-  list.querySelectorAll('[data-open]').forEach(btn => btn.addEventListener('click', () => { toggleNotif(false); openProblem(alertsState[btn.dataset.open].id) }));
+  const n = alertsState.length, b = $('bell-badge'); b.textContent = n; b.style.display = n ? 'flex' : 'none';
+  const list = $('notif-list');
+  list.innerHTML = n ? alertsState.map((a, i) => { const c = sevClass(a); return `<button data-open="${i}" class="w-full text-left p-4 flex gap-3 hover:bg-slate-50 border-b border-slate-100"><span class="w-10 h-10 shrink-0 rounded-xl ${c.ico} flex items-center justify-center"><iconify-icon icon="lucide:alert-triangle" class="text-xl"></iconify-icon></span><span class="min-w-0"><span class="block font-bold text-sm">${escapeHtml(a.title)}</span><span class="block text-sm text-slate-600">${escapeHtml(a.detail)}</span>${a.harm ? `<span class="block text-sm font-semibold ${c.txt} mt-1">${escapeHtml(a.harm)}</span>` : ''}<span class="block text-xs font-bold ${c.txt} mt-1">Tap to get help from Problem AI</span></span></button>` }).join('') : '<p class="p-6 text-center text-slate-600 font-medium">No soil problems detected.</p>';
+  list.querySelectorAll('[data-open]').forEach(btn => btn.addEventListener('click', () => { toggleNotif(false); openProblem(alertsState[btn.dataset.open].id) }));
 }
 function renderProblemSummary() {
-  const el = $('problem-summary'); if (!el) return;
-  const r = readingState || {}, ch = changeState || {};
-  const delta = (v, u) => (v == null || v === 0) ? '' : `<span class="block text-[11px] font-bold text-slate-600">${v > 0 ? '&#9650;' : '&#9660;'} ${Math.abs(v)}${u}</span>`;
-  const chip = (l, v, x) => `<div class="bg-white border border-slate-200 rounded-xl px-3 py-2"><p class="text-[11px] font-bold text-slate-500 uppercase">${l}</p><p class="text-lg font-black">${escapeHtml(String(v))}</p>${x || ''}</div>`;
-  let h = `<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 mt-4">Live soil readings</p><div class="grid grid-cols-3 gap-2 mb-1">${chip('pH', r.ph_level ?? '-', delta(ch.ph, ''))}${chip('Moisture', r.moisture_level != null ? r.moisture_level + '%' : '-', delta(ch.moisture, '%'))}${chip('Nitrogen', r.nitrogen_status ?? '-', ch.nitrogen_from ? `<span class="block text-[11px] font-bold text-slate-600">was ${escapeHtml(String(ch.nitrogen_from))}</span>` : '')}</div><p class="text-[11px] text-slate-500 font-medium mb-4">Arrows show the change since the previous reading.</p>`;
-  if (!readingState) h += '<div class="rounded-xl bg-slate-100 p-4 font-semibold text-slate-700">No sensor readings are linked to your account yet.</div>';
-  else if (!alertsState.length) h += '<div class="rounded-xl bg-emerald-50 border border-emerald-200 p-4 font-semibold text-emerald-800">No soil problems detected' + (getCrop() ? ' for ' + escapeHtml(getCrop()) : '') + '.</div>';
-  else h += '<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Soil alerts</p>' + alertsState.map((a, i) => { const c = sevClass(a); return `<button data-ask="${i}" class="w-full text-left mb-2 rounded-xl border p-4 ${c.box}"><span class="flex items-center justify-between gap-2"><span class="font-bold">${escapeHtml(a.label)}</span><span class="text-xs font-bold uppercase ${c.txt}">${a.severity}</span></span><span class="block text-sm text-slate-700 mt-1">${escapeHtml(a.detail)}</span>${a.harm ? `<span class="block text-sm font-semibold ${c.txt} mt-1">${escapeHtml(a.harm)}</span>` : ''}<span class="block text-sm font-bold ${c.txt} mt-2">Get help</span></button>` }).join('');
-  el.innerHTML = h; el.querySelectorAll('[data-ask]').forEach(b => b.addEventListener('click', () => askAlert(alertsState[b.dataset.ask])));
+  const el = $('problem-summary'); if (!el) return;
+  const r = readingState || {}, ch = changeState || {};
+  const delta = (v, u) => (v == null || v === 0) ? '' : `<span class="block text-[11px] font-bold text-slate-600">${v > 0 ? '&#9650;' : '&#9660;'} ${Math.abs(v)}${u}</span>`;
+  const chip = (l, v, x) => `<div class="bg-white border border-slate-200 rounded-xl px-3 py-2"><p class="text-[11px] font-bold text-slate-500 uppercase">${l}</p><p class="text-lg font-black">${escapeHtml(String(v))}</p>${x || ''}</div>`;
+  let h = `<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 mt-4">Live soil readings</p><div class="grid grid-cols-3 gap-2 mb-1">${chip('pH', r.ph_level ?? '-', delta(ch.ph, ''))}${chip('Moisture', r.moisture_level != null ? r.moisture_level + '%' : '-', delta(ch.moisture, '%'))}${chip('Temperature', r.temperature_status ?? '-', ch.temperature_from ? `<span class="block text-[11px] font-bold text-slate-600">was ${escapeHtml(String(ch.temperature_from))}</span>` : '')}</div><p class="text-[11px] text-slate-500 font-medium mb-4">Arrows show the change since the previous reading.</p>`;
+  if (!readingState) h += '<div class="rounded-xl bg-slate-100 p-4 font-semibold text-slate-700">No sensor readings are linked to your account yet.</div>';
+  else if (!alertsState.length) h += '<div class="rounded-xl bg-emerald-50 border border-emerald-200 p-4 font-semibold text-emerald-800">No soil problems detected' + (getCrop() ? ' for ' + escapeHtml(getCrop()) : '') + '.</div>';
+  else h += '<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Soil alerts</p>' + alertsState.map((a, i) => { const c = sevClass(a); return `<button data-ask="${i}" class="w-full text-left mb-2 rounded-xl border p-4 ${c.box}"><span class="flex items-center justify-between gap-2"><span class="font-bold">${escapeHtml(a.label)}</span><span class="text-xs font-bold uppercase ${c.txt}">${a.severity}</span></span><span class="block text-sm text-slate-700 mt-1">${escapeHtml(a.detail)}</span>${a.harm ? `<span class="block text-sm font-semibold ${c.txt} mt-1">${escapeHtml(a.harm)}</span>` : ''}<span class="block text-sm font-bold ${c.txt} mt-2">Get help</span></button>` }).join('');
+  el.innerHTML = h; el.querySelectorAll('[data-ask]').forEach(b => b.addEventListener('click', () => askAlert(alertsState[b.dataset.ask])));
 }
 function toggleNotif(force) { const p = $('notif-panel'), open = force !== undefined ? force : p.style.display === 'none'; p.style.display = open ? 'block' : 'none'; if (open) updatePushUI(); }
 document.addEventListener('click', e => { if (!e.target.closest('#notif-panel,#bell-btn')) $('notif-panel').style.display = 'none' });
 async function openProblem(alertId) { toggleProblem(true); await refreshAlerts(); if (alertId) { const a = alertsState.find(x => x.id === alertId); if (a) askAlert(a) } }
 function askAlert(a) { if (a) sendProblem(`Soil alert: ${a.label}. Can this harm my crop, and what should I do?`) }
 async function saveCrop() {
-  const v = $('crop-input').value.replace(/\s+/g, ' ').trim().slice(0, 60);
-  try { localStorage.setItem(CROP_KEY, v) } catch (e) {}
-  $('crop-note').textContent = v ? 'Saved. Problem AI will check your soil against: ' + v : 'Crop cleared. Showing general soil health.';
-  post('/api/crop', { crop: v }).then(loadFarm).catch(() => {}); await refreshAlerts();
-  if (v) sendProblem(`I planted ${v}. Is my soil okay for it, and is anything changing that could harm it?`);
+  const v = $('crop-input').value.replace(/\s+/g, ' ').trim().slice(0, 60);
+  try { localStorage.setItem(CROP_KEY, v) } catch (e) {}
+  $('crop-note').textContent = v ? 'Saved. Problem AI will check your soil against: ' + v : 'Crop cleared. Showing general soil health.';
+  post('/api/crop', { crop: v }).then(loadFarm).catch(() => {}); await refreshAlerts();
+  if (v) sendProblem(`I planted ${v}. Is my soil okay for it, and is anything changing that could harm it?`);
 }
-$('crop-input').value = getCrop(); $('crop-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveCrop() } });
+$('crop-input').value = getCrop();$('crop-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveCrop() } });
 async function sendProblem(preset) {
-  const input = $('problem-input'), box = $('problem-messages'), text = (preset || input.value).trim(); if (!text) return;
-  box.insertAdjacentHTML('beforeend', `<div class="flex justify-end"><div class="chat-bubble-user p-4 font-medium shadow-sm max-w-[90%]">${escapeHtml(text)}</div></div>`);
-  if (!preset) { input.value = ''; input.style.height = 'auto' }
-  const l = document.createElement('div'); l.className = 'chat-bubble-ai p-4 font-medium shadow-sm text-slate-500 max-w-[90%]'; l.textContent = 'Problem AI is checking your soil...'; box.appendChild(l); box.scrollTop = box.scrollHeight;
-  try {
-    const r = await post('/api/problem-chat', { message: text, history: problemHistory.slice(-8), crop: getCrop() }), d = await r.json(); if (!r.ok) throw new Error(d.error);
-    problemHistory.push({ role: 'user', text }, { role: 'ai', text: d.reply });
-    l.className = 'chat-bubble-ai p-4 font-medium shadow-sm text-slate-700 leading-relaxed max-w-[90%]'; l.innerHTML = md(d.reply);
-  } catch (e) { l.className = 'chat-bubble-ai p-4 font-medium text-rose-700 max-w-[90%]'; l.textContent = 'Could not reach the server. Please check your connection and try again.'; }
-  box.scrollTop = box.scrollHeight;
+  const input = $('problem-input'), box =$('problem-messages'), text = (preset || input.value).trim(); if (!text) return;
+  box.insertAdjacentHTML('beforeend', `<div class="flex justify-end"><div class="chat-bubble-user p-4 font-medium shadow-sm max-w-[90%]">${escapeHtml(text)}</div></div>`);
+  if (!preset) { input.value = ''; input.style.height = 'auto' }
+  const l = document.createElement('div'); l.className = 'chat-bubble-ai p-4 font-medium shadow-sm text-slate-500 max-w-[90%]'; l.textContent = 'Problem AI is checking your soil...'; box.appendChild(l); box.scrollTop = box.scrollHeight;
+  try {
+    const r = await post('/api/problem-chat', { message: text, history: problemHistory.slice(-8), crop: getCrop() }), d = await r.json(); if (!r.ok) throw new Error(d.error);
+    problemHistory.push({ role: 'user', text }, { role: 'ai', text: d.reply });
+    l.className = 'chat-bubble-ai p-4 font-medium shadow-sm text-slate-700 leading-relaxed max-w-[90%]'; l.innerHTML = md(d.reply);
+  } catch (e) { l.className = 'chat-bubble-ai p-4 font-medium text-rose-700 max-w-[90%]'; l.textContent = 'Could not reach the server. Please check your connection and try again.'; }
+  box.scrollTop = box.scrollHeight;
 }
 const pi = $('problem-input');
 pi.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendProblem() } });
@@ -348,71 +347,71 @@ pi.addEventListener('input', () => { pi.style.height = 'auto'; pi.style.height =
 /* ---------- Push ---------- */
 function b64ToU8(b) { const p = '='.repeat((4 - b.length % 4) % 4), s = (b + p).replace(/-/g, '+').replace(/_/g, '/'), r = atob(s); return Uint8Array.from([...r].map(c => c.charCodeAt(0))) }
 function updatePushUI() {
-  const l = $('push-label'), btn = $('enable-push'); if (!l) return;
-  if (!('Notification' in window)) { l.textContent = 'Notifications not supported here'; btn.disabled = true; return }
-  if (Notification.permission === 'denied') { l.textContent = 'Blocked: allow notifications in browser settings'; btn.disabled = true; return }
-  l.textContent = Notification.permission === 'granted' ? (pushActive ? 'Push alerts are on' : 'Alerts on while this page is open') : 'Turn on push alerts';
+  const l = $('push-label'), btn =$('enable-push'); if (!l) return;
+  if (!('Notification' in window)) { l.textContent = 'Notifications not supported here'; btn.disabled = true; return }
+  if (Notification.permission === 'denied') { l.textContent = 'Blocked: allow notifications in browser settings'; btn.disabled = true; return }
+  l.textContent = Notification.permission === 'granted' ? (pushActive ? 'Push alerts are on' : 'Alerts on while this page is open') : 'Turn on push alerts';
 }
 async function enablePush() {
-  if (!('Notification' in window)) return;
-  if (Notification.permission !== 'granted') await Notification.requestPermission();
-  if (Notification.permission === 'granted' && 'serviceWorker' in navigator && 'PushManager' in window) {
-    try {
-      const reg = await navigator.serviceWorker.ready, k = await (await fetch('/api/push/key')).json();
-      if (k.key) { const sub = (await reg.pushManager.getSubscription()) || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToU8(k.key) }); await post('/api/push/subscribe', sub); pushActive = true }
-    } catch (e) { console.error('Push setup error:', e) }
-  }
-  updatePushUI();
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'granted') await Notification.requestPermission();
+  if (Notification.permission === 'granted' && 'serviceWorker' in navigator && 'PushManager' in window) {
+    try {
+      const reg = await navigator.serviceWorker.ready, k = await (await fetch('/api/push/key')).json();
+      if (k.key) { const sub = (await reg.pushManager.getSubscription()) || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToU8(k.key) }); await post('/api/push/subscribe', sub); pushActive = true }
+    } catch (e) { console.error('Push setup error:', e) }
+  }
+  updatePushUI();
 }
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').then(async reg => { try { pushActive = !!(await reg.pushManager.getSubscription()) } catch (e) {} updatePushUI() }).catch(() => {});
 
 /* ---------- Farm location ---------- */
 function setLocation() {
-  const s = $('loc-status');
-  if (!navigator.geolocation) { s.textContent = 'This device cannot share its location.'; return }
-  s.textContent = 'Finding your location...';
-  navigator.geolocation.getCurrentPosition(async p => {
-    try { const r = await post('/api/location', { latitude: p.coords.latitude, longitude: p.coords.longitude }); if (!r.ok) throw 0; s.textContent = '✅ Farm location saved.'; refreshLiveWeather(); loadRecommendations() }
-    catch (e) { s.textContent = 'Could not save your location. Please try again.' }
-  }, () => { s.textContent = 'Location was blocked. Allow location access in your browser and try again.' }, { enableHighAccuracy: true, timeout: 15000 });
+  const s = $('loc-status');
+  if (!navigator.geolocation) { s.textContent = 'This device cannot share its location.'; return }
+  s.textContent = 'Finding your location...';
+  navigator.geolocation.getCurrentPosition(async p => {
+    try { const r = await post('/api/location', { latitude: p.coords.latitude, longitude: p.coords.longitude }); if (!r.ok) throw 0; s.textContent = '✅ Farm location saved.'; refreshLiveWeather(); loadRecommendations() }
+    catch (e) { s.textContent = 'Could not save your location. Please try again.' }
+  }, () => { s.textContent = 'Location was blocked. Allow location access in your browser and try again.' }, { enableHighAccuracy: true, timeout: 15000 });
 }
 
 /* ---------- Weather + climate ---------- */
 function getWeatherIcon(c) { c = Number(c); return c === 0 ? 'lucide:sun' : c <= 2 ? 'lucide:cloud-sun' : c <= 48 ? 'lucide:cloud' : (c >= 95) ? 'lucide:cloud-lightning' : 'lucide:cloud-rain' }
 function renderClimate(c) {
-  const el = $('climate-card'); if (!el) return;
-  if (!c) { el.textContent = 'Climate history is not available right now.'; return }
-  el.innerHTML = `<h4 class="font-bold font-heading text-slate-900 mb-2">Your area's climate</h4><p><strong>${escapeHtml(c.type)}</strong>, about ${c.annualRain} mm of rain a year.</p><p>Hottest: ${c.hot.month} (${c.hot.temp}°C). Coldest: ${c.cold.month} (${c.cold.temp}°C).</p><p>Rainy months: ${c.rainyMonths.length ? c.rainyMonths.join(', ') : 'no clear rainy season'}.</p><p>Frost risk: ${c.frostMonths.length ? c.frostMonths.join(', ') : 'rare'}.</p><p class="font-semibold mt-2">Compared with 10+ years ago it is ${c.warmingC >= 0 ? 'warmer' : 'cooler'} by ${Math.abs(c.warmingC)}°C and rainfall is ${c.rainChangePct >= 0 ? 'up' : 'down'} ${Math.abs(c.rainChangePct)}%.</p>`;
+  const el = $('climate-card'); if (!el) return;
+  if (!c) { el.textContent = 'Climate history is not available right now.'; return }
+  el.innerHTML = `<h4 class="font-bold font-heading text-slate-900 mb-2">Your area's climate</h4><p><strong>${escapeHtml(c.type)}</strong>, about ${c.annualRain} mm of rain a year.</p><p>Hottest: ${c.hot.month} (${c.hot.temp}°C). Coldest: ${c.cold.month} (${c.cold.temp}°C).</p><p>Rainy months: ${c.rainyMonths.length ? c.rainyMonths.join(', ') : 'no clear rainy season'}.</p><p>Frost risk: ${c.frostMonths.length ? c.frostMonths.join(', ') : 'rare'}.</p><p class="font-semibold mt-2">Compared with 10+ years ago it is ${c.warmingC >= 0 ? 'warmer' : 'cooler'} by ${Math.abs(c.warmingC)}°C and rainfall is ${c.rainChangePct >= 0 ? 'up' : 'down'} ${Math.abs(c.rainChangePct)}%.</p>`;
 }
 async function refreshLiveWeather() {
-  try {
-    const r = await fetch('/api/weather'); if (!r.ok) throw new Error('Weather request failed');
-    const d = await r.json(), t = (id, v) => { const e = $(id); if (e) e.textContent = v };
-    t('weather-city-title', d.city); renderClimate(d.climate);
-    t('weather-temp-main', Math.round(d.temp) + '°'); t('weather-condition-main', d.condition); t('weather-high', d.high + '°'); t('weather-low', d.low + '°');
-    t('weather-summary-temp', Math.round(d.temp) + '°'); t('weather-summary-condition', d.condition); t('weather-summary-rain', d.rain48h.toFixed(1));
-    $('hourly-container').innerHTML = d.hourly.map(h => `<div class="flex flex-col items-center p-2 rounded-xl bg-white/5"><span class="text-xs text-slate-300 mb-2">${h.time}</span><iconify-icon icon="${getWeatherIcon(h.code)}" class="text-xl text-amber-400 mb-2"></iconify-icon><span class="text-sm font-bold">${h.temp}°</span></div>`).join('');
-    $('daily-container').innerHTML = d.daily.map(x => `<div class="flex items-center justify-between py-1.5 border-b border-white/5"><span class="w-16 text-sm font-medium">${x.day}</span><div class="flex items-center gap-2"><iconify-icon icon="${getWeatherIcon(x.code)}" class="text-lg text-amber-400"></iconify-icon><span class="text-xs text-blue-300">${x.pop > 15 ? x.pop + '%' : ''}</span></div><span class="text-sm w-24 text-right"><span class="text-slate-400">${x.min}°</span> / <strong>${x.max}°</strong></span></div>`).join('');
-    t('weather-rain48', d.rain48h.toFixed(1)); t('weather-rain-future', d.rainFuture48h.toFixed(1));
-    const card = $('rain-card-box'), st = $('weather-rain-status');
-    if (d.rainFuture48h > 10) { card.className = 'bg-amber-50 p-6 rounded-2xl border-2 border-amber-500 mb-6'; st.textContent = `⚠️ ${d.rainFuture48h} mm of rain expected. Postpone fertiliser and compost.`; st.className = 'font-bold text-amber-800 bg-amber-100 py-2 px-4 rounded-lg text-center' }
-    else { card.className = 'bg-white p-6 rounded-2xl border-2 border-emerald-500 mb-6'; st.textContent = 'No heavy rain expected in the next 48 hours.'; st.className = 'font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg text-center' }
-    t('weather-updated', 'Weather updated at ' + new Date().toLocaleTimeString());
-  } catch (e) { console.error('Weather error:', e); const s = $('weather-summary-condition'); if (s) s.textContent = 'Weather unavailable right now' }
+  try {
+    const r = await fetch('/api/weather'); if (!r.ok) throw new Error('Weather request failed');
+    const d = await r.json(), t = (id, v) => { const e = $(id); if (e) e.textContent = v };
+    t('weather-city-title', d.city); renderClimate(d.climate);
+    t('weather-temp-main', Math.round(d.temp) + '°'); t('weather-condition-main', d.condition); t('weather-high', d.high + '°'); t('weather-low', d.low + '°');
+    t('weather-summary-temp', Math.round(d.temp) + '°'); t('weather-summary-condition', d.condition); t('weather-summary-rain', d.rain48h.toFixed(1));
+    $('hourly-container').innerHTML = d.hourly.map(h => `<div class="flex flex-col items-center p-2 rounded-xl bg-white/5"><span class="text-xs text-slate-300 mb-2">${h.time}</span><iconify-icon icon="${getWeatherIcon(h.code)}" class="text-xl text-amber-400 mb-2"></iconify-icon><span class="text-sm font-bold">${h.temp}°</span></div>`).join('');
+    $('daily-container').innerHTML = d.daily.map(x => `<div class="flex items-center justify-between py-1.5 border-b border-white/5"><span class="w-16 text-sm font-medium">${x.day}</span><div class="flex items-center gap-2"><iconify-icon icon="${getWeatherIcon(x.code)}" class="text-lg text-amber-400"></iconify-icon><span class="text-xs text-blue-300">${x.pop > 15 ? x.pop + '%' : ''}</span></div><span class="text-sm w-24 text-right"><span class="text-slate-400">${x.min}°</span> / <strong>${x.max}°</strong></span></div>`).join('');
+    t('weather-rain48', d.rain48h.toFixed(1)); t('weather-rain-future', d.rainFuture48h.toFixed(1));
+    const card = $('rain-card-box'), st =$('weather-rain-status');
+    if (d.rainFuture48h > 10) { card.className = 'bg-amber-50 p-6 rounded-2xl border-2 border-amber-500 mb-6'; st.textContent = `⚠️ ${d.rainFuture48h} mm of rain expected. Postpone fertiliser and compost.`; st.className = 'font-bold text-amber-800 bg-amber-100 py-2 px-4 rounded-lg text-center' }
+    else { card.className = 'bg-white p-6 rounded-2xl border-2 border-emerald-500 mb-6'; st.textContent = 'No heavy rain expected in the next 48 hours.'; st.className = 'font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg text-center' }
+    t('weather-updated', 'Weather updated at ' + new Date().toLocaleTimeString());
+  } catch (e) { console.error('Weather error:', e); const s = $('weather-summary-condition'); if (s) s.textContent = 'Weather unavailable right now' }
 }
 
 /* ---------- Crop advice ---------- */
 const VERDICT = { plant: { t: 'Good to plant', c: 'bg-emerald-600' }, plant_with_care: { t: 'Plant with care', c: 'bg-amber-500' }, wait: { t: 'Wait, not a good time', c: 'bg-rose-600' } };
 async function loadRecommendations() {
-  const box = $('reco-list'), basis = $('reco-basis'); if (!box) return;
-  try {
-    const res = await fetch('/api/recommendations'); if (!res.ok) throw new Error(); const d = await res.json();
-    if (!d.ready) { basis.textContent = ''; box.innerHTML = `<p class="text-lg font-semibold text-slate-700">We still need: ${d.missing.map(escapeHtml).join(', ')}. Your crop advice appears once this is recorded.</p>`; return }
-    const b = d.basis;
-    document.querySelectorAll('[data-soil]').forEach(e => e.textContent = b.soilType ? b.soilType.replace(/\b\w/g, c => c.toUpperCase()) : 'Not recorded yet');
-    basis.textContent = `Based on your soil (pH ${b.ph}, moisture ${b.moisture}%, nitrogen ${b.nitrogen}${b.soilType ? ', ' + b.soilType : ''}), your area's usual weather for the next 3 months, and this week's rain forecast.` + (d.missing.length ? ` Still missing: ${d.missing.join(', ')}.` : '');
-    box.innerHTML = d.crops.map(c => { const v = VERDICT[c.verdict]; return `<div class="advanced-card rounded-3xl p-6 sm:p-8"><div class="flex items-center justify-between gap-3 mb-4"><h3 class="font-heading font-bold text-2xl">${escapeHtml(c.crop)}</h3><span class="${v.c} text-white font-bold px-4 py-2 rounded-full">${v.t}</span></div>${c.pros.map(p => `<p class="mb-2 text-slate-700">✅ ${escapeHtml(p)}</p>`).join('')}${c.cons.map(p => `<p class="mb-2 font-semibold">⚠️ ${escapeHtml(p)}</p>`).join('')}</div>` }).join('');
-  } catch (e) { box.innerHTML = '<p class="text-lg font-semibold text-rose-700">Could not load crop advice. Please try again.</p>' }
+  const box = $('reco-list'), basis =$('reco-basis'); if (!box) return;
+  try {
+    const res = await fetch('/api/recommendations'); if (!res.ok) throw new Error(); const d = await res.json();
+    if (!d.ready) { basis.textContent = ''; box.innerHTML = `<p class="text-lg font-semibold text-slate-700">We still need: ${d.missing.map(escapeHtml).join(', ')}. Your crop advice appears once this is recorded.</p>`; return }
+    const b = d.basis;
+    document.querySelectorAll('[data-soil]').forEach(e => e.textContent = b.soilType ? b.soilType.replace(/\b\w/g, c => c.toUpperCase()) : 'Not recorded yet');
+    basis.textContent = `Based on your soil (pH ${b.ph}, moisture ${b.moisture}%, temperature ${b.temperature}${b.soilType ? ', ' + b.soilType : ''}), your area's usual weather for the next 3 months, and this week's rain forecast.` + (d.missing.length ? ` Still missing: ${d.missing.join(', ')}.` : '');
+    box.innerHTML = d.crops.map(c => { const v = VERDICT[c.verdict]; return `<div class="advanced-card rounded-3xl p-6 sm:p-8"><div class="flex items-center justify-between gap-3 mb-4"><h3 class="font-heading font-bold text-2xl">${escapeHtml(c.crop)}</h3><span class="${v.c} text-white font-bold px-4 py-2 rounded-full">${v.t}</span></div>${c.pros.map(p => `<p class="mb-2 text-slate-700">✅ ${escapeHtml(p)}</p>`).join('')}${c.cons.map(p => `<p class="mb-2 font-semibold">⚠️ ${escapeHtml(p)}</p>`).join('')}</div>` }).join('');
+  } catch (e) { box.innerHTML = '<p class="text-lg font-semibold text-rose-700">Could not load crop advice. Please try again.</p>' }
 }
 
 /* ---------- MY FARM: Personal Farm Knowledge Dashboard ---------- */
@@ -422,28 +421,28 @@ const badge = s => `<span class="inline-block px-3 py-1 rounded-full border font
 const TILES = { soil: ['🌱', 'My Soil'], crops: ['🌾', 'My Crops'], water: ['💧', 'My Water'], weather: ['🌦️', 'My Weather'], progress: ['📊', 'My Progress'], calendar: ['📅', 'My Farming Calendar'] };
 const tiles = ids => ids.map(k => `<button onclick="showArea('${k}')" class="min-h-[96px] rounded-2xl bg-white border-2 border-emerald-200 hover:border-emerald-500 p-4 text-left font-heading font-bold text-xl flex items-center gap-3"><span class="text-4xl">${TILES[k][0]}</span>${TILES[k][1]}</button>`).join('');
 const LESSONS = [
-  { t: 'Understanding your soil', area: 'soil', pts: ['Soil pH shows how acidic or alkaline the soil is.', 'Each crop has a pH range it likes. Outside that range, plants take up nutrients less well.', 'Repeating the soil test each season shows whether things are changing.'], q: 'Why is it useful to know your soil pH?', o: ['It shows whether your soil suits your crop.', 'It tells you how much rain will fall.'], a: 0, e: 'pH affects how well plants take up nutrients, and the best range depends on the crop.' },
-  { t: 'Understanding your water', area: 'water', pts: ['Crops need steady water. Both too little and too much cause problems.', 'Wilting leaves can be a sign of water stress.', 'Write down when you irrigate so you can see what works.'], q: 'Why check the rain forecast before fertilising?', o: ['Heavy rain can wash the fertiliser away.', 'Fertiliser only works in the rain.'], a: 0, e: 'Rain can wash nutrients out of the soil, so you lose money and plant food.' },
-  { t: 'Understanding your crop', area: null, pts: ['Crops go through growth stages, and each stage has different needs.', 'Walk your field often and look for changes in leaf colour, spots or holes.', 'Take photos and notes so an advisor can help you faster.'], q: 'When should you ask an agricultural advisor?', o: ['When crops are not growing well and you are not sure why.', 'Never. A website can decide everything.'], a: 0, e: 'Advisors can look at your actual field. This website gives general guidance.' }
+  { t: 'Understanding your soil', area: 'soil', pts: ['Soil pH shows how acidic or alkaline the soil is.', 'Each crop has a pH range it likes. Outside that range, plants take up nutrients less well.', 'Repeating the soil test each season shows whether things are changing.'], q: 'Why is it useful to know your soil pH?', o: ['It shows whether your soil suits your crop.', 'It tells you how much rain will fall.'], a: 0, e: 'pH affects how well plants take up nutrients, and the best range depends on the crop.' },
+  { t: 'Understanding your water', area: 'water', pts: ['Crops need steady water. Both too little and too much cause problems.', 'Wilting leaves can be a sign of water stress.', 'Write down when you irrigate so you can see what works.'], q: 'Why check the rain forecast before fertilising?', o: ['Heavy rain can wash the fertiliser away.', 'Fertiliser only works in the rain.'], a: 0, e: 'Rain can wash nutrients out of the soil, so you lose money and plant food.' },
+  { t: 'Understanding your crop', area: null, pts: ['Crops go through growth stages, and each stage has different needs.', 'Walk your field often and look for changes in leaf colour, spots or holes.', 'Take photos and notes so an advisor can help you faster.'], q: 'When should you ask an agricultural advisor?', o: ['When crops are not growing well and you are not sure why.', 'Never. A website can decide everything.'], a: 0, e: 'Advisors can look at your actual field. This website gives general guidance.' }
 ];
 async function loadFarm() { try { const r = await fetch('/api/my-farm'); if (!r.ok) throw 0; FARM = await r.json() } catch (e) { FARM = null } renderHome() }
 function renderHome() {
-  $('home-tiles').innerHTML = tiles(['soil', 'crops', 'water', 'progress']); $('farm-tiles').innerHTML = tiles(Object.keys(TILES));
-  if (!FARM) { $('home-glance').innerHTML = $('home-next').innerHTML = '<p class="text-lg font-semibold text-slate-600">Loading your farm...</p>'; return }
-  $('home-glance').innerHTML = FARM.glance.map(g => `<div class="advanced-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-2"><div><p class="font-bold text-lg">${escapeHtml(g.area)}</p><p class="text-slate-600">${escapeHtml(g.note)}</p></div>${badge(g.status)}</div>`).join('');
-  $('home-next').innerHTML = FARM.nextActions.length ? FARM.nextActions.map(a => `<div class="advanced-card rounded-2xl p-4"><p class="font-bold text-lg">${escapeHtml(a.title)}</p><p class="text-slate-700 mb-3">${escapeHtml(a.text)}</p><button onclick="showArea('results')" class="min-h-[48px] px-5 rounded-xl bg-emerald-600 text-white font-bold">VIEW DETAILS</button></div>`).join('') : '<p class="text-lg font-semibold text-slate-700">Nothing urgent right now. Open My Farming Calendar to see this week\'s tasks.</p>';
+  $('home-tiles').innerHTML = tiles(['soil', 'crops', 'water', 'progress']);$('farm-tiles').innerHTML = tiles(Object.keys(TILES));
+  if (!FARM) { $('home-glance').innerHTML =$('home-next').innerHTML = '<p class="text-lg font-semibold text-slate-600">Loading your farm...</p>'; return }
+  $('home-glance').innerHTML = FARM.glance.map(g => `<div class="advanced-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-2"><div><p class="font-bold text-lg">${escapeHtml(g.area)}</p><p class="text-slate-600">${escapeHtml(g.note)}</p></div>${badge(g.status)}</div>`).join('');
+  $('home-next').innerHTML = FARM.nextActions.length ? FARM.nextActions.map(a => `<div class="advanced-card rounded-2xl p-4"><p class="font-bold text-lg">${escapeHtml(a.title)}</p><p class="text-slate-700 mb-3">${escapeHtml(a.text)}</p><button onclick="showArea('results')" class="min-h-[48px] px-5 rounded-xl bg-emerald-600 text-white font-bold">VIEW DETAILS</button></div>`).join('') : '<p class="text-lg font-semibold text-slate-700">Nothing urgent right now. Open My Farming Calendar to see this week\'s tasks.</p>';
 }
 function speak(t) { if (!('speechSynthesis' in window)) { alert('Read-aloud is not supported on this device.'); return } speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'en-ZA'; u.rate = .9; speechSynthesis.speak(u) }
 function speakHome() { if (!FARM) return; speak('Here is your farm at a glance. ' + FARM.glance.map(g => `${g.area}: ${ST[g.status][0]}.`).join(' ') + ' What to do next. ' + (FARM.nextActions.map(a => `${a.title}. ${a.text}`).join(' ') || 'Nothing urgent right now.')) }
 function speakFinding(i) { const f = FARM.findings[i]; speak(`${f.title}. ${ST[f.status][0]}. ${f.result} What it means: ${f.meaning} What you can do: ${f.todo.join(' ')}`) }
 const card3 = f => { const i = FARM.findings.indexOf(f); return `<div class="advanced-card rounded-3xl p-6 mb-5"><div class="flex flex-wrap items-center justify-between gap-2 mb-3"><h3 class="text-2xl font-bold font-heading">${escapeHtml(f.title)}</h3>${badge(f.status)}</div>
-  <p class="text-sm font-bold uppercase text-slate-500">My result</p><p class="text-lg mb-3">${escapeHtml(f.result)}</p>
-  <p class="text-sm font-bold uppercase text-slate-500">What it means</p><p class="text-lg mb-3">${escapeHtml(f.meaning)}</p>
-  ${f.todo.length ? `<p class="text-sm font-bold uppercase text-slate-500">What I can do</p><ol class="list-decimal pl-6 text-lg mb-3">${f.todo.map(t => `<li>${escapeHtml(t)}</li>`).join('')}</ol>` : ''}
-  <button onclick="speakFinding(${i})" class="min-h-[48px] px-5 rounded-xl bg-slate-900 text-white font-bold no-print">🔊 LISTEN TO THIS RESULT</button></div>` };
+  <p class="text-sm font-bold uppercase text-slate-500">My result</p><p class="text-lg mb-3">${escapeHtml(f.result)}</p>
+  <p class="text-sm font-bold uppercase text-slate-500">What it means</p><p class="text-lg mb-3">${escapeHtml(f.meaning)}</p>
+  ${f.todo.length ? `<p class="text-sm font-bold uppercase text-slate-500">What I can do</p><ol class="list-decimal pl-6 text-lg mb-3">${f.todo.map(t => `<li>${escapeHtml(t)}</li>`).join('')}</ol>` : ''}
+  <button onclick="speakFinding(${i})" class="min-h-[48px] px-5 rounded-xl bg-slate-900 text-white font-bold no-print">🔊 LISTEN TO THIS RESULT</button></div>` };
 function setTask(id, s) { const t = FARM.tasks.find(x => x.id === id); if (t) t.status = s; showArea('calendar'); post('/api/tasks', { id, status: s }).catch(() => {}) }
 function lessonAns(l, k) { const L = LESSONS[l]; $('lq-' + l).innerHTML = `<strong>${k === L.a ? '✅ Correct.' : '❌ Not quite.'}</strong> ${escapeHtml(L.e)}` }
-function askPreset(t) { if (!$('agri-talk-window').classList.contains('open')) toggleChat(); $('chat-input').value = t; sendMessage() }
+function askPreset(t) { if (!$('agri-talk-window').classList.contains('open')) toggleChat();$('chat-input').value = t; sendMessage() }
 function startVoice() { const R = window.SpeechRecognition || window.webkitSpeechRecognition; if (!R) { alert('Voice questions are not supported on this browser.'); return } const r = new R(); r.lang = 'en-ZA'; r.onresult = e => { $('chat-input').value = e.results[0][0].transcript }; r.start() }
 function setLang(v) { try { localStorage.setItem('sb_lang', v) } catch (e) {} }
 function langNote() { let l = ''; try { l = localStorage.getItem('sb_lang') || '' } catch (e) {} return l && l !== 'English' ? ` (Please answer in ${l}.)` : '' }
@@ -451,32 +450,32 @@ function toggleTextSize() { const big = document.documentElement.style.fontSize 
 try { if (localStorage.getItem('sb_big')) document.documentElement.style.fontSize = '20px' } catch (e) {}
 
 function showArea(area) {
-  if (area === 'weather') return switchView('detail-weather');
-  const T = { soil: 'My Soil', crops: 'My Crops', water: 'My Water', progress: 'My Progress', calendar: 'My Farming Calendar', results: 'My Results', learn: 'Learn About My Farm', help: 'Help', report: 'My Farm Report' };
-  $('detail-title').textContent = T[area]; const b = $('detail-body'); switchView('view-detail');
-  if (!FARM && area !== 'help' && area !== 'learn' && area !== 'crops') { b.innerHTML = '<p class="text-lg font-semibold">Could not load your farm. Please check your connection and try again.</p>'; return }
-  const F = FARM ? FARM.findings : [], by = a => F.filter(f => f.area === a).map(card3).join('');
-  if (area === 'soil') b.innerHTML = by('soil');
-  else if (area === 'water') b.innerHTML = by('water');
-  else if (area === 'results') b.innerHTML = `<div class="space-y-3 mb-8">${FARM.glance.map(g => `<div class="advanced-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-2"><div><p class="font-bold text-lg">${escapeHtml(g.area)}</p><p class="text-slate-600">${escapeHtml(g.note)}</p></div>${badge(g.status)}</div>`).join('')}</div>${F.map(card3).join('')}<button onclick="showArea('report')" class="min-h-[56px] px-6 rounded-2xl bg-emerald-600 text-white font-bold text-lg">VIEW MY FARM REPORT</button>`;
-  else if (area === 'crops') { b.innerHTML = `<p class="text-lg mb-4">${FARM && FARM.crops.length ? 'You told us you planted: <strong>' + escapeHtml(FARM.crops.join(', ')) + '</strong>.' : 'Tell Problem AI what you planted so we can check your soil against it.'}</p><h2 class="text-2xl font-bold font-heading">Should I plant now?</h2><p id="reco-basis" class="text-lg text-slate-600 font-medium mt-1 mb-6">Checking your soil, your area's climate and the coming rain...</p><div id="reco-list" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>`; loadRecommendations() }
-  else if (area === 'progress') { const H = FARM.history; b.innerHTML = H.length ? `<div class="overflow-x-auto"><table class="w-full text-lg bg-white rounded-2xl border border-slate-200"><thead><tr class="text-left bg-slate-50"><th class="p-3">Date</th><th class="p-3">pH</th><th class="p-3">Moisture</th><th class="p-3">Nitrogen</th></tr></thead><tbody>${H.map(h => `<tr class="border-t border-slate-100"><td class="p-3">${new Date(h.at).toLocaleDateString()}</td><td class="p-3">${h.ph ?? '-'}</td><td class="p-3">${h.moisture ?? '-'}%</td><td class="p-3">${escapeHtml(String(h.nitrogen ?? '-'))}</td></tr>`).join('')}</tbody></table></div><p class="mt-4 text-slate-700">A change in one number does not by itself mean your whole farm is doing better or worse. It depends on your crop, your target range and how each reading was taken.</p>` : '<p class="text-lg font-semibold">No readings have been recorded yet.</p>' }
-  else if (area === 'calendar') b.innerHTML = `<p class="text-lg mb-4">Tasks for this week, based on your results, weather and crop.</p>` + FARM.tasks.map(t => `<div class="advanced-card rounded-2xl p-4 mb-3"><p class="font-bold text-lg mb-3">${escapeHtml(t.title)}</p><div class="flex flex-wrap gap-2">${[['todo', '☐ Not started'], ['doing', '◷ In progress'], ['done', '✓ Completed']].map(([s, l]) => `<button onclick="setTask('${t.id}','${s}')" class="min-h-[48px] px-4 rounded-xl font-bold border-2 ${t.status === s ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white border-slate-300'}">${l}</button>`).join('')}</div></div>`).join('');
-  else if (area === 'learn') b.innerHTML = `<p class="mb-4 text-slate-600">General farming information. For advice on your own field, ask an agricultural advisor.</p>` + LESSONS.map((L, i) => { const mine = FARM && L.area ? F.find(f => f.area === L.area) : null; return `<details class="advanced-card rounded-2xl p-5 mb-4"><summary class="font-bold text-xl cursor-pointer">📚 ${L.t}</summary><ul class="list-disc pl-6 text-lg my-3">${L.pts.map(p => `<li>${p}</li>`).join('')}</ul>${mine ? `<p class="p-3 rounded-xl bg-emerald-50 text-lg mb-3"><strong>Your result:</strong> ${escapeHtml(mine.result)}</p>` : ''}<p class="font-bold mb-2">${L.q}</p><div class="flex flex-wrap gap-2">${L.o.map((o, k) => `<button onclick="lessonAns(${i},${k})" class="min-h-[48px] px-4 rounded-xl border-2 border-slate-300 font-semibold text-left">${o}</button>`).join('')}</div><p id="lq-${i}" class="mt-3 text-lg"></p></details>` }).join('') + `<button onclick="openQuizModal()" class="min-h-[56px] px-6 rounded-2xl bg-slate-900 text-white font-bold text-lg">TAKE THE QUICK QUIZ</button>`;
-  else if (area === 'help') b.innerHTML = `<h2 class="text-xl font-bold mb-3">Ask about my farm</h2><div class="grid sm:grid-cols-2 gap-3 mb-8">${['Help me understand my soil.', 'What should I consider before planting?', 'What should I check if my crops are not growing well?', 'How can I record my farming expenses?'].map(q => `<button onclick="askPreset(this.textContent)" class="min-h-[56px] rounded-2xl bg-white border-2 border-emerald-200 font-bold p-3 text-left">${q}</button>`).join('')}</div>
-    <h2 class="text-xl font-bold mb-3">Language for Agri-Talk answers</h2><select onchange="setLang(this.value)" class="min-h-[48px] px-3 rounded-xl border-2 border-slate-300 text-lg mb-2">${['English', 'Sepedi', 'Xitsonga', 'Tshivenda', 'IsiZulu', 'Afrikaans'].map(l => `<option ${(localStorage.getItem('sb_lang') || 'English') === l ? 'selected' : ''}>${l}</option>`).join('')}</select><p class="text-slate-600 mb-8">Menus and results are in English. Please check important advice with an advisor, as AI translations can contain mistakes.</p>
-    <h2 class="text-xl font-bold mb-3">How we use your information</h2><div class="advanced-card rounded-2xl p-5 text-lg space-y-2"><p>We record information from your farm study (such as soil, water and crops) and from your soil sensor. We use it to show you your own results, explain them and suggest next steps.</p><p>Only you can see your results when you are logged in. You can ask us to correct your records.</p><p>We handle personal information in line with South Africa's Protection of Personal Information Act (POPIA).</p></div>`;
-  else if (area === 'report') b.innerHTML = `<div class="advanced-card rounded-3xl p-6 text-lg"><p><strong>Farmer:</strong> ${escapeHtml(FARM.name)}</p><p><strong>Date:</strong> ${FARM.date}</p><p><strong>Information on record:</strong> soil type ${escapeHtml(FARM.profile && FARM.profile.soil_type || 'not recorded')}, water source ${escapeHtml(FARM.profile && FARM.profile.water_source || 'not recorded')}, irrigation ${FARM.profile ? (FARM.profile.irrigated ? 'yes' : 'none recorded') : 'not recorded'}, crops ${escapeHtml(FARM.crops.join(', ') || 'not recorded')}.</p></div><h2 class="text-2xl font-bold font-heading mt-8 mb-3">Findings</h2>${F.map(card3).join('')}<h2 class="text-2xl font-bold font-heading mt-8 mb-3">Actions you can take</h2><ol class="list-decimal pl-6 text-lg">${FARM.nextActions.map(a => `<li>${escapeHtml(a.title)}: ${escapeHtml(a.text)}</li>`).join('') || '<li>Nothing urgent right now.</li>'}</ol><button onclick="window.print()" class="no-print mt-6 min-h-[56px] px-6 rounded-2xl bg-emerald-600 text-white font-bold text-lg">PRINT OR SAVE AS PDF</button>`;
+  if (area === 'weather') return switchView('detail-weather');
+  const T = { soil: 'My Soil', crops: 'My Crops', water: 'My Water', progress: 'My Progress', calendar: 'My Farming Calendar', results: 'My Results', learn: 'Learn About My Farm', help: 'Help', report: 'My Farm Report' };
+  $('detail-title').textContent = T[area]; const b =$('detail-body'); switchView('view-detail');
+  if (!FARM && area !== 'help' && area !== 'learn' && area !== 'crops') { b.innerHTML = '<p class="text-lg font-semibold">Could not load your farm. Please check your connection and try again.</p>'; return }
+  const F = FARM ? FARM.findings : [], by = a => F.filter(f => f.area === a).map(card3).join('');
+  if (area === 'soil') b.innerHTML = by('soil');
+  else if (area === 'water') b.innerHTML = by('water');
+  else if (area === 'results') b.innerHTML = `<div class="space-y-3 mb-8">${FARM.glance.map(g => `<div class="advanced-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-2"><div><p class="font-bold text-lg">${escapeHtml(g.area)}</p><p class="text-slate-600">${escapeHtml(g.note)}</p></div>${badge(g.status)}</div>`).join('')}</div>${F.map(card3).join('')}<button onclick="showArea('report')" class="min-h-[56px] px-6 rounded-2xl bg-emerald-600 text-white font-bold text-lg">VIEW MY FARM REPORT</button>`;
+  else if (area === 'crops') { b.innerHTML = `<p class="text-lg mb-4">${FARM && FARM.crops.length ? 'You told us you planted: <strong>' + escapeHtml(FARM.crops.join(', ')) + '</strong>.' : 'Tell Problem AI what you planted so we can check your soil against it.'}</p><h2 class="text-2xl font-bold font-heading">Should I plant now?</h2><p id="reco-basis" class="text-lg text-slate-600 font-medium mt-1 mb-6">Checking your soil, your area's climate and the coming rain...</p><div id="reco-list" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>`; loadRecommendations() }
+  else if (area === 'progress') { const H = FARM.history; b.innerHTML = H.length ? `<div class="overflow-x-auto"><table class="w-full text-lg bg-white rounded-2xl border border-slate-200"><thead><tr class="text-left bg-slate-50"><th class="p-3">Date</th><th class="p-3">pH</th><th class="p-3">Moisture</th><th class="p-3">Temperature</th></tr></thead><tbody>${H.map(h => `<tr class="border-t border-slate-100"><td class="p-3">${new Date(h.at).toLocaleDateString()}</td><td class="p-3">${h.ph ?? '-'}</td><td class="p-3">${h.moisture ?? '-'}%</td><td class="p-3">${escapeHtml(String(h.temperature ?? '-'))}</td></tr>`).join('')}</tbody></table></div><p class="mt-4 text-slate-700">A change in one number does not by itself mean your whole farm is doing better or worse. It depends on your crop, your target range and how each reading was taken.</p>` : '<p class="text-lg font-semibold">No readings have been recorded yet.</p>' }
+  else if (area === 'calendar') b.innerHTML = `<p class="text-lg mb-4">Tasks for this week, based on your results, weather and crop.</p>` + FARM.tasks.map(t => `<div class="advanced-card rounded-2xl p-4 mb-3"><p class="font-bold text-lg mb-3">${escapeHtml(t.title)}</p><div class="flex flex-wrap gap-2">${[['todo', '☐ Not started'], ['doing', '◷ In progress'], ['done', '✓ Completed']].map(([s, l]) => `<button onclick="setTask('${t.id}','${s}')" class="min-h-[48px] px-4 rounded-xl font-bold border-2 ${t.status === s ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white border-slate-300'}">${l}</button>`).join('')}</div></div>`).join('');
+  else if (area === 'learn') b.innerHTML = `<p class="mb-4 text-slate-600">General farming information. For advice on your own field, ask an agricultural advisor.</p>` + LESSONS.map((L, i) => { const mine = FARM && L.area ? F.find(f => f.area === L.area) : null; return `<details class="advanced-card rounded-2xl p-5 mb-4"><summary class="font-bold text-xl cursor-pointer">📚 ${L.t}</summary><ul class="list-disc pl-6 text-lg my-3">${L.pts.map(p => `<li>${p}</li>`).join('')}</ul>${mine ? `<p class="p-3 rounded-xl bg-emerald-50 text-lg mb-3"><strong>Your result:</strong> ${escapeHtml(mine.result)}</p>` : ''}<p class="font-bold mb-2">${L.q}</p><div class="flex flex-wrap gap-2">${L.o.map((o, k) => `<button onclick="lessonAns(${i},${k})" class="min-h-[48px] px-4 rounded-xl border-2 border-slate-300 font-semibold text-left">${o}</button>`).join('')}</div><p id="lq-${i}" class="mt-3 text-lg"></p></details>` }).join('') + `<button onclick="openQuizModal()" class="min-h-[56px] px-6 rounded-2xl bg-slate-900 text-white font-bold text-lg">TAKE THE QUICK QUIZ</button>`;
+  else if (area === 'help') b.innerHTML = `<h2 class="text-xl font-bold mb-3">Ask about my farm</h2><div class="grid sm:grid-cols-2 gap-3 mb-8">${['Help me understand my soil.', 'What should I consider before planting?', 'What should I check if my crops are not growing well?', 'How can I record my farming expenses?'].map(q => `<button onclick="askPreset(this.textContent)" class="min-h-[56px] rounded-2xl bg-white border-2 border-emerald-200 font-bold p-3 text-left">${q}</button>`).join('')}</div>
+    <h2 class="text-xl font-bold mb-3">Language for Agri-Talk answers</h2><select onchange="setLang(this.value)" class="min-h-[48px] px-3 rounded-xl border-2 border-slate-300 text-lg mb-2">${['English', 'Sepedi', 'Xitsonga', 'Tshivenda', 'IsiZulu', 'Afrikaans'].map(l => `<option ${(localStorage.getItem('sb_lang') \vert{}\vert{} 'English') === l ? 'selected' : ''}>${l}</option>`).join('')}</select><p class="text-slate-600 mb-8">Menus and results are in English. Please check important advice with an advisor, as AI translations can contain mistakes.</p>
+    <h2 class="text-xl font-bold mb-3">How we use your information</h2><div class="advanced-card rounded-2xl p-5 text-lg space-y-2"><p>We record information from your farm study (such as soil, water and crops) and from your soil sensor. We use it to show you your own results, explain them and suggest next steps.</p><p>Only you can see your results when you are logged in. You can ask us to correct your records.</p><p>We handle personal information in line with South Africa's Protection of Personal Information Act (POPIA).</p></div>`;
+  else if (area === 'report') b.innerHTML = `<div class="advanced-card rounded-3xl p-6 text-lg"><p><strong>Farmer:</strong> ${escapeHtml(FARM.name)}</p><p><strong>Date:</strong> ${FARM.date}</p><p><strong>Information on record:</strong> soil type ${escapeHtml(FARM.profile && FARM.profile.soil_type || 'not recorded')}, water source ${escapeHtml(FARM.profile && FARM.profile.water_source || 'not recorded')}, irrigation ${FARM.profile ? (FARM.profile.irrigated ? 'yes' : 'none recorded') : 'not recorded'}, crops ${escapeHtml(FARM.crops.join(', ') || 'not recorded')}.</p></div><h2 class="text-2xl font-bold font-heading mt-8 mb-3">Findings</h2>${F.map(card3).join('')}<h2 class="text-2xl font-bold font-heading mt-8 mb-3">Actions you can take</h2><ol class="list-decimal pl-6 text-lg">${FARM.nextActions.map(a => `<li>${escapeHtml(a.title)}:${escapeHtml(a.text)}</li>`).join('') || '<li>Nothing urgent right now.</li>'}</ol><button onclick="window.print()" class="no-print mt-6 min-h-[56px] px-6 rounded-2xl bg-emerald-600 text-white font-bold text-lg">PRINT OR SAVE AS PDF</button>`;
 }
 
 /* ---------- Profile + start ---------- */
 async function loadUserProfile() {
-  try {
-    const r = await fetch('/api/me'); if (!r.ok) return; const u = await r.json(); if (!u.fullname) return;
-    $('welcome-name').textContent = u.fullname;
-    $('chat-greeting').textContent = `Hello ${u.fullname}! Ask me about your soil, crops, planting seasons, pests, or irrigation. You can ask in your own language.`;
-    $('avatar').textContent = u.fullname.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-  } catch (e) { console.error('Profile error', e) }
+  try {
+    const r = await fetch('/api/me'); if (!r.ok) return; const u = await r.json(); if (!u.fullname) return;
+    $('welcome-name').textContent = u.fullname;
+    $('chat-greeting').textContent = `Hello ${u.fullname}! Ask me about your soil, crops, planting seasons, pests, or irrigation. You can ask in your own language.`;
+    $('avatar').textContent = u.fullname.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  } catch (e) { console.error('Profile error', e) }
 }
 document.addEventListener('error', e => { if (e.target && e.target.tagName === 'IMG') e.target.style.display = 'none' }, true);
 loadUserProfile(); refreshAlerts(); setInterval(refreshAlerts, 60000); refreshLiveWeather(); setInterval(refreshLiveWeather, 600000); loadFarm();
