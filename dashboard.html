@@ -8,7 +8,7 @@
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
-<!-- jsPDF for Generating Downloadable Educational PDFs -->
+<!-- jsPDF for Generating Slide-Deck Educational PDFs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -224,33 +224,33 @@ body.chat-open #chat-fab{display:none}
         <div>
           <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-wider border border-emerald-500/30">Downloadable Learning Center</span>
           <h2 class="text-2xl sm:text-3xl font-bold font-heading text-white mt-2">Farmer Field Guides &amp; Weather PDFs</h2>
-          <p class="text-slate-300 text-sm sm:text-base mt-1">Download beautifully formatted study notes tailored to your chosen experience level (<span id="current-level-label" class="text-emerald-400 font-bold uppercase">Intermediate</span>).</p>
+          <p class="text-slate-300 text-sm sm:text-base mt-1">Download beautifully formatted slide-deck manuals tailored to serious farmers (<span id="current-level-label" class="text-emerald-400 font-bold uppercase">Intermediate</span>).</p>
         </div>
         <div class="flex flex-wrap gap-3">
           <button onclick="downloadSoilGuidePDF()" class="min-h-[48px] px-5 rounded-xl font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-colors flex items-center gap-2 shadow-lg">
-            <iconify-icon icon="lucide:file-down" class="text-xl"></iconify-icon> Download Soil &amp; Solutions PDF
+            <iconify-icon icon="lucide:file-down" class="text-xl"></iconify-icon> Download Soil Slide Manual (Multi-Page)
           </button>
           <button onclick="downloadWeatherGuidePDF()" class="min-h-[48px] px-5 rounded-xl font-bold bg-white/10 text-white hover:bg-white/20 border border-white/20 transition-colors flex items-center gap-2">
-            <iconify-icon icon="lucide:cloud-sun" class="text-xl text-amber-400"></iconify-icon> Download Weather &amp; Rain PDF
+            <iconify-icon icon="lucide:cloud-sun" class="text-xl text-amber-400"></iconify-icon> Download Weather Slide Manual (Multi-Page)
           </button>
         </div>
       </div>
 
       <div class="grid md:grid-cols-2 gap-6 relative z-10">
         <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10">
-          <h3 class="font-bold text-lg mb-2 flex items-center gap-2"><iconify-icon icon="lucide:book-open" class="text-emerald-400"></iconify-icon> What's inside the Soil Guide PDF?</h3>
+          <h3 class="font-bold text-lg mb-2 flex items-center gap-2"><iconify-icon icon="lucide:book-open" class="text-emerald-400"></iconify-icon> Slide-Deck Soil Manual</h3>
           <ul class="space-y-2 text-sm text-slate-200">
-            <li>• Detailed explanations of your pH 6.2 reading and Sandy Loam soil structure.</li>
-            <li>• How to fix Low Nitrogen without damaging root systems.</li>
-            <li>• Tailored advice matching your <span id="guide-preview-level" class="text-emerald-300 font-bold">Intermediate</span> farmer profile.</li>
+            <li>• Structured like professional university slide presentations.</li>
+            <li>• Deep telemetry analysis: CEC, pH 6.2 buffering, Sandy Loam bulk density.</li>
+            <li>• Advanced nitrogen balancing protocols for commercial crop yields.</li>
           </ul>
         </div>
         <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10">
-          <h3 class="font-bold text-lg mb-2 flex items-center gap-2"><iconify-icon icon="lucide:cloud-rain" class="text-blue-400"></iconify-icon> What's inside the Weather Guide PDF?</h3>
+          <h3 class="font-bold text-lg mb-2 flex items-center gap-2"><iconify-icon icon="lucide:cloud-rain" class="text-blue-400"></iconify-icon> Slide-Deck Weather Manual</h3>
           <ul class="space-y-2 text-sm text-slate-200">
-            <li>• How 48-hour rain forecasts affect nutrient dilution and soil moisture.</li>
-            <li>• When to safely irrigate versus when to pause top-dressing.</li>
-            <li>• Actionable checklist to protect your crop investment from weather shocks.</li>
+            <li>• Multi-page deep dive into rain dilution curves and evapotranspiration.</li>
+            <li>• 48-hour precipitation forecasting models and nutrient leaching physics.</li>
+            <li>• Serious commercial decision frameworks for irrigation and fertilizer scheduling.</li>
           </ul>
         </div>
       </div>
@@ -280,7 +280,7 @@ body.chat-open #chat-fab{display:none}
           <p class="text-sm text-emerald-800 mt-0.5">Excellent drainage capacity with moderate nutrient retention. Ideal for root crops and fruiting vegetables.</p>
         </div>
       </div>
-      <button onclick="downloadSoilGuidePDF()" class="min-h-[44px] px-5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition-colors shrink-0">Download Soil Guide</button>
+      <button onclick="downloadSoilGuidePDF()" class="min-h-[44px] px-5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition-colors shrink-0">Download Soil Slide Manual</button>
     </div>
 
     <div class="grid md:grid-cols-3 gap-5 mb-8">
@@ -377,7 +377,7 @@ body.chat-open #chat-fab{display:none}
         <h4 class="font-bold font-heading text-slate-900 mb-2 flex items-center gap-2"><iconify-icon icon="lucide:shield-alert" class="text-amber-500 text-xl"></iconify-icon> Smart Agricultural Warning</h4>
         <p class="text-sm text-slate-600 leading-relaxed">If significant rain is forecasted for the upcoming 48 hours, the system highlights an advance warning so you can postpone fertilizer or compost top-dressings before nutrients wash away.</p>
         <button onclick="downloadWeatherGuidePDF()" class="mt-4 w-full min-h-[40px] bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2">
-          <iconify-icon icon="lucide:file-down"></iconify-icon> Download Weather Guide PDF
+          <iconify-icon icon="lucide:file-down"></iconify-icon> Download Weather Slide Manual
         </button>
       </div>
     </div>
@@ -528,161 +528,263 @@ function changeFarmerLevel(level) {
   document.getElementById('guide-preview-level').textContent = labels[level];
 }
 
-/* ===== PDF GENERATION ENGINES (jsPDF) ===== */
+/* ===== SLIDE-DECK TEACHING PDF GENERATION ENGINES (jsPDF) ===== */
 function downloadSoilGuidePDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   
-  doc.setFillColor(5, 150, 105);
-  doc.rect(0, 0, 210, 30, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.text("SOIL BUDDIES - FIELD SOIL GUIDE", 15, 20);
+  // Slide Helper function
+  function renderSlide(slideNum, totalSlides, title, bullets, techNotes) {
+    if (slideNum > 1) doc.addPage();
+    
+    // Slide Header Background
+    doc.setFillColor(15, 23, 42);
+    doc.rect(0, 0, 210, 32, 'F');
+    
+    // Slide Accent Line
+    doc.setFillColor(16, 185, 129);
+    doc.rect(0, 32, 210, 3, 'F');
 
-  doc.setTextColor(15, 23, 42);
-  doc.setFontSize(14);
-  doc.text(`Farmer Level: ${currentFarmerLevel.toUpperCase()}`, 15, 42);
-  doc.setFontSize(10);
-  doc.setTextColor(100, 116, 139);
-  doc.text(`Generated on: ${new Date().toLocaleDateString()} | Calibrated Probe & Drone Sync`, 15, 48);
+    // Header Text
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.text("SOIL BUDDIES - PROFESSIONAL LECTURE SERIES", 15, 14);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(148, 163, 184);
+    doc.text(`Module: Soil Telemetry & Agronomy | Level: ${currentFarmerLevel.toUpperCase()}`, 15, 23);
 
-  doc.setDrawColor(226, 232, 240);
-  doc.line(15, 54, 195, 54);
+    // Slide Number Footer Badge
+    doc.setFillColor(241, 245, 249);
+    doc.roundedRect(175, 10, 22, 14, 3, 3, 'F');
+    doc.setTextColor(15, 23, 42);
+    doc.setFontSize(9);
+    doc.text(`${slideNum} / ${totalSlides}`, 181, 19);
 
-  doc.setFontSize(12);
-  doc.setTextColor(15, 23, 42);
-  doc.setFont("helvetica", "bold");
-  doc.text("1. Your Current Soil Telemetry & Meaning", 15, 65);
+    // Slide Title
+    doc.setTextColor(15, 23, 42);
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text(title, 15, 50);
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.setTextColor(51, 65, 85);
+    // Bullet Points Block
+    let y = 62;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(51, 65, 85);
+    
+    bullets.forEach(bullet => {
+      doc.setFillColor(16, 185, 129);
+      doc.circle(18, y - 1.5, 1.5, 'F');
+      doc.text(bullet, 24, y, { maxWidth: 170 });
+      y += 14;
+    });
 
-  let content = [];
-  if(currentFarmerLevel === 'beginner') {
-    content = [
-      "• Soil pH (6.2): pH tells you how sweet or sour your soil is. 7.0 is neutral.",
-      "  At 6.2, your soil is gently acidic, which is like a comfortable blanket for vegetables.",
-      "• Soil Texture (Sandy Loam): Calibrated from drone multispectral scans and probe tests.",
-      "  Sandy Loam feels crumbly and holds moisture well without drowning roots.",
-      "• Nitrogen Status (Low): Nitrogen is plant food for green leaves. 'Low' means you",
-      "  need to feed your soil before planting so your crops grow strong and tall."
-    ];
-  } else if(currentFarmerLevel === 'intermediate') {
-    content = [
-      "• Soil pH (6.2): Optimal threshold for most cash crops (tomatoes, carrots, maize).",
-      "  Nutrient lockout is minimal at this range, meaning fertilizers are efficiently absorbed.",
-      "• Soil Texture (Sandy Loam): Ideal balance of sand, silt, and clay. Provides rapid drainage",
-      "  while retaining enough water at 45% moisture field capacity.",
-      "• Nitrogen Status (Low): Early vegetative deficiency detected. Requires nitrogen amendment",
-      "  prior to canopy closure."
-    ];
-  } else {
-    content = [
-      "• pH 6.2 Baseline: Cation Exchange Capacity (CEC) is stable. Base saturation is optimized",
-      "  for micronutrient availability without requiring liming interventions.",
-      "• Multispectral Drone Calibration: Sandy Loam texture confirmed via spectral reflectance and",
-      "  ground-truth core samples. Bulk density: 1.35 g/cm³.",
-      "• N-Deficiency Mitigation: Mineralization rate is suppressed. Top-dress with organic compost",
-      "  at 50kg/ha or calcium nitrate fertigation prior to crop establishment."
-    ];
+    // Technical Deep-Dive Box for Serious Farmers
+    if(techNotes && techNotes.length > 0) {
+      doc.setFillColor(248, 250, 252);
+      doc.setDrawColor(226, 232, 240);
+      doc.roundedRect(15, y + 5, 180, 52, 4, 4, 'FD');
+      
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+      doc.setTextColor(5, 150, 105);
+      doc.text("⚡ ADVANCED TECHNICAL SPECIFICATION FOR SRS FARMERS:", 20, y + 15);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(71, 85, 105);
+      let ty = y + 23;
+      techNotes.forEach(note => {
+        doc.text(`• ${note}`, 20, ty, { maxWidth: 170 });
+        ty + 8 ? ty += 8 : null;
+      });
+    }
+
+    // Footer copyright
+    doc.setFontSize(8);
+    doc.setTextColor(148, 163, 184);
+    doc.text("Soil Buddies Enterprise Telemetry Engine © 2026. Confidential Academic & Field Manual.", 15, 288);
   }
 
-  let y = 74;
-  content.forEach(line => {
-    doc.text(line, 15, y);
-    y += 7;
-  });
+  // Slide 1: Executive Telemetry Summary
+  renderSlide(1, 4, "Slide 1: Executive Telemetry & Soil Baseline", [
+    "Comprehensive Multispectral Drone Scan & IoT Probe Synchronization complete.",
+    "Current Active Soil pH: 6.2 (Optimal range for Solanaceae and root vegetables).",
+    "Soil Texture Classification: Sandy Loam (Optimal hydraulic conductivity & aeration).",
+    "Primary Macro-Nutrient Deficit Detected: Nitrogen (N) is currently at Low threshold."
+  ], [
+    "Cation Exchange Capacity (CEC) is holding at 18.4 meq/100g, ensuring moderate buffering capacity.",
+    "Bulk density measured at 1.35 g/cm³; root penetration resistance is minimal.",
+    "Immediate action: Execute nitrogen top-dressing prior to canopy closure to prevent yield suppression."
+  ]);
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
-  doc.setTextColor(15, 23, 42);
-  doc.text("2. Action Plan: How to Solve & Prepare", 15, y + 10);
+  // Slide 2: pH & Chemical Buffering Mechanics
+  renderSlide(2, 4, "Slide 2: pH Buffering & Nutrient Availability", [
+    "pH 6.2 sits precisely in the sweet spot where phosphorus (P) and micronutrients remain soluble.",
+    "Avoiding nutrient lockout: At pH > 7.5 or < 5.5, chemical binding locks essential ions.",
+    "Biological activity: Bacterial mineralization peaks at pH 6.0 - 6.5, maximizing organic breakdown.",
+    "Liming status: No agricultural lime required for this production cycle."
+  ], [
+    "Micronutrient availability (Fe, Mn, Zn, Cu) remains balanced without inducing iron chlorosis.",
+    "Soil solution electrical conductivity (EC) indicates stable ionic concentration.",
+    "Maintain pH monitoring weekly via automated telemetry probe arrays."
+  ]);
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.setTextColor(51, 65, 85);
-  
-  let steps = [
-    "Step 1: Apply high-nitrogen organic compost top-dressing evenly across the bed 48 hours before planting.",
-    "Step 2: Ensure tillage depth is maintained at 20cm to preserve Sandy Loam structure.",
-    "Step 3: Monitor daily moisture to keep levels steady around 45% using early-morning drip irrigation."
-  ];
+  // Slide 3: Sandy Loam Physics & Moisture Management
+  renderSlide(3, 4, "Slide 3: Sandy Loam Hydraulic Conductivity", [
+    "Texture breakdown: 65% Sand, 20% Silt, 15% Clay ensures rapid infiltration and aeration.",
+    "Current Field Moisture: 45% (Balanced right at optimum plant available water capacity).",
+    "Drainage efficiency: Prevents root asphyxiation during heavy cloudburst events.",
+    "Evapotranspiration rate: Requires consistent early-morning irrigation cycles."
+  ], [
+    "Permanent Wilting Point (PWP) estimated at 12% volumetric water content.",
+    "Readily Available Water (RAW) window spans between 25% and 45% moisture.",
+    "Drip irrigation emitters recommended to minimize evaporative surface loss."
+  ]);
 
-  y += 18;
-  steps.forEach(step => {
-    doc.text(step, 15, y, { maxWidth: 180 });
-    y += 12;
-  });
+  // Slide 4: Commercial Action Plan & Nitrogen Mitigation
+  renderSlide(4, 4, "Slide 4: Commercial Action Plan & Execution", [
+    "Step 1: Broadcast high-nitrogen organic compost or calcium nitrate 48 hours pre-planting.",
+    "Step 2: Maintain tillage depth strictly at 20cm to preserve aggregate stability.",
+    "Step 3: Monitor 48-hour weather APIs before fertigation to prevent rain washout.",
+    "Step 4: Deploy Problem AI sensor monitoring daily to track N-recovery velocity."
+  ], [
+    "Target yield benchmark: 1,450 kg per 100m² plot (~R24,650 estimated gross revenue).",
+    "Risk mitigation: Ensure drainage ditches are clear ahead of forecasted weather fronts.",
+    "Full compliance with Soil Buddies Advanced Agronomy Standards verified."
+  ]);
 
-  doc.save(`Soil_Buddies_Soil_Guide_${currentFarmerLevel}.pdf`);
+  doc.save(`Soil_Buddies_Slide_Manual_${currentFarmerLevel}.pdf`);
 }
 
 function downloadWeatherGuidePDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
-  doc.setFillColor(30, 41, 59);
-  doc.rect(0, 0, 210, 30, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.text("SOIL BUDDIES - WEATHER & RAIN GUIDE", 15, 20);
+  function renderWeatherSlide(slideNum, totalSlides, title, bullets, techNotes) {
+    if (slideNum > 1) doc.addPage();
+    
+    // Slide Header Background
+    doc.setFillColor(30, 41, 59);
+    doc.rect(0, 0, 210, 32, 'F');
+    
+    // Slide Accent Line
+    doc.setFillColor(59, 130, 246);
+    doc.rect(0, 32, 210, 3, 'F');
 
-  doc.setTextColor(15, 23, 42);
-  doc.setFontSize(14);
-  doc.text(`Farmer Level: ${currentFarmerLevel.toUpperCase()}`, 15, 42);
-  doc.setFontSize(10);
-  doc.setTextColor(100, 116, 139);
-  doc.text(`Generated on: ${new Date().toLocaleDateString()} | Open-Meteo Microclimate API`, 15, 48);
+    // Header Text
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.text("SOIL BUDDIES - METEOROLOGICAL LECTURE SERIES", 15, 14);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(148, 163, 184);
+    doc.text(`Module: Microclimate & Rain Dilution | Level: ${currentFarmerLevel.toUpperCase()}`, 15, 23);
 
-  doc.setDrawColor(226, 232, 240);
-  doc.line(15, 54, 195, 54);
+    // Slide Number Footer Badge
+    doc.setFillColor(241, 245, 249);
+    doc.roundedRect(175, 10, 22, 14, 3, 3, 'F');
+    doc.setTextColor(15, 23, 42);
+    doc.setFontSize(9);
+    doc.text(`${slideNum} / ${totalSlides}`, 181, 19);
 
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "bold");
-  doc.text("1. Understanding Rain Dilution & Soil Impact", 15, 65);
+    // Slide Title
+    doc.setTextColor(15, 23, 42);
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text(title, 15, 50);
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.setTextColor(51, 65, 85);
+    // Bullet Points Block
+    let y = 62;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(51, 65, 85);
+    
+    bullets.forEach(bullet => {
+      doc.setFillColor(59, 130, 246);
+      doc.circle(18, y - 1.5, 1.5, 'F');
+      doc.text(bullet, 24, y, { maxWidth: 170 });
+      y += 14;
+    });
 
-  let weatherContent = [
-    "• What is Rain Dilution? When heavy rain falls right after applying fertilizer or compost,",
-    "  water washes the vital nutrients deep past the root zone, starving your crops.",
-    "• The 48-Hour Rule: Always check the next 48 hours rain forecast before amending soil.",
-    "  If significant rain (>1mm) is predicted, pause your fertilizer application.",
-    "• Moisture Balance: Your current soil moisture is at 45% (ideal field capacity).",
-    "  Let natural rainfall handle irrigation if totals exceed daily crop evapotranspiration."
-  ];
+    // Technical Deep-Dive Box for Serious Farmers
+    if(techNotes && techNotes.length > 0) {
+      doc.setFillColor(248, 250, 252);
+      doc.setDrawColor(226, 232, 240);
+      doc.roundedRect(15, y + 5, 180, 52, 4, 4, 'FD');
+      
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+      doc.setTextColor(37, 99, 235);
+      doc.text("⚡ METEOROLOGICAL SPECIFICATION FOR SRS FARMERS:", 20, y + 15);
 
-  let y = 74;
-  weatherContent.forEach(line => {
-    doc.text(line, 15, y);
-    y += 7;
-  });
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(71, 85, 105);
+      let ty = y + 23;
+      techNotes.forEach(note => {
+        doc.text(`• ${note}`, 20, ty, { maxWidth: 170 });
+        ty + 8 ? ty += 8 : null;
+      });
+    }
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
-  doc.text("2. Weather Action Checklist for Farmers", 15, y + 10);
+    doc.setFontSize(8);
+    doc.setTextColor(148, 163, 184);
+    doc.text("Soil Buddies Enterprise Meteorological Engine © 2026. Confidential Academic & Field Manual.", 15, 288);
+  }
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
+  // Slide 1: Microclimate Overview
+  renderWeatherSlide(1, 4, "Slide 1: Open-Meteo API & Farm Synced GPS", [
+    "Real-time meteorological synchronization connected to precise farm GPS coordinates.",
+    "Atmospheric pressure monitoring to predict sudden convective storm cells.",
+    "Ambient temperature tracking: Crucial for calculating Crop Water Stress Index (CWSI).",
+    "Relative humidity tracking to assess fungal disease spore propagation risks."
+  ], [
+    "Vapor Pressure Deficit (VPD) currently optimal at 0.9 kPa.",
+    "Solar radiation tracking indicates 6.8 peak sun hours daily.",
+    "Integrated warning triggers active when precipitation probability exceeds 65%."
+  ]);
 
-  let wSteps = [
-    "• Check the Apple Weather style microclimate card on your dashboard every morning.",
-    "• If a rain warning triggers, secure your compost covers and postpone top-dressing.",
-    "• Post-Rain Check: Wait 24 hours after heavy downpours before tilling Sandy Loam to avoid compaction."
-  ];
+  // Slide 2: Rain Dilution Physics
+  renderWeatherSlide(2, 4, "Slide 2: Rain Dilution & Nutrient Leaching Mechanics", [
+    "The 48-Hour Rule: Heavy rainfall post-fertilization induces severe nitrate leaching.",
+    "Percolation velocity: Sandy Loam allows rapid water movement, carrying mobile ions deep past root zones.",
+    "Osmotic shock prevention: Avoiding fertilizer application immediately prior to cloudbursts.",
+    "Cost savings: Protecting expensive nitrogen investments from washing into sub-strata."
+  ], [
+    "Leaching coefficient in Sandy Loam: ~0.45 per 25mm of unmanaged precipitation.",
+    "Cation retention buffer: Calcium and Magnesium resist leaching better than Nitrates.",
+    "Action trigger: Postpone all top-dressing when forecasted 48h rain exceeds 1.0mm."
+  ]);
 
-  y += 18;
-  wSteps.forEach(step => {
-    doc.text(step, 15, y, { maxWidth: 180 });
-    y += 10;
-  });
+  // Slide 3: Soil Moisture Equilibrium
+  renderWeatherSlide(3, 4, "Slide 3: Moisture Equilibrium & Irrigation Control", [
+    "Current soil moisture holds steady at 45% field capacity.",
+    "Precipitation offset: Natural rainfall reduces irrigation pumping energy costs.",
+    "Waterlogging prevention: Sandy Loam drains excess head water within 6 hours.",
+    "Root zone aeration recovery post-storm."
+  ], [
+    "Drainage rate: 15mm/hour saturated hydraulic conductivity.",
+    "Evapotranspiration demand: ~4.2mm/day under current thermal conditions.",
+    "Automated valve lockout activated during active precipitation events."
+  ]);
 
-  doc.save(`Soil_Buddies_Weather_Guide_${currentFarmerLevel}.pdf`);
+  // Slide 4: Strategic Weather Risk Mitigation
+  renderWeatherSlide(4, 4, "Slide 4: Strategic Weather Risk Mitigation", [
+    "Daily routine: Inspect the Apple Weather microclimate widget every morning at 06:00.",
+    "Emergency protocol: Secure open compost heaps and fertilizer bags when storm alerts trigger.",
+    "Post-storm verification: Wait 24 hours before heavy machinery operation to avoid soil compaction.",
+    "Continuous sync: Ensure IoT telemetry sticks remain powered and connected."
+  ], [
+    "Yield protection index improved by 34% through proactive weather integration.",
+    "Zero unmanaged nutrient washout recorded in current production cycle.",
+    "Advanced farming standards fully maintained across all active plots."
+  ]);
+
+  doc.save(`Soil_Buddies_Weather_Slide_Manual_${currentFarmerLevel}.pdf`);
 }
 
 /* ===== FARMER QUIZ ENGINE (KNOW YOUR LAND) ===== */
