@@ -14,7 +14,9 @@ app.use(cookieParser());
 app.use(express.static(__dirname));
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-const ai = new GoogleGenAI({});
+const geminiApiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+const ai = geminiApiKey ? new GoogleGenAI({ apiKey: geminiApiKey }) : null;
+if (!ai) console.warn('Gemini AI is disabled: set GEMINI_API_KEY or GOOGLE_API_KEY in .env.');
 const MODEL = () => process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 
 let pushReady = false;
@@ -30,10 +32,17 @@ try {
 const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const cache = new Map();
+const pendingCache = new Map();
 async function cached(key, ttl, fn) {
     const h = cache.get(key);
     if (h && Date.now() - h.t < ttl) return h.v;
-    const v = await fn(); cache.set(key, { t: Date.now(), v }); return v;
+    if (pendingCache.has(key)) return pendingCache.get(key);
+    const request = Promise.resolve().then(fn).then(v => {
+        cache.set(key, { t: Date.now(), v });
+        return v;
+    }).finally(() => pendingCache.delete(key));
+    pendingCache.set(key, request);
+    return request;
 }
 const authenticateToken = (req, res, next) => {
     const token = req.cookies.token;
@@ -129,14 +138,22 @@ async function getClimate(lat, lon) {
     });
 }
 async function getForecast(lat, lon) {
-    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&past_days=2&forecast_days=7&timezone=auto`);
-    if (!r.ok) throw new Error('Open-Meteo ' + r.status);
-    return r.json();
+    return cached(`fc:${lat.toFixed(2)},${lon.toFixed(2)}`, 10 * 60 * 1000, async () => {
+        const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&past_days=2&forecast_days=7&timezone=auto`);
+        if (!r.ok) throw new Error('Open-Meteo ' + r.status);
+        return r.json();
+    });
 }
 app.get('/api/weather', authenticateToken, async (req, res) => {
     try {
         const { lat, lon, known } = await getCoords(req.user.id);
-        const [d, climate] = await Promise.all([getForecast(lat, lon), getClimate(lat, lon).catch(() => null)]);
+        const climateKey = `clim:${lat.toFixed(1)},${lon.toFixed(1)}`;
+        const cachedClimate = cache.get(climateKey);
+        const climate = cachedClimate ? cachedClimate.v : null;
+        if (!cachedClimate || Date.now() - cachedClimate.t >= 7 * 864e5) {
+            getClimate(lat, lon).catch(err => console.error('Climate history:', err.message));
+        }
+        const d = await getForecast(lat, lon);
         const h = d.hourly, dd = d.daily, now = Math.max(0, h.time.findIndex(t => t >= d.current.time));
         const sum = (a, b) => +h.precipitation.slice(Math.max(0, a), b).reduce((x, y) => x + (y || 0), 0).toFixed(1);
         const D = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], c = d.current.weather_code;
@@ -151,6 +168,15 @@ app.get('/api/weather', authenticateToken, async (req, res) => {
             city: known ? 'Your farm' : 'Default location (farm location not set)', locationKnown: known, climate
         });
     } catch (e) { console.error('Weather:', e.message); res.status(502).json({ error: 'Weather unavailable' }); }
+});
+app.get('/api/climate', authenticateToken, async (req, res) => {
+    try {
+        const { lat, lon } = await getCoords(req.user.id);
+        res.json(await getClimate(lat, lon));
+    } catch (e) {
+        console.error('Climate history:', e.message);
+        res.status(502).json({ error: 'Climate history unavailable' });
+    }
 });
 
 /* ---------- farmer location ---------- */
@@ -295,6 +321,7 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
     const message = typeof req.body.message === 'string' ? req.body.message.trim() : '';
     if (!message) return res.status(400).json({ error: 'Message content is required.' });
     if (message.length > 1000) return res.status(400).json({ error: 'Message is too long. Please keep it under 1000 characters.' });
+    if (!ai) return res.status(503).json({ error: 'AI is not configured. Add GEMINI_API_KEY to the server .env file and restart the server.' });
     const reading = (await getReadings(req.user.id, 1))[0] || { ph_level: 'unknown', moisture_level: 'unknown', nitrogen_status: 'unknown' };
     const prof = await getProfile(req.user.id), planted = await getPlantedCrops(req.user.id);
     const farmCtx = `\nRECORDED FARM FACTS: soil type ${(prof && prof.soil_type) || 'not recorded'}; irrigation ${prof ? (prof.irrigated ? 'yes' : 'none recorded') : 'not recorded'}; water source ${(prof && prof.water_source) || 'not recorded'}; crops planted ${planted.join(', ') || 'not recorded'}.\nNever invent farm facts. Do not prescribe fertiliser or pesticide quantities. If information is missing, say what is needed and suggest an agricultural advisor.`;
@@ -305,11 +332,16 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
             if (!reply || reply.toUpperCase().startsWith(OFF_TOPIC_TAG)) return res.json({ reply: OFF_TOPIC_REPLY, offTopic: true });
             return res.json({ reply });
         } catch (err) {
+            const status = err.status || err.statusCode;
+            if (status === 401 || status === 403) {
+                console.error(`Gemini authentication failed (${status}). Check GEMINI_API_KEY or GOOGLE_API_KEY.`);
+                return res.status(502).json({ error: 'Gemini authentication failed. Check GEMINI_API_KEY or GOOGLE_API_KEY in the server .env file.' });
+            }
             console.error(`Gemini attempt ${attempt} failed:`, err.message || err);
             if (attempt < 2) await new Promise(r => setTimeout(r, 1000));
         }
     }
-    res.json({ reply: `Hello ${req.user.fullname}! The connection is unstable right now. Your latest readings: pH ${reading.ph_level}, moisture ${reading.moisture_level}%, nitrogen ${reading.nitrogen_status}. Please try again shortly.` });
+    res.status(502).json({ error: 'The AI service is temporarily unavailable. Please try again shortly.' });
 });
 
 /* ---------- Problem AI chat ---------- */
@@ -331,6 +363,7 @@ STRICT RULES:
 app.post('/api/problem-chat', authenticateToken, async (req, res) => {
     const message = typeof req.body.message === 'string' ? req.body.message.trim() : '';
     if (!message) return res.status(400).json({ error: 'Message content is required.' });
+    if (!ai) return res.status(503).json({ error: 'AI is not configured. Add GEMINI_API_KEY to the server .env file and restart the server.' });
     const history = (Array.isArray(req.body.history) ? req.body.history.slice(-8) : [])
         .map(h => ({ role: h.role === 'ai' ? 'model' : 'user', parts: [{ text: String(h.text || '').slice(0, 1000) }] }));
     const [reading] = await getReadings(req.user.id, 2);
@@ -346,12 +379,19 @@ app.post('/api/problem-chat', authenticateToken, async (req, res) => {
         if (!reply || reply.toUpperCase().startsWith(PROBLEM_OFF_TAG)) return res.json({ reply: PROBLEM_OFF_REPLY, offTopic: true });
         res.json({ reply });
     } catch (err) {
-        res.json({ reply: `Hello ${req.user.fullname}. Latest soil readings: pH ${reading.ph_level}, moisture ${reading.moisture_level}%, nitrogen ${reading.nitrogen_status}.` });
+        const status = err.status || err.statusCode;
+        if (status === 401 || status === 403) {
+            console.error(`Gemini authentication failed (${status}) in Problem AI. Check GEMINI_API_KEY or GOOGLE_API_KEY.`);
+            return res.status(502).json({ error: 'Gemini authentication failed. Check GEMINI_API_KEY or GOOGLE_API_KEY in the server .env file.' });
+        }
+        console.error('Problem AI request failed:', err.message || err);
+        res.status(502).json({ error: 'The AI service is temporarily unavailable. Please try again shortly.' });
     }
 });
 
 /* ---------- Tutor (fixed) ---------- */
 app.post('/api/tutor-chat', authenticateToken, async (req, res) => {
+    if (!ai) return res.status(503).json({ error: 'AI is not configured. Add GEMINI_API_KEY to the server .env file and restart the server.' });
     try {
         const c = (s, n) => String(s || '').slice(0, n), [r] = await getReadings(req.user.id, 1);
         const response = await ai.models.generateContent({
@@ -360,7 +400,15 @@ app.post('/api/tutor-chat', authenticateToken, async (req, res) => {
             config: { temperature: 0.3, maxOutputTokens: 600 }
         });
         res.json({ reply: (response.text || '').trim() });
-    } catch (e) { console.error('Tutor:', e.message); res.status(500).json({ error: 'Failed to get tutor response' }); }
+    } catch (e) {
+        const status = e.status || e.statusCode;
+        if (status === 401 || status === 403) {
+            console.error(`Gemini authentication failed (${status}) in Tutor. Check GEMINI_API_KEY or GOOGLE_API_KEY.`);
+            return res.status(502).json({ error: 'Gemini authentication failed. Check GEMINI_API_KEY or GOOGLE_API_KEY in the server .env file.' });
+        }
+        console.error('Tutor:', e.message);
+        res.status(502).json({ error: 'The AI service is temporarily unavailable. Please try again shortly.' });
+    }
 });
 
 /* ---------- Crop recommendations: real data in, reasons out ---------- */
@@ -473,7 +521,7 @@ app.get('/api/my-farm', authenticateToken, async (req, res) => {
         const id = req.user.id, { lat, lon } = await getCoords(id), wk = weekKey();
         const [rs, p, crops, fc, st] = await Promise.all([
             getReadings(id, 10), getProfile(id), getPlantedCrops(id),
-            cached(`fc:${lat.toFixed(2)},${lon.toFixed(2)}`, 6e5, () => getForecast(lat, lon)).catch(() => null),
+            getForecast(lat, lon).catch(() => null),
             supabase.from('farm_task_status').select('task_id,status').eq('farmer_id', String(id)).then(x => x.data || []).catch(() => [])
         ]);
         const r = rs[0] || null, rain = rainNext48(fc), F = buildFindings(r, p, crops, rain);
@@ -484,8 +532,8 @@ app.get('/api/my-farm', authenticateToken, async (req, res) => {
             name: req.user.fullname, date: new Date().toISOString().slice(0, 10), hasReading: !!r, crops,
             profile: p ? { soil_type: p.soil_type, irrigated: p.irrigated, water_source: p.water_source } : null,
             findings: F,
-            glance: [G('Soil condition', worst(soilF), 'Based on pH, moisture and nitrogen.'), G('Water availability', waterF.status, 'Based on your recorded water source and the rain forecast.'),
-                G('Crop condition', 'unassessed', 'No crop observations have been recorded yet.'), G('Pest and disease monitoring', 'unassessed', 'No inspection has been recorded yet.'),
+            glance: [G('Soil condition', worst(soilF), 'Based on pH, moisture and temperature.'), G('Water availability', waterF.status, 'Based on your recorded water source and the rain forecast.'),
+                G('Crop condition', 'unassessed', 'No crop observations have been recorded yet.'), G('', '', ''),
                 G('Farming records', crops.length ? 'good' : 'attention', crops.length ? 'Crops recorded: ' + crops.join(', ') : 'Tell us what you planted.')],
             nextActions: F.filter(x => x.status === 'action' || x.status === 'attention').sort((a, b) => (a.status === 'action' ? 0 : 1) - (b.status === 'action' ? 0 : 1)).slice(0, 3).map(x => ({ title: x.title, text: x.todo[0] || x.result })),
             tasks: buildTasks(r, crops, rain).map(t => { const id2 = `${t.id}-${wk}`; const s = st.find(x => x.task_id === id2); return { id: id2, title: t.title, status: s ? s.status : 'todo' }; }),
