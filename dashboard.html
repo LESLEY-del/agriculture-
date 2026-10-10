@@ -304,17 +304,49 @@ function renderBell() {
   list.innerHTML = n ? alertsState.map((a, i) => { const c = sevClass(a); return `<button data-open="${i}" class="w-full text-left p-4 flex gap-3 hover:bg-slate-50 border-b border-slate-100"><span class="w-10 h-10 shrink-0 rounded-xl ${c.ico} flex items-center justify-center"><iconify-icon icon="lucide:alert-triangle" class="text-xl"></iconify-icon></span><span class="min-w-0"><span class="block font-bold text-sm">${escapeHtml(a.title)}</span><span class="block text-sm text-slate-600">${escapeHtml(a.detail)}</span>${a.harm ? `<span class="block text-sm font-semibold ${c.txt} mt-1">${escapeHtml(a.harm)}</span>` : ''}<span class="block text-xs font-bold ${c.txt} mt-1">Tap to get help from Problem AI</span></span></button>` }).join('') : '<p class="p-6 text-center text-slate-600 font-medium">No soil problems detected.</p>';
   list.querySelectorAll('[data-open]').forEach(btn => btn.addEventListener('click', () => { toggleNotif(false); openProblem(alertsState[btn.dataset.open].id) }));
 }
+
 function renderProblemSummary() {
   const el = $('problem-summary'); if (!el) return;
   const r = readingState || {}, ch = changeState || {};
   const delta = (v, u) => (v == null || v === 0) ? '' : `<span class="block text-[11px] font-bold text-slate-600">${v > 0 ? '&#9650;' : '&#9660;'} ${Math.abs(v)}${u}</span>`;
   const chip = (l, v, x) => `<div class="bg-white border border-slate-200 rounded-xl px-3 py-2"><p class="text-[11px] font-bold text-slate-500 uppercase">${l}</p><p class="text-lg font-black">${escapeHtml(String(v))}</p>${x || ''}</div>`;
-  let h = `<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 mt-4">Live soil readings</p><div class="grid grid-cols-3 gap-2 mb-1">${chip('pH', r.ph_level ?? '-', delta(ch.ph, ''))}${chip('Moisture', r.moisture_level != null ? r.moisture_level + '%' : '-', delta(ch.moisture, '%'))}${chip('Temperature', r.temperature_status ?? '-', ch.temperature_from ? `<span class="block text-[11px] font-bold text-slate-600">was ${escapeHtml(String(ch.temperature_from))}</span>` : '')}</div><p class="text-[11px] text-slate-500 font-medium mb-4">Arrows show the change since the previous reading.</p>`;
-  if (!readingState) h += '<div class="rounded-xl bg-slate-100 p-4 font-semibold text-slate-700">No sensor readings are linked to your account yet.</div>';
-  else if (!alertsState.length) h += '<div class="rounded-xl bg-emerald-50 border border-emerald-200 p-4 font-semibold text-emerald-800">No soil problems detected' + (getCrop() ? ' for ' + escapeHtml(getCrop()) : '') + '.</div>';
-  else h += '<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Soil alerts</p>' + alertsState.map((a, i) => { const c = sevClass(a); return `<button data-ask="${i}" class="w-full text-left mb-2 rounded-xl border p-4 ${c.box}"><span class="flex items-center justify-between gap-2"><span class="font-bold">${escapeHtml(a.label)}</span><span class="text-xs font-bold uppercase ${c.txt}">${a.severity}</span></span><span class="block text-sm text-slate-700 mt-1">${escapeHtml(a.detail)}</span>${a.harm ? `<span class="block text-sm font-semibold ${c.txt} mt-1">${escapeHtml(a.harm)}</span>` : ''}<span class="block text-sm font-bold ${c.txt} mt-2">Get help</span></button>` }).join('');
-  el.innerHTML = h; el.querySelectorAll('[data-ask]').forEach(b => b.addEventListener('click', () => askAlert(alertsState[b.dataset.ask])));
+  
+  let h = `
+    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 mt-4">Live soil readings</p>
+    <div class="grid grid-cols-3 gap-2 mb-1">
+      ${chip('pH', r.ph_level ?? '-', delta(ch.ph, ''))}
+      ${chip('Moisture', r.moisture_level != null ? r.moisture_level + '%' : '-', delta(ch.moisture, '%'))}
+      ${chip('Temperature', r.temperature_status ?? '-', ch.temperature_from ? `<span class="block text-[11px] font-bold text-slate-600">was ${escapeHtml(String(ch.temperature_from))}</span>` : '')}
+    </div>
+    <p class="text-[11px] text-slate-500 font-medium mb-4">Arrows show the change since the previous reading.</p>
+  `;
+  
+  if (!readingState) {
+    h += '<div class="rounded-xl bg-slate-100 p-4 font-semibold text-slate-700">No sensor readings are linked to your account yet.</div>';
+  } else if (!alertsState.length) {
+    h += `<div class="rounded-xl bg-emerald-50 border border-emerald-200 p-4 font-semibold text-emerald-800">No soil problems detected${getCrop() ? ' for ' + escapeHtml(getCrop()) : ''}.</div>`;
+  } else {
+    h += '<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Soil alerts</p>' + 
+    alertsState.map((a, i) => { 
+      const c = sevClass(a); 
+      return `
+        <button data-ask="${i}" class="w-full text-left mb-2 rounded-xl border p-4 ${c.box}">
+          <span class="flex items-center justify-between gap-2">
+            <span class="font-bold">${escapeHtml(a.label)}</span>
+            <span class="text-xs font-bold uppercase ${c.txt}">${a.severity}</span>
+          </span>
+          <span class="block text-sm text-slate-700 mt-1">${escapeHtml(a.detail)}</span>
+          ${a.harm ? `<span class="block text-sm font-semibold ${c.txt} mt-1">${escapeHtml(a.harm)}</span>` : ''}
+          <span class="block text-sm font-bold ${c.txt} mt-2">Get help</span>
+        </button>
+      `;
+    }).join('');
+  }
+  
+  el.innerHTML = h; 
+  el.querySelectorAll('[data-ask]').forEach(b => b.addEventListener('click', () => askAlert(alertsState[b.dataset.ask])));
 }
+
 function toggleNotif(force) { const p = $('notif-panel'), open = force !== undefined ? force : p.style.display === 'none'; p.style.display = open ? 'block' : 'none'; if (open) updatePushUI(); }
 document.addEventListener('click', e => { if (!e.target.closest('#notif-panel,#bell-btn')) $('notif-panel').style.display = 'none' });
 async function openProblem(alertId) { toggleProblem(true); await refreshAlerts(); if (alertId) { const a = alertsState.find(x => x.id === alertId); if (a) askAlert(a) } }
@@ -425,27 +457,73 @@ const LESSONS = [
   { t: 'Understanding your water', area: 'water', pts: ['Crops need steady water. Both too little and too much cause problems.', 'Wilting leaves can be a sign of water stress.', 'Write down when you irrigate so you can see what works.'], q: 'Why check the rain forecast before fertilising?', o: ['Heavy rain can wash the fertiliser away.', 'Fertiliser only works in the rain.'], a: 0, e: 'Rain can wash nutrients out of the soil, so you lose money and plant food.' },
   { t: 'Understanding your crop', area: null, pts: ['Crops go through growth stages, and each stage has different needs.', 'Walk your field often and look for changes in leaf colour, spots or holes.', 'Take photos and notes so an advisor can help you faster.'], q: 'When should you ask an agricultural advisor?', o: ['When crops are not growing well and you are not sure why.', 'Never. A website can decide everything.'], a: 0, e: 'Advisors can look at your actual field. This website gives general guidance.' }
 ];
-async function loadFarm() { try { const r = await fetch('/api/my-farm'); if (!r.ok) throw 0; FARM = await r.json() } catch (e) { FARM = null } renderHome() }
+
+async function loadFarm() { 
+  try { 
+    const r = await fetch('/api/my-farm'); 
+    if (!r.ok) throw 0; 
+    FARM = await r.json(); 
+  } catch (e) { 
+    FARM = null; 
+  } 
+  renderHome(); 
+}
 
 function renderHome() {
   $('home-tiles').innerHTML = tiles(['soil', 'crops', 'water', 'progress']);$('farm-tiles').innerHTML = tiles(Object.keys(TILES));
-  if (!FARM) { $('home-glance').innerHTML =$('home-next').innerHTML = '<p class="text-lg font-semibold text-slate-600">Loading your farm...</p>'; return }
+  
+  if (!FARM) { 
+    $('home-glance').innerHTML = '<p class="text-lg font-semibold text-slate-600">Loading your farm...</p>';
+    $('home-next').innerHTML = '<p class="text-lg font-semibold text-slate-600">Loading your farm...</p>';
+    return; 
+  }
   
   // Filter out any "Pest and disease" glance items dynamically from the database
   const filteredGlance = FARM.glance.filter(g => !g.area.toLowerCase().includes('pest'));
-  $('home-glance').innerHTML = filteredGlance.map(g => `<div class="advanced-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-2"><div><p class="font-bold text-lg">${escapeHtml(g.area)}</p><p class="text-slate-600">${escapeHtml(g.note)}</p></div>${badge(g.status)}</div>`).join('');
   
-  $('home-next').innerHTML = FARM.nextActions.length ? FARM.nextActions.map(a => `<div class="advanced-card rounded-2xl p-4"><p class="font-bold text-lg">${escapeHtml(a.title)}</p><p class="text-slate-700 mb-3">${escapeHtml(a.text)}</p><button onclick="showArea('results')" class="min-h-[48px] px-5 rounded-xl bg-emerald-600 text-white font-bold">VIEW DETAILS</button></div>`).join('') : '<p class="text-lg font-semibold text-slate-700">Nothing urgent right now. Open My Farming Calendar to see this week\'s tasks.</p>';
+  $('home-glance').innerHTML = filteredGlance.map(g => `
+    <div class="advanced-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-2">
+      <div>
+        <p class="font-bold text-lg">${escapeHtml(g.area)}</p>
+        <p class="text-slate-600">${escapeHtml(g.note)}</p>
+      </div>
+      ${badge(g.status)}
+    </div>
+  `).join('');
+  
+  $('home-next').innerHTML = FARM.nextActions.length ? 
+    FARM.nextActions.map(a => `
+      <div class="advanced-card rounded-2xl p-4">
+        <p class="font-bold text-lg">${escapeHtml(a.title)}</p>
+        <p class="text-slate-700 mb-3">${escapeHtml(a.text)}</p>
+        <button onclick="showArea('results')" class="min-h-[48px] px-5 rounded-xl bg-emerald-600 text-white font-bold">VIEW DETAILS</button>
+      </div>
+    `).join('') 
+    : `<p class="text-lg font-semibold text-slate-700">Nothing urgent right now. Open My Farming Calendar to see this week's tasks.</p>`;
 }
 
 function speak(t) { if (!('speechSynthesis' in window)) { alert('Read-aloud is not supported on this device.'); return } speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'en-ZA'; u.rate = .9; speechSynthesis.speak(u) }
 function speakHome() { if (!FARM) return; speak('Here is your farm at a glance. ' + FARM.glance.map(g => `${g.area}: ${ST[g.status][0]}.`).join(' ') + ' What to do next. ' + (FARM.nextActions.map(a => `${a.title}. ${a.text}`).join(' ') || 'Nothing urgent right now.')) }
 function speakFinding(i) { const f = FARM.findings[i]; speak(`${f.title}. ${ST[f.status][0]}. ${f.result} What it means: ${f.meaning} What you can do: ${f.todo.join(' ')}`) }
-const card3 = f => { const i = FARM.findings.indexOf(f); return `<div class="advanced-card rounded-3xl p-6 mb-5"><div class="flex flex-wrap items-center justify-between gap-2 mb-3"><h3 class="text-2xl font-bold font-heading">${escapeHtml(f.title)}</h3>${badge(f.status)}</div>
-  <p class="text-sm font-bold uppercase text-slate-500">My result</p><p class="text-lg mb-3">${escapeHtml(f.result)}</p>
-  <p class="text-sm font-bold uppercase text-slate-500">What it means</p><p class="text-lg mb-3">${escapeHtml(f.meaning)}</p>
-  ${f.todo.length ? `<p class="text-sm font-bold uppercase text-slate-500">What I can do</p><ol class="list-decimal pl-6 text-lg mb-3">${f.todo.map(t => `<li>${escapeHtml(t)}</li>`).join('')}</ol>` : ''}
-  <button onclick="speakFinding(${i})" class="min-h-[48px] px-5 rounded-xl bg-slate-900 text-white font-bold no-print">🔊 LISTEN TO THIS RESULT</button></div>` };
+
+const card3 = f => { 
+  const i = FARM.findings.indexOf(f); 
+  return `
+    <div class="advanced-card rounded-3xl p-6 mb-5">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <h3 class="text-2xl font-bold font-heading">${escapeHtml(f.title)}</h3>
+        ${badge(f.status)}
+      </div>
+      <p class="text-sm font-bold uppercase text-slate-500">My result</p>
+      <p class="text-lg mb-3">${escapeHtml(f.result)}</p>
+      <p class="text-sm font-bold uppercase text-slate-500">What it means</p>
+      <p class="text-lg mb-3">${escapeHtml(f.meaning)}</p>
+      ${f.todo.length ? `<p class="text-sm font-bold uppercase text-slate-500">What I can do</p><ol class="list-decimal pl-6 text-lg mb-3">${f.todo.map(t => `<li>${escapeHtml(t)}</li>`).join('')}</ol>` : ''}
+      <button onclick="speakFinding(${i})" class="min-h-[48px] px-5 rounded-xl bg-slate-900 text-white font-bold no-print">🔊 LISTEN TO THIS RESULT</button>
+    </div>
+  `; 
+};
+
 function setTask(id, s) { const t = FARM.tasks.find(x => x.id === id); if (t) t.status = s; showArea('calendar'); post('/api/tasks', { id, status: s }).catch(() => {}) }
 function lessonAns(l, k) { const L = LESSONS[l]; $('lq-' + l).innerHTML = `<strong>${k === L.a ? '✅ Correct.' : '❌ Not quite.'}</strong> ${escapeHtml(L.e)}` }
 function askPreset(t) { if (!$('agri-talk-window').classList.contains('open')) toggleChat();$('chat-input').value = t; sendMessage() }
@@ -457,31 +535,154 @@ try { if (localStorage.getItem('sb_big')) document.documentElement.style.fontSiz
 
 function showArea(area) {
   if (area === 'weather') return switchView('detail-weather');
-  const T = { soil: 'My Soil', crops: 'My Crops', water: 'My Water', progress: 'My Progress', calendar: 'My Farming Calendar', results: 'My Results', learn: 'Learn About My Farm', help: 'Help', report: 'My Farm Report' };
-  $('detail-title').textContent = T[area]; const b =$('detail-body'); switchView('view-detail');
-  if (!FARM && area !== 'help' && area !== 'learn' && area !== 'crops') { b.innerHTML = '<p class="text-lg font-semibold">Could not load your farm. Please check your connection and try again.</p>'; return }
+  
+  const T = { 
+    soil: 'My Soil', crops: 'My Crops', water: 'My Water', progress: 'My Progress', 
+    calendar: 'My Farming Calendar', results: 'My Results', learn: 'Learn About My Farm', 
+    help: 'Help', report: 'My Farm Report' 
+  };
+  
+  $('detail-title').textContent = T[area]; 
+  const b = $('detail-body'); 
+  switchView('view-detail');
+  
+  if (!FARM && area !== 'help' && area !== 'learn' && area !== 'crops') { 
+    b.innerHTML = '<p class="text-lg font-semibold">Could not load your farm. Please check your connection and try again.</p>'; 
+    return;
+  }
   
   // Filter out any "Pest and disease" finding items dynamically from the database
   const F = FARM ? FARM.findings.filter(f => !f.title.toLowerCase().includes('pest') && !(f.area || '').toLowerCase().includes('pest')) : [];
   const by = a => F.filter(f => f.area === a).map(card3).join('');
   
-  if (area === 'soil') b.innerHTML = by('soil');
-  else if (area === 'water') b.innerHTML = by('water');
-  else if (area === 'results') {
-      const filteredGlance = FARM.glance.filter(g => !g.area.toLowerCase().includes('pest'));
-      b.innerHTML = `<div class="space-y-3 mb-8">${filteredGlance.map(g => `<div class="advanced-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-2"><div><p class="font-bold text-lg">${escapeHtml(g.area)}</p><p class="text-slate-600">${escapeHtml(g.note)}</p></div>${badge(g.status)}</div>`).join('')}</div>${F.map(card3).join('')}<button onclick="showArea('report')" class="min-h-[56px] px-6 rounded-2xl bg-emerald-600 text-white font-bold text-lg">VIEW MY FARM REPORT</button>`;
+  if (area === 'soil') {
+    b.innerHTML = by('soil');
+  } else if (area === 'water') {
+    b.innerHTML = by('water');
+  } else if (area === 'results') {
+    const filteredGlance = FARM.glance.filter(g => !g.area.toLowerCase().includes('pest'));
+    b.innerHTML = `
+      <div class="space-y-3 mb-8">
+        ${filteredGlance.map(g => `
+          <div class="advanced-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <p class="font-bold text-lg">${escapeHtml(g.area)}</p>
+              <p class="text-slate-600">${escapeHtml(g.note)}</p>
+            </div>
+            ${badge(g.status)}
+          </div>
+        `).join('')}
+      </div>
+      ${F.map(card3).join('')}
+      <button onclick="showArea('report')" class="min-h-[56px] px-6 rounded-2xl bg-emerald-600 text-white font-bold text-lg">VIEW MY FARM REPORT</button>
+    `;
+  } else if (area === 'crops') { 
+    b.innerHTML = `
+      <p class="text-lg mb-4">${FARM && FARM.crops.length ? `You told us you planted: <strong>${escapeHtml(FARM.crops.join(', '))}</strong>.` : 'Tell Problem AI what you planted so we can check your soil against it.'}</p>
+      <h2 class="text-2xl font-bold font-heading">Should I plant now?</h2>
+      <p id="reco-basis" class="text-lg text-slate-600 font-medium mt-1 mb-6">Checking your soil, your area's climate and the coming rain...</p>
+      <div id="reco-list" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+    `; 
+    loadRecommendations();
+  } else if (area === 'progress') { 
+    const H = FARM.history; 
+    b.innerHTML = H.length ? `
+      <div class="overflow-x-auto">
+        <table class="w-full text-lg bg-white rounded-2xl border border-slate-200">
+          <thead>
+            <tr class="text-left bg-slate-50">
+              <th class="p-3">Date</th>
+              <th class="p-3">pH</th>
+              <th class="p-3">Moisture</th>
+              <th class="p-3">Temperature</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${H.map(h => `
+              <tr class="border-t border-slate-100">
+                <td class="p-3">${new Date(h.at).toLocaleDateString()}</td>
+                <td class="p-3">${h.ph ?? '-'}</td>
+                <td class="p-3">${h.moisture ?? '-'}%</td>
+                <td class="p-3">${escapeHtml(String(h.temperature ?? '-'))}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-slate-700">A change in one number does not by itself mean your whole farm is doing better or worse. It depends on your crop, your target range and how each reading was taken.</p>
+    ` : '<p class="text-lg font-semibold">No readings have been recorded yet.</p>';
+  } else if (area === 'calendar') {
+    b.innerHTML = `
+      <p class="text-lg mb-4">Tasks for this week, based on your results, weather and crop.</p>
+      ${FARM.tasks.map(t => `
+        <div class="advanced-card rounded-2xl p-4 mb-3">
+          <p class="font-bold text-lg mb-3">${escapeHtml(t.title)}</p>
+          <div class="flex flex-wrap gap-2">
+            ${[['todo', '☐ Not started'], ['doing', '◷ In progress'], ['done', '✓ Completed']].map(([s, l]) => `
+              <button onclick="setTask('${t.id}','${s}')" class="min-h-[48px] px-4 rounded-xl font-bold border-2 ${t.status === s ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white border-slate-300'}">${l}</button>
+            `).join('')}
+          </div>
+        </div>
+      `).join('')}
+    `;
+  } else if (area === 'learn') {
+    b.innerHTML = `
+      <p class="mb-4 text-slate-600">General farming information. For advice on your own field, ask an agricultural advisor.</p>
+      ${LESSONS.map((L, i) => { 
+        const mine = FARM && L.area ? F.find(f => f.area === L.area) : null; 
+        return `
+          <details class="advanced-card rounded-2xl p-5 mb-4">
+            <summary class="font-bold text-xl cursor-pointer">📚 ${L.t}</summary>
+            <ul class="list-disc pl-6 text-lg my-3">${L.pts.map(p => `<li>${p}</li>`).join('')}</ul>
+            ${mine ? `<p class="p-3 rounded-xl bg-emerald-50 text-lg mb-3"><strong>Your result:</strong> ${escapeHtml(mine.result)}</p>` : ''}
+            <p class="font-bold mb-2">${L.q}</p>
+            <div class="flex flex-wrap gap-2">
+              ${L.o.map((o, k) => `<button onclick="lessonAns(${i},${k})" class="min-h-[48px] px-4 rounded-xl border-2 border-slate-300 font-semibold text-left">${o}</button>`).join('')}
+            </div>
+            <p id="lq-${i}" class="mt-3 text-lg"></p>
+          </details>
+        `; 
+      }).join('')}
+      <button onclick="openQuizModal()" class="min-h-[56px] px-6 rounded-2xl bg-slate-900 text-white font-bold text-lg">TAKE THE QUICK QUIZ</button>
+    `;
+  } else if (area === 'help') {
+    b.innerHTML = `
+      <h2 class="text-xl font-bold mb-3">Ask about my farm</h2>
+      <div class="grid sm:grid-cols-2 gap-3 mb-8">
+        ${['Help me understand my soil.', 'What should I consider before planting?', 'What should I check if my crops are not growing well?', 'How can I record my farming expenses?'].map(q => `
+          <button onclick="askPreset('${q}')" class="min-h-[56px] rounded-2xl bg-white border-2 border-emerald-200 font-bold p-3 text-left">${q}</button>
+        `).join('')}
+      </div>
+      <h2 class="text-xl font-bold mb-3">Language for Agri-Talk answers</h2>
+      <select onchange="setLang(this.value)" class="min-h-[48px] px-3 rounded-xl border-2 border-slate-300 text-lg mb-2">
+        ${['English', 'Sepedi', 'Xitsonga', 'Tshivenda', 'IsiZulu', 'Afrikaans'].map(l => `
+          <option ${(localStorage.getItem('sb_lang') \vert{}\vert{} 'English') === l ? 'selected' : ''}>${l}</option>
+        `).join('')}
+      </select>
+      <p class="text-slate-600 mb-8">Menus and results are in English. Please check important advice with an advisor, as AI translations can contain mistakes.</p>
+      <h2 class="text-xl font-bold mb-3">How we use your information</h2>
+      <div class="advanced-card rounded-2xl p-5 text-lg space-y-2">
+        <p>We record information from your farm study (such as soil, water and crops) and from your soil sensor. We use it to show you your own results, explain them and suggest next steps.</p>
+        <p>Only you can see your results when you are logged in. You can ask us to correct your records.</p>
+        <p>We handle personal information in line with South Africa's Protection of Personal Information Act (POPIA).</p>
+      </div>
+    `;
+  } else if (area === 'report') {
+    b.innerHTML = `
+      <div class="advanced-card rounded-3xl p-6 text-lg">
+        <p><strong>Farmer:</strong> ${escapeHtml(FARM.name)}</p>
+        <p><strong>Date:</strong> ${FARM.date}</p>
+        <p><strong>Information on record:</strong> soil type ${escapeHtml(FARM.profile && FARM.profile.soil_type || 'not recorded')}, water source ${escapeHtml(FARM.profile && FARM.profile.water_source || 'not recorded')}, irrigation ${FARM.profile ? (FARM.profile.irrigated ? 'yes' : 'none recorded') : 'not recorded'}, crops ${escapeHtml(FARM.crops.join(', ') || 'not recorded')}.</p>
+      </div>
+      <h2 class="text-2xl font-bold font-heading mt-8 mb-3">Findings</h2>
+      ${F.map(card3).join('')}
+      <h2 class="text-2xl font-bold font-heading mt-8 mb-3">Actions you can take</h2>
+      <ol class="list-decimal pl-6 text-lg">
+        ${FARM.nextActions.length ? FARM.nextActions.map(a => `<li>${escapeHtml(a.title)}:${escapeHtml(a.text)}</li>`).join('') : '<li>Nothing urgent right now.</li>'}
+      </ol>
+      <button onclick="window.print()" class="no-print mt-6 min-h-[56px] px-6 rounded-2xl bg-emerald-600 text-white font-bold text-lg">PRINT OR SAVE AS PDF</button>
+    `;
   }
-  else if (area === 'crops') { b.innerHTML = `<p class="text-lg mb-4">${FARM && FARM.crops.length ? 'You told us you planted: <strong>' + escapeHtml(FARM.crops.join(', ')) + '</strong>.' : 'Tell Problem AI what you planted so we can check your soil against it.'}</p><h2 class="text-2xl font-bold font-heading">Should I plant now?</h2><p id="reco-basis" class="text-lg text-slate-600 font-medium mt-1 mb-6">Checking your soil, your area's climate and the coming rain...</p><div id="reco-list" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>`; loadRecommendations() }
-  else if (area === 'progress') { 
-      const H = FARM.history; 
-      b.innerHTML = H.length ? `<div class="overflow-x-auto"><table class="w-full text-lg bg-white rounded-2xl border border-slate-200"><thead><tr class="text-left bg-slate-50"><th class="p-3">Date</th><th class="p-3">pH</th><th class="p-3">Moisture</th><th class="p-3">Temperature</th></tr></thead><tbody>${H.map(h => `<tr class="border-t border-slate-100"><td class="p-3">${new Date(h.at).toLocaleDateString()}</td><td class="p-3">${h.ph ?? '-'}</td><td class="p-3">${h.moisture ?? '-'}%</td><td class="p-3">${escapeHtml(String(h.temperature ?? '-'))}</td></tr>`).join('')}</tbody></table></div><p class="mt-4 text-slate-700">A change in one number does not by itself mean your whole farm is doing better or worse. It depends on your crop, your target range and how each reading was taken.</p>` : '<p class="text-lg font-semibold">No readings have been recorded yet.</p>' 
-  }
-  else if (area === 'calendar') b.innerHTML = `<p class="text-lg mb-4">Tasks for this week, based on your results, weather and crop.</p>` + FARM.tasks.map(t => `<div class="advanced-card rounded-2xl p-4 mb-3"><p class="font-bold text-lg mb-3">${escapeHtml(t.title)}</p><div class="flex flex-wrap gap-2">${[['todo', '☐ Not started'], ['doing', '◷ In progress'], ['done', '✓ Completed']].map(([s, l]) => `<button onclick="setTask('${t.id}','${s}')" class="min-h-[48px] px-4 rounded-xl font-bold border-2 ${t.status === s ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white border-slate-300'}">${l}</button>`).join('')}</div></div>`).join('');
-  else if (area === 'learn') b.innerHTML = `<p class="mb-4 text-slate-600">General farming information. For advice on your own field, ask an agricultural advisor.</p>` + LESSONS.map((L, i) => { const mine = FARM && L.area ? F.find(f => f.area === L.area) : null; return `<details class="advanced-card rounded-2xl p-5 mb-4"><summary class="font-bold text-xl cursor-pointer">📚 ${L.t}</summary><ul class="list-disc pl-6 text-lg my-3">${L.pts.map(p => `<li>${p}</li>`).join('')}</ul>${mine ? `<p class="p-3 rounded-xl bg-emerald-50 text-lg mb-3"><strong>Your result:</strong> ${escapeHtml(mine.result)}</p>` : ''}<p class="font-bold mb-2">${L.q}</p><div class="flex flex-wrap gap-2">${L.o.map((o, k) => `<button onclick="lessonAns(${i},${k})" class="min-h-[48px] px-4 rounded-xl border-2 border-slate-300 font-semibold text-left">${o}</button>`).join('')}</div><p id="lq-${i}" class="mt-3 text-lg"></p></details>` }).join('') + `<button onclick="openQuizModal()" class="min-h-[56px] px-6 rounded-2xl bg-slate-900 text-white font-bold text-lg">TAKE THE QUICK QUIZ</button>`;
-  else if (area === 'help') b.innerHTML = `<h2 class="text-xl font-bold mb-3">Ask about my farm</h2><div class="grid sm:grid-cols-2 gap-3 mb-8">${['Help me understand my soil.', 'What should I consider before planting?', 'What should I check if my crops are not growing well?', 'How can I record my farming expenses?'].map(q => `<button onclick="askPreset(this.textContent)" class="min-h-[56px] rounded-2xl bg-white border-2 border-emerald-200 font-bold p-3 text-left">${q}</button>`).join('')}</div>
-    <h2 class="text-xl font-bold mb-3">Language for Agri-Talk answers</h2><select onchange="setLang(this.value)" class="min-h-[48px] px-3 rounded-xl border-2 border-slate-300 text-lg mb-2">${['English', 'Sepedi', 'Xitsonga', 'Tshivenda', 'IsiZulu', 'Afrikaans'].map(l => `<option ${(localStorage.getItem('sb_lang') \vert{}\vert{} 'English') === l ? 'selected' : ''}>${l}</option>`).join('')}</select><p class="text-slate-600 mb-8">Menus and results are in English. Please check important advice with an advisor, as AI translations can contain mistakes.</p>
-    <h2 class="text-xl font-bold mb-3">How we use your information</h2><div class="advanced-card rounded-2xl p-5 text-lg space-y-2"><p>We record information from your farm study (such as soil, water and crops) and from your soil sensor. We use it to show you your own results, explain them and suggest next steps.</p><p>Only you can see your results when you are logged in. You can ask us to correct your records.</p><p>We handle personal information in line with South Africa's Protection of Personal Information Act (POPIA).</p></div>`;
-  else if (area === 'report') b.innerHTML = `<div class="advanced-card rounded-3xl p-6 text-lg"><p><strong>Farmer:</strong> ${escapeHtml(FARM.name)}</p><p><strong>Date:</strong> ${FARM.date}</p><p><strong>Information on record:</strong> soil type ${escapeHtml(FARM.profile && FARM.profile.soil_type || 'not recorded')}, water source ${escapeHtml(FARM.profile && FARM.profile.water_source || 'not recorded')}, irrigation ${FARM.profile ? (FARM.profile.irrigated ? 'yes' : 'none recorded') : 'not recorded'}, crops ${escapeHtml(FARM.crops.join(', ') || 'not recorded')}.</p></div><h2 class="text-2xl font-bold font-heading mt-8 mb-3">Findings</h2>${F.map(card3).join('')}<h2 class="text-2xl font-bold font-heading mt-8 mb-3">Actions you can take</h2><ol class="list-decimal pl-6 text-lg">${FARM.nextActions.map(a => `<li>${escapeHtml(a.title)}:${escapeHtml(a.text)}</li>`).join('') || '<li>Nothing urgent right now.</li>'}</ol><button onclick="window.print()" class="no-print mt-6 min-h-[56px] px-6 rounded-2xl bg-emerald-600 text-white font-bold text-lg">PRINT OR SAVE AS PDF</button>`;
 }
 
 /* ---------- Profile + start ---------- */
