@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Dashboard | Soil Buddies</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js" defer></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -241,7 +241,7 @@ async function sendMessage() {
   try {
     const r = await post('/api/chat', { message: text + langNote() }), d = await r.json(); if (!r.ok) throw new Error(d.error);
     l.className = 'chat-bubble-ai p-4 font-medium shadow-sm text-slate-700 leading-relaxed max-w-[90%]'; l.innerHTML = md(d.reply);
-  } catch (e) { l.className = 'chat-bubble-ai p-4 font-medium text-rose-700 max-w-[90%]'; l.textContent = e instanceof Error && e.message ? e.message : 'Could not reach the server. Please check your connection and try again.'; }
+  } catch (e) { l.className = 'chat-bubble-ai p-4 font-medium text-rose-700 max-w-[90%]'; l.textContent = 'Could not reach the server. Please check your connection and try again.'; }
   box.scrollTop = box.scrollHeight;
 }
 const ci = $('chat-input');
@@ -336,7 +336,7 @@ async function sendProblem(preset) {
     const r = await post('/api/problem-chat', { message: text, history: problemHistory.slice(-8), crop: getCrop() }), d = await r.json(); if (!r.ok) throw new Error(d.error);
     problemHistory.push({ role: 'user', text }, { role: 'ai', text: d.reply });
     l.className = 'chat-bubble-ai p-4 font-medium shadow-sm text-slate-700 leading-relaxed max-w-[90%]'; l.innerHTML = md(d.reply);
-  } catch (e) { l.className = 'chat-bubble-ai p-4 font-medium text-rose-700 max-w-[90%]'; l.textContent = e instanceof Error && e.message ? e.message : 'Could not reach the server. Please check your connection and try again.'; }
+  } catch (e) { l.className = 'chat-bubble-ai p-4 font-medium text-rose-700 max-w-[90%]'; l.textContent = 'Could not reach the server. Please check your connection and try again.'; }
   box.scrollTop = box.scrollHeight;
 }
 const pi = $('problem-input');
@@ -380,26 +380,14 @@ function setLocation() {
 function getWeatherIcon(c) { c = Number(c); return c === 0 ? 'lucide:sun' : c <= 2 ? 'lucide:cloud-sun' : c <= 48 ? 'lucide:cloud' : (c >= 95) ? 'lucide:cloud-lightning' : 'lucide:cloud-rain' }
 function renderClimate(c) {
   const el = $('climate-card'); if (!el) return;
-if (!c) { el.textContent = 'Loading your area’s climate history…'; return }
+  if (!c) { el.textContent = 'Climate history is not available right now.'; return }
   el.innerHTML = `<h4 class="font-bold font-heading text-slate-900 mb-2">Your area's climate</h4><p><strong>${escapeHtml(c.type)}</strong>, about ${c.annualRain} mm of rain a year.</p><p>Hottest: ${c.hot.month} (${c.hot.temp}°C). Coldest: ${c.cold.month} (${c.cold.temp}°C).</p><p>Rainy months: ${c.rainyMonths.length ? c.rainyMonths.join(', ') : 'no clear rainy season'}.</p><p>Frost risk: ${c.frostMonths.length ? c.frostMonths.join(', ') : 'rare'}.</p><p class="font-semibold mt-2">Compared with 10+ years ago it is ${c.warmingC >= 0 ? 'warmer' : 'cooler'} by ${Math.abs(c.warmingC)}°C and rainfall is ${c.rainChangePct >= 0 ? 'up' : 'down'} ${Math.abs(c.rainChangePct)}%.</p>`;
 }
-let climateRequest = null;
-function loadClimate() {
-if (climateRequest) return climateRequest;
-climateRequest = fetch('/api/climate')
-.then(r => { if (!r.ok) throw new Error('Climate request failed'); return r.json() })
-.then(renderClimate)
-.catch(e => { console.error('Climate error:', e); const el = $('climate-card'); if (el) el.textContent = 'Climate history is not available right now.' })
-.finally(() => { climateRequest = null });
-return climateRequest;
-}
 async function refreshLiveWeather() {
-try {
-const r = await fetch('/api/weather'); if (!r.ok) throw new Error('Weather request failed');
-const d = await r.json(), t = (id, v) => { const e = $(id); if (e) e.textContent = v };
-t('weather-city-title', d.city);
-if (d.climate) renderClimate(d.climate);
-else { renderClimate(null); loadClimate() }
+  try {
+    const r = await fetch('/api/weather'); if (!r.ok) throw new Error('Weather request failed');
+    const d = await r.json(), t = (id, v) => { const e = $(id); if (e) e.textContent = v };
+    t('weather-city-title', d.city); renderClimate(d.climate);
     t('weather-temp-main', Math.round(d.temp) + '°'); t('weather-condition-main', d.condition); t('weather-high', d.high + '°'); t('weather-low', d.low + '°');
     t('weather-summary-temp', Math.round(d.temp) + '°'); t('weather-summary-condition', d.condition); t('weather-summary-rain', d.rain48h.toFixed(1));
     $('hourly-container').innerHTML = d.hourly.map(h => `<div class="flex flex-col items-center p-2 rounded-xl bg-white/5"><span class="text-xs text-slate-300 mb-2">${h.time}</span><iconify-icon icon="${getWeatherIcon(h.code)}" class="text-xl text-amber-400 mb-2"></iconify-icon><span class="text-sm font-bold">${h.temp}°</span></div>`).join('');
