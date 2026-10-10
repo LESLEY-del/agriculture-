@@ -215,48 +215,6 @@ body.chat-open #chat-fab{display:none}
     </div>
   </div>
 
-  <!-- DOWNLOADABLE EDUCATIONAL GUIDES & PDF HUB (PLACED AT THE VERY BOTTOM) -->
-  <div class="mt-14">
-    <div class="advanced-card p-6 sm:p-10 rounded-[2rem] bg-gradient-to-br from-emerald-900 to-slate-900 text-white relative overflow-hidden">
-      <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-      
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 relative z-10">
-        <div>
-          <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-wider border border-emerald-500/30">Downloadable Learning Center</span>
-          <h2 class="text-2xl sm:text-3xl font-bold font-heading text-white mt-2">Farmer Field Guides &amp; Weather PDFs</h2>
-          <p class="text-slate-300 text-sm sm:text-base mt-1">Download beautifully formatted slide-deck manuals tailored to serious farmers (<span id="current-level-label" class="text-emerald-400 font-bold uppercase">Intermediate</span>).</p>
-        </div>
-        <div class="flex flex-wrap gap-3">
-          <button onclick="downloadSoilGuidePDF()" class="min-h-[48px] px-5 rounded-xl font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-colors flex items-center gap-2 shadow-lg">
-            <iconify-icon icon="lucide:file-down" class="text-xl"></iconify-icon> Download Soil Slide Manual (Multi-Page)
-          </button>
-          <button onclick="downloadWeatherGuidePDF()" class="min-h-[48px] px-5 rounded-xl font-bold bg-white/10 text-white hover:bg-white/20 border border-white/20 transition-colors flex items-center gap-2">
-            <iconify-icon icon="lucide:cloud-sun" class="text-xl text-amber-400"></iconify-icon> Download Weather Slide Manual (Multi-Page)
-          </button>
-        </div>
-      </div>
-
-      <div class="grid md:grid-cols-2 gap-6 relative z-10">
-        <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10">
-          <h3 class="font-bold text-lg mb-2 flex items-center gap-2"><iconify-icon icon="lucide:book-open" class="text-emerald-400"></iconify-icon> Slide-Deck Soil Manual</h3>
-          <ul class="space-y-2 text-sm text-slate-200">
-            <li>• Structured like professional university slide presentations.</li>
-            <li>• Deep telemetry analysis: CEC, pH 6.2 buffering, Sandy Loam bulk density.</li>
-            <li>• Advanced nitrogen balancing protocols for commercial crop yields.</li>
-          </ul>
-        </div>
-        <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10">
-          <h3 class="font-bold text-lg mb-2 flex items-center gap-2"><iconify-icon icon="lucide:cloud-rain" class="text-blue-400"></iconify-icon> Slide-Deck Weather Manual</h3>
-          <ul class="space-y-2 text-sm text-slate-200">
-            <li>• Multi-page deep dive into rain dilution curves and evapotranspiration.</li>
-            <li>• 48-hour precipitation forecasting models and nutrient leaching physics.</li>
-            <li>• Serious commercial decision frameworks for irrigation and fertilizer scheduling.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 <!-- HARDWARE -->
@@ -268,7 +226,7 @@ body.chat-open #chat-fab{display:none}
       <button class="self-start min-h-[44px] px-5 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 flex items-center gap-2"><iconify-icon icon="lucide:refresh-cw"></iconify-icon> Sync Stick &amp; Drone</button>
     </div>
 
-    <!-- Soil Texture Banner -->
+    <!-- Soil Texture Banner & Slide Manual Download Button -->
     <div class="mb-8 p-6 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
       <div class="flex items-center gap-4">
         <div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
@@ -280,7 +238,9 @@ body.chat-open #chat-fab{display:none}
           <p class="text-sm text-emerald-800 mt-0.5">Excellent drainage capacity with moderate nutrient retention. Ideal for root crops and fruiting vegetables.</p>
         </div>
       </div>
-      <button onclick="downloadSoilGuidePDF()" class="min-h-[44px] px-5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition-colors shrink-0">Download Soil Slide Manual</button>
+      <button onclick="downloadSoilGuidePDF()" class="min-h-[48px] px-6 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition-colors shrink-0 flex items-center gap-2 shadow-sm">
+        <iconify-icon icon="lucide:file-down" class="text-lg"></iconify-icon> Download Soil Slide Manual
+      </button>
     </div>
 
     <div class="grid md:grid-cols-3 gap-5 mb-8">
@@ -376,8 +336,10 @@ body.chat-open #chat-fab{display:none}
       <div class="advanced-card p-6 rounded-2xl bg-white mb-6">
         <h4 class="font-bold font-heading text-slate-900 mb-2 flex items-center gap-2"><iconify-icon icon="lucide:shield-alert" class="text-amber-500 text-xl"></iconify-icon> Smart Agricultural Warning</h4>
         <p class="text-sm text-slate-600 leading-relaxed">If significant rain is forecasted for the upcoming 48 hours, the system highlights an advance warning so you can postpone fertilizer or compost top-dressings before nutrients wash away.</p>
-        <button onclick="downloadWeatherGuidePDF()" class="mt-4 w-full min-h-[40px] bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2">
-          <iconify-icon icon="lucide:file-down"></iconify-icon> Download Weather Slide Manual
+        
+        <!-- Integrated Weather Slide Manual Download Button -->
+        <button onclick="downloadWeatherGuidePDF()" class="mt-4 w-full min-h-[48px] bg-slate-900 hover:bg-emerald-600 text-white text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm">
+          <iconify-icon icon="lucide:file-down" class="text-lg"></iconify-icon> Download Weather Slide Manual
         </button>
       </div>
     </div>
@@ -524,8 +486,7 @@ let currentFarmerLevel = 'intermediate';
 function changeFarmerLevel(level) {
   currentFarmerLevel = level;
   const labels = { beginner: 'New / Beginner', intermediate: 'Intermediate', advanced: 'Advanced' };
-  document.getElementById('current-level-label').textContent = labels[level];
-  document.getElementById('guide-preview-level').textContent = labels[level];
+  if(document.getElementById('current-level-label')) document.getElementById('current-level-label').textContent = labels[level];
 }
 
 /* ===== SLIDE-DECK TEACHING PDF GENERATION ENGINES (jsPDF) ===== */
@@ -533,19 +494,15 @@ function downloadSoilGuidePDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   
-  // Slide Helper function
   function renderSlide(slideNum, totalSlides, title, bullets, techNotes) {
     if (slideNum > 1) doc.addPage();
     
-    // Slide Header Background
     doc.setFillColor(15, 23, 42);
     doc.rect(0, 0, 210, 32, 'F');
     
-    // Slide Accent Line
     doc.setFillColor(16, 185, 129);
     doc.rect(0, 32, 210, 3, 'F');
 
-    // Header Text
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
@@ -555,20 +512,17 @@ function downloadSoilGuidePDF() {
     doc.setTextColor(148, 163, 184);
     doc.text(`Module: Soil Telemetry & Agronomy | Level: ${currentFarmerLevel.toUpperCase()}`, 15, 23);
 
-    // Slide Number Footer Badge
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(175, 10, 22, 14, 3, 3, 'F');
     doc.setTextColor(15, 23, 42);
     doc.setFontSize(9);
     doc.text(`${slideNum} / ${totalSlides}`, 181, 19);
 
-    // Slide Title
     doc.setTextColor(15, 23, 42);
     doc.setFontSize(16);
     doc.setFont("helvetica", "bold");
     doc.text(title, 15, 50);
 
-    // Bullet Points Block
     let y = 62;
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
@@ -581,7 +535,6 @@ function downloadSoilGuidePDF() {
       y += 14;
     });
 
-    // Technical Deep-Dive Box for Serious Farmers
     if(techNotes && techNotes.length > 0) {
       doc.setFillColor(248, 250, 252);
       doc.setDrawColor(226, 232, 240);
@@ -598,17 +551,15 @@ function downloadSoilGuidePDF() {
       let ty = y + 23;
       techNotes.forEach(note => {
         doc.text(`• ${note}`, 20, ty, { maxWidth: 170 });
-        ty + 8 ? ty += 8 : null;
+        ty += 8;
       });
     }
 
-    // Footer copyright
     doc.setFontSize(8);
     doc.setTextColor(148, 163, 184);
     doc.text("Soil Buddies Enterprise Telemetry Engine © 2026. Confidential Academic & Field Manual.", 15, 288);
   }
 
-  // Slide 1: Executive Telemetry Summary
   renderSlide(1, 4, "Slide 1: Executive Telemetry & Soil Baseline", [
     "Comprehensive Multispectral Drone Scan & IoT Probe Synchronization complete.",
     "Current Active Soil pH: 6.2 (Optimal range for Solanaceae and root vegetables).",
@@ -620,7 +571,6 @@ function downloadSoilGuidePDF() {
     "Immediate action: Execute nitrogen top-dressing prior to canopy closure to prevent yield suppression."
   ]);
 
-  // Slide 2: pH & Chemical Buffering Mechanics
   renderSlide(2, 4, "Slide 2: pH Buffering & Nutrient Availability", [
     "pH 6.2 sits precisely in the sweet spot where phosphorus (P) and micronutrients remain soluble.",
     "Avoiding nutrient lockout: At pH > 7.5 or < 5.5, chemical binding locks essential ions.",
@@ -632,7 +582,6 @@ function downloadSoilGuidePDF() {
     "Maintain pH monitoring weekly via automated telemetry probe arrays."
   ]);
 
-  // Slide 3: Sandy Loam Physics & Moisture Management
   renderSlide(3, 4, "Slide 3: Sandy Loam Hydraulic Conductivity", [
     "Texture breakdown: 65% Sand, 20% Silt, 15% Clay ensures rapid infiltration and aeration.",
     "Current Field Moisture: 45% (Balanced right at optimum plant available water capacity).",
@@ -644,7 +593,6 @@ function downloadSoilGuidePDF() {
     "Drip irrigation emitters recommended to minimize evaporative surface loss."
   ]);
 
-  // Slide 4: Commercial Action Plan & Nitrogen Mitigation
   renderSlide(4, 4, "Slide 4: Commercial Action Plan & Execution", [
     "Step 1: Broadcast high-nitrogen organic compost or calcium nitrate 48 hours pre-planting.",
     "Step 2: Maintain tillage depth strictly at 20cm to preserve aggregate stability.",
@@ -666,15 +614,12 @@ function downloadWeatherGuidePDF() {
   function renderWeatherSlide(slideNum, totalSlides, title, bullets, techNotes) {
     if (slideNum > 1) doc.addPage();
     
-    // Slide Header Background
     doc.setFillColor(30, 41, 59);
     doc.rect(0, 0, 210, 32, 'F');
     
-    // Slide Accent Line
     doc.setFillColor(59, 130, 246);
     doc.rect(0, 32, 210, 3, 'F');
 
-    // Header Text
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
@@ -684,20 +629,17 @@ function downloadWeatherGuidePDF() {
     doc.setTextColor(148, 163, 184);
     doc.text(`Module: Microclimate & Rain Dilution | Level: ${currentFarmerLevel.toUpperCase()}`, 15, 23);
 
-    // Slide Number Footer Badge
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(175, 10, 22, 14, 3, 3, 'F');
     doc.setTextColor(15, 23, 42);
     doc.setFontSize(9);
     doc.text(`${slideNum} / ${totalSlides}`, 181, 19);
 
-    // Slide Title
     doc.setTextColor(15, 23, 42);
     doc.setFontSize(16);
     doc.setFont("helvetica", "bold");
     doc.text(title, 15, 50);
 
-    // Bullet Points Block
     let y = 62;
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
@@ -710,7 +652,6 @@ function downloadWeatherGuidePDF() {
       y += 14;
     });
 
-    // Technical Deep-Dive Box for Serious Farmers
     if(techNotes && techNotes.length > 0) {
       doc.setFillColor(248, 250, 252);
       doc.setDrawColor(226, 232, 240);
@@ -727,7 +668,7 @@ function downloadWeatherGuidePDF() {
       let ty = y + 23;
       techNotes.forEach(note => {
         doc.text(`• ${note}`, 20, ty, { maxWidth: 170 });
-        ty + 8 ? ty += 8 : null;
+        ty += 8;
       });
     }
 
@@ -736,7 +677,6 @@ function downloadWeatherGuidePDF() {
     doc.text("Soil Buddies Enterprise Meteorological Engine © 2026. Confidential Academic & Field Manual.", 15, 288);
   }
 
-  // Slide 1: Microclimate Overview
   renderWeatherSlide(1, 4, "Slide 1: Open-Meteo API & Farm Synced GPS", [
     "Real-time meteorological synchronization connected to precise farm GPS coordinates.",
     "Atmospheric pressure monitoring to predict sudden convective storm cells.",
@@ -748,7 +688,6 @@ function downloadWeatherGuidePDF() {
     "Integrated warning triggers active when precipitation probability exceeds 65%."
   ]);
 
-  // Slide 2: Rain Dilution Physics
   renderWeatherSlide(2, 4, "Slide 2: Rain Dilution & Nutrient Leaching Mechanics", [
     "The 48-Hour Rule: Heavy rainfall post-fertilization induces severe nitrate leaching.",
     "Percolation velocity: Sandy Loam allows rapid water movement, carrying mobile ions deep past root zones.",
@@ -760,7 +699,6 @@ function downloadWeatherGuidePDF() {
     "Action trigger: Postpone all top-dressing when forecasted 48h rain exceeds 1.0mm."
   ]);
 
-  // Slide 3: Soil Moisture Equilibrium
   renderWeatherSlide(3, 4, "Slide 3: Moisture Equilibrium & Irrigation Control", [
     "Current soil moisture holds steady at 45% field capacity.",
     "Precipitation offset: Natural rainfall reduces irrigation pumping energy costs.",
@@ -772,7 +710,6 @@ function downloadWeatherGuidePDF() {
     "Automated valve lockout activated during active precipitation events."
   ]);
 
-  // Slide 4: Strategic Weather Risk Mitigation
   renderWeatherSlide(4, 4, "Slide 4: Strategic Weather Risk Mitigation", [
     "Daily routine: Inspect the Apple Weather microclimate widget every morning at 06:00.",
     "Emergency protocol: Secure open compost heaps and fertilizer bags when storm alerts trigger.",
