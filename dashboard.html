@@ -124,7 +124,7 @@ body.chat-open #chat-fab{display:none}
     </div>
   </div>
 
-  <!-- RECOMMENDED FOR PLANTING WITH REALISTIC MOTIVATIONAL METRICS -->
+  <!-- RECOMMENDED FOR PLANTING WITH MOTIVATIONAL METRICS -->
   <div class="mt-14">
     <div class="flex items-center justify-between gap-4 mb-8">
       <div>
@@ -147,7 +147,6 @@ body.chat-open #chat-fab{display:none}
           <h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Roma Tomatoes</h3>
           <p class="text-sm text-slate-600 mb-6 leading-relaxed">Optimal for your current pH of 6.2. High yield expected in the current local temperature and moisture cycle.</p>
           
-          <!-- Motivational Realistic Work Metrics -->
           <div class="grid grid-cols-2 gap-3 mb-6 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-100">
             <div>
               <p class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-0.5 flex items-center gap-1"><iconify-icon icon="lucide:sprout"></iconify-icon> Recommended Plot</p>
@@ -177,7 +176,6 @@ body.chat-open #chat-fab{display:none}
           <h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Root Carrots</h3>
           <p class="text-sm text-slate-600 mb-6 leading-relaxed">Current 45% moisture level provides ideal density resistance for deep, straight root development.</p>
           
-          <!-- Motivational Realistic Work Metrics -->
           <div class="grid grid-cols-2 gap-3 mb-6 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-100">
             <div>
               <p class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-0.5 flex items-center gap-1"><iconify-icon icon="lucide:sprout"></iconify-icon> Recommended Plot</p>
@@ -196,6 +194,33 @@ body.chat-open #chat-fab{display:none}
       </div>
     </div>
   </div>
+
+  <!-- KNOW YOUR LAND: INTERACTIVE SOIL & FARM QUIZZES -->
+  <div class="mt-14">
+    <div class="advanced-card p-6 sm:p-10 rounded-[2rem] bg-gradient-to-br from-slate-900 to-slate-800 text-white relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 relative z-10">
+        <div>
+          <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider border border-emerald-500/30">Farmer Academy</span>
+          <h2 class="text-2xl sm:text-3xl font-bold font-heading text-white mt-2">Know Your Land: Interactive Soil Quizzes</h2>
+          <p class="text-slate-300 text-sm sm:text-base mt-1">Test your understanding of your soil telemetry (pH 6.2, moisture, and nitrogen) and master your farm decisions.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-right">
+            <p class="text-xs text-slate-400 font-semibold uppercase">Quiz Score</p>
+            <p id="quiz-score-badge" class="text-lg font-black text-emerald-400">0 / 3 Correct</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz Interactive Card Container -->
+      <div id="quiz-container" class="bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 border border-white/10 relative z-10">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- HARDWARE -->
@@ -258,7 +283,6 @@ body.chat-open #chat-fab{display:none}
   <button onclick="switchView('settings-view')" class="flex items-center gap-2 min-h-[44px] text-sm font-bold text-slate-600 mb-4 hover:text-[#4338CA]"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Return to Settings</button>
   
   <div class="grid lg:grid-cols-3 gap-8">
-    <!-- LEFT: Apple Weather Card -->
     <div class="lg:col-span-2 bg-[#1E2538] rounded-[2.5rem] p-6 sm:p-10 text-white shadow-2xl relative overflow-hidden flex flex-col justify-between">
       <div>
         <div class="text-center my-6">
@@ -281,7 +305,6 @@ body.chat-open #chat-fab{display:none}
       <p id="weather-updated" class="text-xs text-slate-400 mt-8 text-center">Weather supplied by Open-Meteo API using database coordinates.</p>
     </div>
 
-    <!-- RIGHT: Soil Dilution & Forecast Warning Box -->
     <div class="flex flex-col justify-start">
       <h3 class="text-sm uppercase tracking-widest font-bold text-slate-500 mb-5">Rain Dilution &amp; Forecast API</h3>
       <div id="rain-card-box" class="bg-white p-6 rounded-2xl border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.15)] mb-6 transition-all">
@@ -318,7 +341,6 @@ body.chat-open #chat-fab{display:none}
           <iconify-icon icon="lucide:sparkles" class="text-base"></iconify-icon> View Full Yield Details
         </button>
       </div>
-
     </div>
   </div>
 </div>
@@ -346,10 +368,7 @@ body.chat-open #chat-fab{display:none}
       </div>
     </div>
     
-    <!-- Step Content Container -->
     <div id="plot-guide-body" class="space-y-4 text-sm text-slate-700 leading-relaxed font-medium"></div>
-
-    <!-- Navigation / Question Box -->
     <div id="guide-interactive-area" class="mt-6 pt-4 border-t border-slate-100"></div>
   </div>
 </div>
@@ -400,7 +419,6 @@ body.chat-open #chat-fab{display:none}
       <div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm" id="chat-greeting">Hello! I am your Agri-Talk assistant powered by Gemini. Ask me about your soil, crops, planting seasons, pests, or irrigation.</div>
     </div>
   </div>
-  <!-- Attached Image Preview Container -->
   <div id="image-preview-bar" class="hidden px-4 py-2 bg-emerald-50 border-t border-emerald-100 flex items-center justify-between">
     <div class="flex items-center gap-2 text-xs font-bold text-emerald-800">
       <iconify-icon icon="lucide:image" class="text-lg"></iconify-icon>
@@ -556,6 +574,135 @@ ci.addEventListener('focus',()=>{setTimeout(setVV,150);setTimeout(setVV,400)});
 ci.addEventListener('input',()=>{ci.style.height='auto';ci.style.height=Math.min(ci.scrollHeight,112)+'px'});
 function openModal(id){const m=document.getElementById(id),c=document.getElementById(id+'-content');m.classList.remove('hidden');m.classList.add('flex');void m.offsetWidth;c.classList.remove('scale-95','opacity-0');}
 function closeModal(id){const m=document.getElementById(id),c=document.getElementById(id+'-content');c.classList.add('scale-95','opacity-0');setTimeout(()=>{m.classList.add('hidden');m.classList.remove('flex')},300);}
+
+/* ===== FARMER QUIZ ENGINE (KNOW YOUR LAND) ===== */
+const farmQuizzes = [
+  {
+    question: "Your land probe currently reads a pH of 6.2. What does this mean for your vegetable crops?",
+    options: [
+      { text: "It is in the ideal slightly acidic range for most vegetables.", correct: true, explanation: "Spot on! A pH of 6.2 is prime territory for vegetables like tomatoes and carrots, allowing optimal nutrient uptake." },
+      { text: "It is too acidic and will burn all plant roots instantly.", correct: false, explanation: "Incorrect. 6.2 is very close to neutral (7.0) and is actually ideal. Highly acidic would be below 5.0." },
+      { text: "It is too alkaline, meaning plants cannot drink water.", correct: false, explanation: "Incorrect. Alkaline is above 7.5. 6.2 is slightly acidic." }
+    ]
+  },
+  {
+    question: "Your stick sensor reports Low Nitrogen (N). What is the safest way to prepare your plot before planting?",
+    options: [
+      { text: "Apply high-nitrogen organic compost 48 hours before planting.", correct: true, explanation: "Correct! Organic compost top-dressing safely boosts nitrogen without burning young roots." },
+      { text: "Flood the field with heavy chemical sprays during a rainstorm.", correct: false, explanation: "Incorrect! Heavy rain right after fertilizing causes nutrient washout and pollutes runoff." },
+      { text: "Ignore it; nitrogen has no effect on plant leaf growth.", correct: false, explanation: "Incorrect. Nitrogen is vital for lush leaf and stem growth." }
+    ]
+  },
+  {
+    question: "The weather API forecasts 15mm of rain in the next 48 hours. What should you do with your scheduled fertilizer?",
+    options: [
+      { text: "Postpone the application until after the rain passes to prevent washout.", correct: true, explanation: "Exactly right! Waiting prevents expensive nutrients from washing away into the soil table." },
+      { text: "Apply double the amount immediately to beat the rain.", correct: false, explanation: "Incorrect. That would cause severe nutrient run-off and acidify the plot bed." },
+      { text: "Stop checking weather entirely and plant anyway.", correct: false, explanation: "Incorrect. Monitoring microclimates protects your farming investment." }
+    ]
+  }
+];
+
+let currentQuizIndex = 0;
+let userQuizScore = 0;
+let quizAnswered = false;
+
+function renderQuiz() {
+  const container = document.getElementById('quiz-container');
+  if(!container) return;
+
+  const quiz = farmQuizzes[currentQuizIndex];
+  document.getElementById('quiz-score-badge').textContent = `${userQuizScore} / ${farmQuizzes.length} Correct`;
+
+  let optionsHtml = quiz.options.map((opt, idx) => `
+    <button onclick="handleQuizAnswer(${idx})" id="quiz-opt-${idx}" class="w-full text-left p-4 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 transition-all font-medium text-sm sm:text-base flex items-center justify-between group">
+      <span>${escapeHtml(opt.text)}</span>
+      <span class="w-6 h-6 rounded-full border border-white/30 flex items-center justify-center shrink-0 group-hover:border-emerald-400"></span>
+    </button>
+  `).join('');
+
+  container.innerHTML = `
+    <div class="mb-4 flex items-center justify-between">
+      <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Question ${currentQuizIndex + 1} of ${farmQuizzes.length}</span>
+      <span class="text-xs text-slate-300 font-medium">Test &amp; Learn Your Land</span>
+    </div>
+    <h3 class="text-lg sm:text-xl font-bold font-heading text-white mb-6">${escapeHtml(quiz.question)}</h3>
+    <div class="space-y-3 mb-6" id="quiz-options-list">
+      ${optionsHtml}
+    </div>
+    <div id="quiz-feedback-box" class="hidden p-4 rounded-xl border text-sm leading-relaxed mb-4"></div>
+    <div id="quiz-next-wrap" class="hidden flex justify-end">
+      <button onclick="nextQuizQuestion()" class="min-h-[44px] px-6 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-600 text-slate-950 transition-colors flex items-center gap-2">
+        <span>${currentQuizIndex < farmQuizzes.length - 1 ? 'Next Question' : 'Complete Quiz'}</span>
+        <iconify-icon icon="lucide:arrow-right"></iconify-icon>
+      </button>
+    </div>
+  `;
+  quizAnswered = false;
+}
+
+function handleQuizAnswer(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+
+  const quiz = farmQuizzes[currentQuizIndex];
+  const selected = quiz.options[idx];
+  const feedbackBox = document.getElementById('quiz-feedback-box');
+  const nextWrap = document.getElementById('quiz-next-wrap');
+
+  quiz.options.forEach((opt, i) => {
+    const btn = document.getElementById(`quiz-opt-${i}`);
+    btn.disabled = true;
+    if(opt.correct) {
+      btn.className = "w-full text-left p-4 rounded-xl border border-emerald-500 bg-emerald-500/20 text-emerald-200 font-bold text-sm sm:text-base flex items-center justify-between";
+    } else if(i === idx) {
+      btn.className = "w-full text-left p-4 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-200 font-medium text-sm sm:text-base flex items-center justify-between";
+    }
+  });
+
+  if (selected.correct) {
+    userQuizScore++;
+    feedbackBox.className = "p-4 rounded-xl border border-emerald-500/40 bg-emerald-500/20 text-emerald-100 text-sm leading-relaxed mb-4";
+    feedbackBox.innerHTML = `<strong>✅ Correct!</strong> ${escapeHtml(selected.explanation)}`;
+  } else {
+    feedbackBox.className = "p-4 rounded-xl border border-rose-500/40 bg-rose-500/20 text-rose-100 text-sm leading-relaxed mb-4";
+    feedbackBox.innerHTML = `<strong>❌ Not quite.</strong> ${escapeHtml(selected.explanation)}`;
+  }
+
+  document.getElementById('quiz-score-badge').textContent = `${userQuizScore} / ${farmQuizzes.length} Correct`;
+  feedbackBox.classList.remove('hidden');
+  nextWrap.classList.remove('hidden');
+}
+
+function nextQuizQuestion() {
+  currentQuizIndex++;
+  if (currentQuizIndex < farmQuizzes.length) {
+    renderQuiz();
+  } else {
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = `
+      <div class="text-center py-8">
+        <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-4 text-3xl">
+          <iconify-icon icon="lucide:award"></iconify-icon>
+        </div>
+        <h3 class="text-2xl font-bold font-heading text-white mb-2">Quiz Completed!</h3>
+        <p class="text-slate-300 mb-6">You scored <strong class="text-emerald-400">${userQuizScore} out of ${farmQuizzes.length}</strong>. You understand your soil telemetry and weather triggers like a pro farmer!</p>
+        <button onclick="resetQuiz()" class="min-h-[48px] px-8 rounded-xl font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-colors">Retake Quiz</button>
+      </div>
+    `;
+  }
+}
+
+function resetQuiz() {
+  currentQuizIndex = 0;
+  userQuizScore = 0;
+  renderQuiz();
+}
+
+// Initialize Quiz on load
+document.addEventListener('DOMContentLoaded', () => {
+  renderQuiz();
+});
 
 /* ===== STEP-BY-STEP TUTOR AI GUIDE ===== */
 let currentCropName = '';
