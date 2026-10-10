@@ -8,6 +8,8 @@
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+<!-- jsPDF for Generating Downloadable Educational PDFs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -59,7 +61,18 @@ body.chat-open #chat-fab{display:none}
       <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-emerald-500/30"><iconify-icon icon="lucide:cpu" class="text-white text-xl"></iconify-icon></div>
       <span class="hidden min-[430px]:inline text-xl sm:text-2xl font-bold tracking-tight font-heading text-slate-800">Soil<span class="text-emerald-600">Buddies</span></span>
     </div>
+    
+    <!-- Experience Level Selector & Navigation Controls -->
     <div class="flex items-center gap-2 sm:gap-3">
+      <div class="hidden md:flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+        <span class="text-xs font-bold text-slate-500 uppercase">Level:</span>
+        <select id="farmer-level-select" onchange="changeFarmerLevel(this.value)" class="text-xs font-bold bg-transparent text-emerald-700 outline-none cursor-pointer">
+          <option value="beginner">🌱 New / Beginner Farmer</option>
+          <option value="intermediate" selected>🌾 Intermediate Farmer</option>
+          <option value="advanced">🚜 Advanced Farmer</option>
+        </select>
+      </div>
+
       <button onclick="openProblem()" class="flex items-center gap-2 h-11 px-3 sm:px-4 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 font-bold text-sm" aria-label="Problem AI"><iconify-icon icon="lucide:message-square-warning" class="text-xl"></iconify-icon><span class="hidden sm:inline">Problem AI</span></button>
       <button onclick="switchView('settings-view')" class="btn-icon" aria-label="Settings"><iconify-icon icon="lucide:settings" class="text-xl"></iconify-icon></button>
       <button id="bell-btn" onclick="toggleNotif()" class="btn-icon relative" aria-label="Notifications"><iconify-icon icon="lucide:bell" class="text-xl"></iconify-icon><span id="bell-badge" style="display:none" class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 rounded-full bg-rose-500 text-white text-xs font-bold items-center justify-center border-2 border-white pulse-ring">0</span></button>
@@ -82,7 +95,7 @@ body.chat-open #chat-fab{display:none}
   <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
     <div>
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 mb-2 font-heading">Welcome back, <span class="gradient-text">Farmer</span></h1>
-      <p class="text-slate-600 text-base sm:text-lg font-medium">Your telemetry and environment status looks stable today.</p>
+      <p class="text-slate-600 text-base sm:text-lg font-medium">Your telemetry, calibrated drone soil type, and weather status are synced.</p>
     </div>
     <div class="self-start flex flex-wrap gap-2">
       <div class="flex items-center gap-2 text-sm font-semibold text-emerald-700 bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-100"><span class="w-2 h-2 rounded-full bg-emerald-500 pulse-ring"></span> System Online</div>
@@ -97,12 +110,18 @@ body.chat-open #chat-fab{display:none}
         <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors text-slate-400"><iconify-icon icon="lucide:arrow-up-right" class="text-xl"></iconify-icon></div>
       </div>
       <div>
-        <h2 class="text-2xl font-bold text-slate-900 mb-1 font-heading">Sensor Array</h2>
-        <p class="text-sm font-medium text-slate-500 mb-5">Latest Stick Sync</p>
-        <div class="flex items-end gap-4">
-          <div><p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">pH Level</p><p class="text-4xl font-black text-slate-800 tracking-tighter">6.2</p></div>
-          <div class="h-10 w-px bg-slate-200"></div>
-          <div><p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Moisture</p><p class="text-4xl font-black text-slate-800 tracking-tighter">45<span class="text-2xl text-slate-400">%</span></p></div>
+        <h2 class="text-2xl font-bold text-slate-900 mb-1 font-heading">Sensor Array &amp; Soil Type</h2>
+        <p class="text-sm font-medium text-slate-500 mb-5">Calibrated Probe + Drone Multispectral Scan</p>
+        <div class="flex items-end justify-between">
+          <div class="flex items-end gap-4">
+            <div><p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">pH Level</p><p class="text-4xl font-black text-slate-800 tracking-tighter">6.2</p></div>
+            <div class="h-10 w-px bg-slate-200"></div>
+            <div><p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Moisture</p><p class="text-4xl font-black text-slate-800 tracking-tighter">45<span class="text-2xl text-slate-400">%</span></p></div>
+          </div>
+          <div class="text-right">
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Soil Texture</p>
+            <p class="text-lg font-black text-emerald-700 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200">Sandy Loam</p>
+          </div>
         </div>
       </div>
     </div>
@@ -124,12 +143,54 @@ body.chat-open #chat-fab{display:none}
     </div>
   </div>
 
+  <!-- DOWNLOADABLE EDUCATIONAL GUIDES & PDF HUB -->
+  <div class="mt-14">
+    <div class="advanced-card p-6 sm:p-10 rounded-[2rem] bg-gradient-to-br from-emerald-900 to-slate-900 text-white relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 relative z-10">
+        <div>
+          <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-wider border border-emerald-500/30">Downloadable Learning Center</span>
+          <h2 class="text-2xl sm:text-3xl font-bold font-heading text-white mt-2">Farmer Field Guides &amp; Weather PDFs</h2>
+          <p class="text-slate-300 text-sm sm:text-base mt-1">Download beautifully formatted study notes tailored to your chosen experience level (<span id="current-level-label" class="text-emerald-400 font-bold uppercase">Intermediate</span>).</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <button onclick="downloadSoilGuidePDF()" class="min-h-[48px] px-5 rounded-xl font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-colors flex items-center gap-2 shadow-lg">
+            <iconify-icon icon="lucide:file-down" class="text-xl"></iconify-icon> Download Soil &amp; Solutions PDF
+          </button>
+          <button onclick="downloadWeatherGuidePDF()" class="min-h-[48px] px-5 rounded-xl font-bold bg-white/10 text-white hover:bg-white/20 border border-white/20 transition-colors flex items-center gap-2">
+            <iconify-icon icon="lucide:cloud-sun" class="text-xl text-amber-400"></iconify-icon> Download Weather &amp; Rain PDF
+          </button>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 relative z-10">
+        <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10">
+          <h3 class="font-bold text-lg mb-2 flex items-center gap-2"><iconify-icon icon="lucide:book-open" class="text-emerald-400"></iconify-icon> What's inside the Soil Guide PDF?</h3>
+          <ul class="space-y-2 text-sm text-slate-200">
+            <li>• Detailed explanations of your pH 6.2 reading and Sandy Loam soil structure.</li>
+            <li>• How to fix Low Nitrogen without damaging root systems.</li>
+            <li>• Tailored advice matching your <span id="guide-preview-level" class="text-emerald-300 font-bold">Intermediate</span> farmer profile.</li>
+          </ul>
+        </div>
+        <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10">
+          <h3 class="font-bold text-lg mb-2 flex items-center gap-2"><iconify-icon icon="lucide:cloud-rain" class="text-blue-400"></iconify-icon> What's inside the Weather Guide PDF?</h3>
+          <ul class="space-y-2 text-sm text-slate-200">
+            <li>• How 48-hour rain forecasts affect nutrient dilution and soil moisture.</li>
+            <li>• When to safely irrigate versus when to pause top-dressing.</li>
+            <li>• Actionable checklist to protect your crop investment from weather shocks.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- RECOMMENDED FOR PLANTING WITH MOTIVATIONAL METRICS -->
   <div class="mt-14">
     <div class="flex items-center justify-between gap-4 mb-8">
       <div>
         <h2 class="text-2xl font-bold font-heading text-slate-900">Recommended for Planting</h2>
-        <p class="text-slate-600 font-medium mt-1">Verified for your current soil telemetry (pH 6.2, Moisture 45%) &amp; local weather cycle.</p>
+        <p class="text-slate-600 font-medium mt-1">Verified for your current soil telemetry (pH 6.2, Sandy Loam) &amp; local weather cycle.</p>
       </div>
       <button onclick="switchView('detail-plans')" class="hidden sm:block shrink-0 text-sm font-bold text-emerald-700 hover:text-emerald-800">View All Plans &rarr;</button>
     </div>
@@ -145,7 +206,7 @@ body.chat-open #chat-fab{display:none}
         </div>
         <div class="p-6 sm:p-8 flex flex-col flex-grow">
           <h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Roma Tomatoes</h3>
-          <p class="text-sm text-slate-600 mb-6 leading-relaxed">Optimal for your current pH of 6.2. High yield expected in the current local temperature and moisture cycle.</p>
+          <p class="text-sm text-slate-600 mb-6 leading-relaxed">Optimal for your current pH of 6.2 in Sandy Loam soil. High yield expected in the current temperature cycle.</p>
           
           <div class="grid grid-cols-2 gap-3 mb-6 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-100">
             <div>
@@ -174,7 +235,7 @@ body.chat-open #chat-fab{display:none}
         </div>
         <div class="p-6 sm:p-8 flex flex-col flex-grow">
           <h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Root Carrots</h3>
-          <p class="text-sm text-slate-600 mb-6 leading-relaxed">Current 45% moisture level provides ideal density resistance for deep, straight root development.</p>
+          <p class="text-sm text-slate-600 mb-6 leading-relaxed">Sandy Loam soil texture provides ideal density resistance for deep, straight root development.</p>
           
           <div class="grid grid-cols-2 gap-3 mb-6 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-100">
             <div>
@@ -204,7 +265,7 @@ body.chat-open #chat-fab{display:none}
         <div>
           <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider border border-emerald-500/30">Farmer Academy</span>
           <h2 class="text-2xl sm:text-3xl font-bold font-heading text-white mt-2">Know Your Land: Interactive Soil Quizzes</h2>
-          <p class="text-slate-300 text-sm sm:text-base mt-1">Test your understanding of your soil telemetry (pH 6.2, moisture, and nitrogen) and master your farm decisions.</p>
+          <p class="text-slate-300 text-sm sm:text-base mt-1">Test your understanding of your soil telemetry (pH 6.2, Sandy Loam, and nitrogen) and master your farm decisions.</p>
         </div>
         <div class="flex items-center gap-3">
           <div class="text-right">
@@ -214,7 +275,6 @@ body.chat-open #chat-fab{display:none}
         </div>
       </div>
 
-      <!-- Quiz Interactive Card Container -->
       <div id="quiz-container" class="bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 border border-white/10 relative z-10">
         <!-- Injected via JavaScript -->
       </div>
@@ -228,9 +288,25 @@ body.chat-open #chat-fab{display:none}
   <button onclick="switchView('main-dashboard')" class="flex items-center gap-2 min-h-[44px] text-sm font-bold text-slate-600 mb-4 hover:text-emerald-700"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Return to Dashboard</button>
   <div class="advanced-card p-6 sm:p-10 lg:p-12 rounded-[2rem]">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold font-heading text-slate-900 flex items-center gap-3"><span class="p-3 bg-emerald-100 text-emerald-600 rounded-xl flex"><iconify-icon icon="lucide:activity"></iconify-icon></span>Telemetry Analysis</h2>
-      <button class="self-start min-h-[44px] px-5 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 flex items-center gap-2"><iconify-icon icon="lucide:refresh-cw"></iconify-icon> Sync Stick</button>
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold font-heading text-slate-900 flex items-center gap-3"><span class="p-3 bg-emerald-100 text-emerald-600 rounded-xl flex"><iconify-icon icon="lucide:activity"></iconify-icon></span>Telemetry &amp; Soil Type Analysis</h2>
+      <button class="self-start min-h-[44px] px-5 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 flex items-center gap-2"><iconify-icon icon="lucide:refresh-cw"></iconify-icon> Sync Stick &amp; Drone</button>
     </div>
+
+    <!-- Soil Texture Banner -->
+    <div class="mb-8 p-6 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+          <iconify-icon icon="lucide:layers" class="text-2xl"></iconify-icon>
+        </div>
+        <div>
+          <span class="text-xs font-bold text-emerald-800 uppercase tracking-widest">Drone + Probe Calibration</span>
+          <h3 class="text-xl font-bold text-emerald-950 font-heading">Soil Texture: Sandy Loam</h3>
+          <p class="text-sm text-emerald-800 mt-0.5">Excellent drainage capacity with moderate nutrient retention. Ideal for root crops and fruiting vegetables.</p>
+        </div>
+      </div>
+      <button onclick="downloadSoilGuidePDF()" class="min-h-[44px] px-5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition-colors shrink-0">Download Soil Guide</button>
+    </div>
+
     <div class="grid md:grid-cols-3 gap-5 mb-8">
       <div class="p-6 sm:p-8 bg-slate-50 rounded-2xl border border-slate-100"><div class="flex justify-between items-center mb-5"><p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Soil pH</p><iconify-icon icon="lucide:flask-conical" class="text-slate-400 text-2xl"></iconify-icon></div><p class="text-5xl font-black text-slate-800 tracking-tighter mb-4">6.2</p><div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="bg-gradient-to-r from-emerald-400 to-emerald-600 w-[62%] h-full rounded-full"></div></div><p class="text-sm font-bold text-emerald-700 mt-4 flex items-center gap-1"><iconify-icon icon="lucide:check-circle"></iconify-icon> Optimal Range</p></div>
       <div class="p-6 sm:p-8 bg-slate-50 rounded-2xl border border-slate-100"><div class="flex justify-between items-center mb-5"><p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Moisture</p><iconify-icon icon="lucide:droplets" class="text-slate-400 text-2xl"></iconify-icon></div><p class="text-5xl font-black text-slate-800 tracking-tighter mb-4">45<span class="text-2xl text-slate-400">%</span></p><div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="bg-gradient-to-r from-blue-400 to-blue-600 w-[45%] h-full rounded-full"></div></div><p class="text-sm font-bold text-blue-700 mt-4 flex items-center gap-1"><iconify-icon icon="lucide:info"></iconify-icon> Field Capacity</p></div>
@@ -245,14 +321,14 @@ body.chat-open #chat-fab{display:none}
   <button onclick="switchView('main-dashboard')" class="flex items-center gap-2 min-h-[44px] text-sm font-bold text-slate-600 mb-4 hover:text-amber-700"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Return to Dashboard</button>
   <div class="advanced-card p-6 sm:p-10 lg:p-12 rounded-[2rem]">
     <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold font-heading text-slate-900 flex items-center gap-3 mb-8"><span class="p-3 bg-amber-100 text-amber-600 rounded-xl flex"><iconify-icon icon="lucide:database-zap"></iconify-icon></span>Algorithmic Plot Matches</h2>
-    <p class="text-slate-600 font-medium text-base sm:text-lg mb-8 max-w-3xl">Based on your telemetry <span class="font-bold text-slate-800">(pH 6.2, N-Level: Low)</span> and the current climate cycle, the AI recommends the following planting strategy.</p>
+    <p class="text-slate-600 font-medium text-base sm:text-lg mb-8 max-w-3xl">Based on your telemetry <span class="font-bold text-slate-800">(pH 6.2, Sandy Loam, N-Level: Low)</span> and the current climate cycle, the AI recommends the following planting strategy.</p>
     <div class="grid gap-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white">
         <div class="flex items-center gap-4 sm:gap-6"><div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-rose-100 rounded-2xl flex items-center justify-center text-rose-600"><iconify-icon icon="lucide:apple" class="text-3xl"></iconify-icon></div><div><div class="flex flex-wrap items-center gap-2 mb-1"><h3 class="font-bold font-heading text-xl text-slate-900">Roma Tomatoes</h3><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-md">98% Match</span></div><p class="text-sm font-medium text-slate-600">Thrives perfectly in pH 6.2. Estimated yield: ~1,450 kg (~R24,650 revenue).</p></div></div>
         <button onclick="openPlotGuide('Roma Tomatoes')" class="min-h-[48px] px-6 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-emerald-600 transition-colors">Initialize Plot</button>
       </div>
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white">
-        <div class="flex items-center gap-4 sm:gap-6"><div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-green-100 rounded-2xl flex items-center justify-center text-green-600"><iconify-icon icon="lucide:carrot" class="text-3xl"></iconify-icon></div><div><div class="flex flex-wrap items-center gap-2 mb-1"><h3 class="font-bold font-heading text-xl text-slate-900">Root Carrots</h3><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-md">92% Match</span></div><p class="text-sm font-medium text-slate-600">Moisture at 45% suits deep root growth. Estimated yield: ~850 kg (~R15,300 revenue).</p></div></div>
+        <div class="flex items-center gap-4 sm:gap-6"><div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-green-100 rounded-2xl flex items-center justify-center text-green-600"><iconify-icon icon="lucide:carrot" class="text-3xl"></iconify-icon></div><div><div class="flex flex-wrap items-center gap-2 mb-1"><h3 class="font-bold font-heading text-xl text-slate-900">Root Carrots</h3><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-md">92% Match</span></div><p class="text-sm font-medium text-slate-600">Sandy Loam suits deep root growth. Estimated yield: ~850 kg (~R15,300 revenue).</p></div></div>
         <button onclick="openPlotGuide('Root Carrots')" class="min-h-[48px] px-6 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-emerald-600 transition-colors">Initialize Plot</button>
       </div>
     </div>
@@ -267,7 +343,7 @@ body.chat-open #chat-fab{display:none}
     <div class="grid lg:grid-cols-2 gap-6">
       <div class="space-y-4">
         <div class="p-6 rounded-2xl border border-slate-200 bg-white"><h3 class="font-bold font-heading text-xl text-slate-900 mb-2">Account Details</h3><p class="text-sm text-slate-600">Manage your profile and farm information.</p></div>
-        <div class="p-6 rounded-2xl border border-slate-200 bg-white"><h3 class="font-bold font-heading text-xl text-slate-900 mb-2">Hardware Configuration</h3><p class="text-sm text-slate-600">Connect and calibrate your soil testing sticks.</p></div>
+        <div class="p-6 rounded-2xl border border-slate-200 bg-white"><h3 class="font-bold font-heading text-xl text-slate-900 mb-2">Hardware Configuration</h3><p class="text-sm text-slate-600">Connect and calibrate your soil testing sticks and drone multispectral sync.</p></div>
       </div>
       <div onclick="switchView('detail-weather')" class="p-6 sm:p-8 rounded-3xl border border-slate-200 bg-white hover:border-indigo-300 transition-all cursor-pointer group flex flex-col justify-between gap-6 min-h-[250px] shadow-sm hover:shadow-md">
         <div class="flex justify-between items-start"><div class="w-14 h-14 rounded-2xl bg-[#EBEFFF] flex items-center justify-center"><iconify-icon icon="lucide:cloud-drizzle" class="text-2xl text-[#6366F1]"></iconify-icon></div><div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-slate-100 text-slate-400"><iconify-icon icon="lucide:arrow-up-right" class="text-xl"></iconify-icon></div></div>
@@ -324,21 +400,8 @@ body.chat-open #chat-fab{display:none}
       <div class="advanced-card p-6 rounded-2xl bg-white mb-6">
         <h4 class="font-bold font-heading text-slate-900 mb-2 flex items-center gap-2"><iconify-icon icon="lucide:shield-alert" class="text-amber-500 text-xl"></iconify-icon> Smart Agricultural Warning</h4>
         <p class="text-sm text-slate-600 leading-relaxed">If significant rain is forecasted for the upcoming 48 hours, the system highlights an advance warning so you can postpone fertilizer or compost top-dressings before nutrients wash away.</p>
-      </div>
-
-      <div class="advanced-card p-6 rounded-2xl bg-white border border-slate-200">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-            <iconify-icon icon="lucide:sprout" class="text-xl"></iconify-icon>
-          </div>
-          <div>
-            <h4 class="font-bold font-heading text-slate-900">Yield Maximize Guide</h4>
-            <p class="text-xs text-slate-500 font-medium">AI recommendations for high yield</p>
-          </div>
-        </div>
-        <p class="text-sm text-slate-600 leading-relaxed mb-4">Discover exact actionable steps tailored to your current rain forecast and soil telemetry to maximize your upcoming harvest.</p>
-        <button onclick="openYieldModal()" class="w-full min-h-[44px] bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
-          <iconify-icon icon="lucide:sparkles" class="text-base"></iconify-icon> View Full Yield Details
+        <button onclick="downloadWeatherGuidePDF()" class="mt-4 w-full min-h-[40px] bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2">
+          <iconify-icon icon="lucide:file-down"></iconify-icon> Download Weather Guide PDF
         </button>
       </div>
     </div>
@@ -373,31 +436,6 @@ body.chat-open #chat-fab{display:none}
   </div>
 </div>
 
-<!-- YIELD DETAILS MODAL -->
-<div id="yield-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
-  <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeYieldModal()"></div>
-  <div id="yield-modal-content" class="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90dvh] overflow-y-auto p-6 sm:p-8 scale-95 opacity-0 transition-all duration-300">
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center"><iconify-icon icon="lucide:trending-up" class="text-xl"></iconify-icon></div>
-        <h3 class="text-xl font-bold font-heading text-slate-900">Yield Optimization Strategy</h3>
-      </div>
-      <button onclick="closeYieldModal()" class="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-rose-500" aria-label="Close"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
-    </div>
-    <div id="yield-modal-body" class="space-y-4 text-sm text-slate-700 leading-relaxed font-medium">
-      <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900">
-        <strong>Current Status:</strong> Analyzed using live weather and telemetry data.
-      </div>
-      <p><strong>1. Optimal Irrigation Timing:</strong> Based on the next 48 hours rain forecast, adjust your drip irrigation schedule to prevent waterlogging and root asphyxiation.</p>
-      <p><strong>2. Nutrient Management:</strong> Apply targeted organic nitrogen boosters only after dry windows to prevent top-dressing washout.</p>
-      <p><strong>3. Microclimate Protection:</strong> Use mulch layering around crop bases to preserve moisture stability during peak temperature cycles.</p>
-    </div>
-    <div class="mt-6 flex justify-end">
-      <button onclick="closeYieldModal()" class="min-h-[48px] px-6 rounded-xl font-bold bg-slate-900 text-white hover:bg-emerald-600 transition-colors">Got it</button>
-    </div>
-  </div>
-</div>
-
 <!-- CHAT BUTTON -->
 <button id="chat-fab" onclick="toggleChat()" aria-label="Open Agri-Talk chat" class="fixed w-14 h-14 sm:w-16 sm:h-16 bg-slate-900 text-emerald-400 rounded-full shadow-2xl flex items-center justify-center hover:bg-slate-800 transition-colors z-[90] border border-slate-700">
   <iconify-icon id="fab-open" icon="lucide:message-square-plus" class="text-3xl"></iconify-icon>
@@ -419,15 +457,7 @@ body.chat-open #chat-fab{display:none}
       <div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm" id="chat-greeting">Hello! I am your Agri-Talk assistant powered by Gemini. Ask me about your soil, crops, planting seasons, pests, or irrigation.</div>
     </div>
   </div>
-  <div id="image-preview-bar" class="hidden px-4 py-2 bg-emerald-50 border-t border-emerald-100 flex items-center justify-between">
-    <div class="flex items-center gap-2 text-xs font-bold text-emerald-800">
-      <iconify-icon icon="lucide:image" class="text-lg"></iconify-icon>
-      <span id="preview-filename">Image attached</span>
-    </div>
-    <button onclick="removeAttachedImage()" class="text-slate-400 hover:text-rose-600"><iconify-icon icon="lucide:x" class="text-base"></iconify-icon></button>
-  </div>
   <div class="pt-3 chat-pad chat-bottom bg-white border-t border-slate-100 flex items-end gap-2 shrink-0">
-    <button onclick="openModal('upload-modal')" class="w-11 h-11 shrink-0 flex items-center justify-center text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl" aria-label="Upload image"><iconify-icon icon="lucide:image-plus" class="text-xl"></iconify-icon></button>
     <div class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-2xl focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-200">
       <textarea id="chat-input" rows="1" class="w-full bg-transparent border-none px-3 py-2.5 focus:outline-none resize-none font-medium text-slate-800 max-h-28" placeholder="Ask about soil, crops, planting..." enterkeyhint="send" autocomplete="off" autocorrect="on"></textarea>
     </div>
@@ -467,30 +497,6 @@ body.chat-open #chat-fab{display:none}
   </div>
 </div>
 
-<!-- STREAMLINED UPLOAD MODAL -->
-<div id="upload-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
-  <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeModal('upload-modal')"></div>
-  <div id="upload-modal-content" class="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90dvh] overflow-y-auto p-6 sm:p-8 scale-95 opacity-0 transition-all duration-300">
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-xl sm:text-2xl font-bold font-heading text-slate-900">Upload Image to Agri-Talk</h3>
-      <button onclick="closeModal('upload-modal')" class="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-rose-500" aria-label="Close"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
-    </div>
-    <p class="text-slate-600 mb-6 font-medium text-sm sm:text-base">Upload your photo. You can talk about what it is or what you want analyzed naturally during your conversation with Agri-Talk.</p>
-    <div class="space-y-5">
-      <label class="block border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-emerald-400 hover:bg-emerald-50 transition-colors cursor-pointer">
-        <input type="file" id="chat-image-file" accept="image/*" class="sr-only" onchange="handleImageSelection(event)">
-        <iconify-icon icon="lucide:upload-cloud" class="text-4xl text-slate-400 mb-2"></iconify-icon>
-        <span class="block text-sm font-bold text-slate-700" id="upload-label-text">Tap to select image</span>
-        <span class="block text-xs text-slate-500 mt-1 font-medium">PNG, JPG, or GIF (max. 10MB)</span>
-      </label>
-    </div>
-    <div class="mt-8 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
-      <button onclick="closeModal('upload-modal')" class="min-h-[48px] px-5 rounded-xl font-bold text-slate-700 border border-slate-300 hover:bg-slate-100">Cancel</button>
-      <button onclick="attachImageToChat()" class="min-h-[48px] px-5 rounded-xl font-bold bg-slate-900 text-white hover:bg-emerald-600 shadow-md flex items-center justify-center gap-2"><iconify-icon icon="lucide:check"></iconify-icon> Attach to Chat</button>
-    </div>
-  </div>
-</div>
-
 <script>
 function switchView(id){
   document.querySelectorAll('.view-section').forEach(v=>v.classList.add('hidden'));
@@ -515,90 +521,197 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('agri-ta
 function escapeHtml(t){return t.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 const AI_AVATAR='<div class="w-8 h-8 rounded-full bg-emerald-100 shrink-0 flex items-center justify-center text-emerald-600 mt-1"><iconify-icon icon="lucide:bot"></iconify-icon></div>';
 
-let attachedImage = null;
-function handleImageSelection(e) {
-  const file = e.target.files[0];
-  if(file) {
-    attachedImage = file;
-    document.getElementById('upload-label-text').textContent = `Selected: ${file.name}`;
-  }
-}
-function attachImageToChat() {
-  if(attachedImage) {
-    document.getElementById('preview-filename').textContent = attachedImage.name;
-    document.getElementById('image-preview-bar').classList.remove('hidden');
-  }
-  closeModal('upload-modal');
-}
-function removeAttachedImage() {
-  attachedImage = null;
-  document.getElementById('image-preview-bar').classList.add('hidden');
-  document.getElementById('upload-label-text').textContent = 'Tap to select image';
-  document.getElementById('chat-image-file').value = '';
+/* ===== FARMER EXPERIENCE LEVEL STATE ===== */
+let currentFarmerLevel = 'intermediate';
+
+function changeFarmerLevel(level) {
+  currentFarmerLevel = level;
+  const labels = { beginner: 'New / Beginner', intermediate: 'Intermediate', advanced: 'Advanced' };
+  document.getElementById('current-level-label').textContent = labels[level];
+  document.getElementById('guide-preview-level').textContent = labels[level];
 }
 
-async function sendMessage(){
-  const input=document.getElementById('chat-input'), box=document.getElementById('chat-messages'), text=input.value.trim();
-  if(!text && !attachedImage) return;
-  const u=document.createElement('div'); u.className='flex justify-end';
-  let imgHtml = attachedImage ? `<p class="text-xs italic text-emerald-100 mt-1">[Attached Image: ${attachedImage.name}]</p>` : '';
-  u.innerHTML=`<div class="chat-bubble-user p-4 text-sm font-medium shadow-sm max-w-[90%]">${escapeHtml(text)}${imgHtml}</div>`;
-  box.appendChild(u); input.value=''; input.style.height='auto';
+/* ===== PDF GENERATION ENGINES (jsPDF) ===== */
+function downloadSoilGuidePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
   
-  const l=document.createElement('div'); l.className='flex gap-3 max-w-[90%]';
-  l.innerHTML=AI_AVATAR+'<div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm text-slate-500">Agri-Talk is thinking...</div>';
-  box.appendChild(l); box.scrollTop=box.scrollHeight;
+  doc.setFillColor(5, 150, 105);
+  doc.rect(0, 0, 210, 30, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.text("SOIL BUDDIES - FIELD SOIL GUIDE", 15, 20);
 
-  attachedImage = null;
-  document.getElementById('image-preview-bar').classList.add('hidden');
+  doc.setTextColor(15, 23, 42);
+  doc.setFontSize(14);
+  doc.text(`Farmer Level: ${currentFarmerLevel.toUpperCase()}`, 15, 42);
+  doc.setFontSize(10);
+  doc.setTextColor(100, 116, 139);
+  doc.text(`Generated on: ${new Date().toLocaleDateString()} | Calibrated Probe & Drone Sync`, 15, 48);
 
-  try{
-    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text})});
-    const d=await r.json(); l.remove();
-    if(!r.ok) throw new Error(d.error||'Something went wrong');
-    const html=md(d.reply);
-    const a=document.createElement('div'); a.className='flex gap-3 max-w-[90%]';
-    a.innerHTML=AI_AVATAR+`<div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm text-slate-700 leading-relaxed min-w-0">${html}</div>`;
-    box.appendChild(a);
-  }catch(e){
-    console.error('Chat Error:',e); l.remove();
-    const x=document.createElement('div'); x.className='flex gap-3 max-w-[90%]';
-    x.innerHTML='<div class="w-8 h-8 rounded-full bg-rose-100 shrink-0 flex items-center justify-center text-rose-600 mt-1"><iconify-icon icon="lucide:alert-circle"></iconify-icon></div><div class="chat-bubble-ai p-4 text-sm font-medium text-rose-700 shadow-sm">Error communicating with backend.</div>';
-    box.appendChild(x);
+  doc.setDrawColor(226, 232, 240);
+  doc.line(15, 54, 195, 54);
+
+  doc.setFontSize(12);
+  doc.setTextColor(15, 23, 42);
+  doc.setFont("helvetica", "bold");
+  doc.text("1. Your Current Soil Telemetry & Meaning", 15, 65);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(51, 65, 85);
+
+  let content = [];
+  if(currentFarmerLevel === 'beginner') {
+    content = [
+      "• Soil pH (6.2): pH tells you how sweet or sour your soil is. 7.0 is neutral.",
+      "  At 6.2, your soil is gently acidic, which is like a comfortable blanket for vegetables.",
+      "• Soil Texture (Sandy Loam): Calibrated from drone multispectral scans and probe tests.",
+      "  Sandy Loam feels crumbly and holds moisture well without drowning roots.",
+      "• Nitrogen Status (Low): Nitrogen is plant food for green leaves. 'Low' means you",
+      "  need to feed your soil before planting so your crops grow strong and tall."
+    ];
+  } else if(currentFarmerLevel === 'intermediate') {
+    content = [
+      "• Soil pH (6.2): Optimal threshold for most cash crops (tomatoes, carrots, maize).",
+      "  Nutrient lockout is minimal at this range, meaning fertilizers are efficiently absorbed.",
+      "• Soil Texture (Sandy Loam): Ideal balance of sand, silt, and clay. Provides rapid drainage",
+      "  while retaining enough water at 45% moisture field capacity.",
+      "• Nitrogen Status (Low): Early vegetative deficiency detected. Requires nitrogen amendment",
+      "  prior to canopy closure."
+    ];
+  } else {
+    content = [
+      "• pH 6.2 Baseline: Cation Exchange Capacity (CEC) is stable. Base saturation is optimized",
+      "  for micronutrient availability without requiring liming interventions.",
+      "• Multispectral Drone Calibration: Sandy Loam texture confirmed via spectral reflectance and",
+      "  ground-truth core samples. Bulk density: 1.35 g/cm³.",
+      "• N-Deficiency Mitigation: Mineralization rate is suppressed. Top-dress with organic compost",
+      "  at 50kg/ha or calcium nitrate fertigation prior to crop establishment."
+    ];
   }
-  box.scrollTop=box.scrollHeight;
+
+  let y = 74;
+  content.forEach(line => {
+    doc.text(line, 15, y);
+    y += 7;
+  });
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  doc.setTextColor(15, 23, 42);
+  doc.text("2. Action Plan: How to Solve & Prepare", 15, y + 10);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(51, 65, 85);
+  
+  let steps = [
+    "Step 1: Apply high-nitrogen organic compost top-dressing evenly across the bed 48 hours before planting.",
+    "Step 2: Ensure tillage depth is maintained at 20cm to preserve Sandy Loam structure.",
+    "Step 3: Monitor daily moisture to keep levels steady around 45% using early-morning drip irrigation."
+  ];
+
+  y += 18;
+  steps.forEach(step => {
+    doc.text(step, 15, y, { maxWidth: 180 });
+    y += 12;
+  });
+
+  doc.save(`Soil_Buddies_Soil_Guide_${currentFarmerLevel}.pdf`);
 }
-const ci=document.getElementById('chat-input');
-ci.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}});
-ci.addEventListener('focus',()=>{setTimeout(setVV,150);setTimeout(setVV,400)});
-ci.addEventListener('input',()=>{ci.style.height='auto';ci.style.height=Math.min(ci.scrollHeight,112)+'px'});
-function openModal(id){const m=document.getElementById(id),c=document.getElementById(id+'-content');m.classList.remove('hidden');m.classList.add('flex');void m.offsetWidth;c.classList.remove('scale-95','opacity-0');}
-function closeModal(id){const m=document.getElementById(id),c=document.getElementById(id+'-content');c.classList.add('scale-95','opacity-0');setTimeout(()=>{m.classList.add('hidden');m.classList.remove('flex')},300);}
+
+function downloadWeatherGuidePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.setFillColor(30, 41, 59);
+  doc.rect(0, 0, 210, 30, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.text("SOIL BUDDIES - WEATHER & RAIN GUIDE", 15, 20);
+
+  doc.setTextColor(15, 23, 42);
+  doc.setFontSize(14);
+  doc.text(`Farmer Level: ${currentFarmerLevel.toUpperCase()}`, 15, 42);
+  doc.setFontSize(10);
+  doc.setTextColor(100, 116, 139);
+  doc.text(`Generated on: ${new Date().toLocaleDateString()} | Open-Meteo Microclimate API`, 15, 48);
+
+  doc.setDrawColor(226, 232, 240);
+  doc.line(15, 54, 195, 54);
+
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("1. Understanding Rain Dilution & Soil Impact", 15, 65);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(51, 65, 85);
+
+  let weatherContent = [
+    "• What is Rain Dilution? When heavy rain falls right after applying fertilizer or compost,",
+    "  water washes the vital nutrients deep past the root zone, starving your crops.",
+    "• The 48-Hour Rule: Always check the next 48 hours rain forecast before amending soil.",
+    "  If significant rain (>1mm) is predicted, pause your fertilizer application.",
+    "• Moisture Balance: Your current soil moisture is at 45% (ideal field capacity).",
+    "  Let natural rainfall handle irrigation if totals exceed daily crop evapotranspiration."
+  ];
+
+  let y = 74;
+  weatherContent.forEach(line => {
+    doc.text(line, 15, y);
+    y += 7;
+  });
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  doc.text("2. Weather Action Checklist for Farmers", 15, y + 10);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+
+  let wSteps = [
+    "• Check the Apple Weather style microclimate card on your dashboard every morning.",
+    "• If a rain warning triggers, secure your compost covers and postpone top-dressing.",
+    "• Post-Rain Check: Wait 24 hours after heavy downpours before tilling Sandy Loam to avoid compaction."
+  ];
+
+  y += 18;
+  wSteps.forEach(step => {
+    doc.text(step, 15, y, { maxWidth: 180 });
+    y += 10;
+  });
+
+  doc.save(`Soil_Buddies_Weather_Guide_${currentFarmerLevel}.pdf`);
+}
 
 /* ===== FARMER QUIZ ENGINE (KNOW YOUR LAND) ===== */
 const farmQuizzes = [
   {
-    question: "Your land probe currently reads a pH of 6.2. What does this mean for your vegetable crops?",
+    question: "Your land probe and calibrated drone scan show pH 6.2 and Sandy Loam soil. What does this mean for your crops?",
     options: [
-      { text: "It is in the ideal slightly acidic range for most vegetables.", correct: true, explanation: "Spot on! A pH of 6.2 is prime territory for vegetables like tomatoes and carrots, allowing optimal nutrient uptake." },
-      { text: "It is too acidic and will burn all plant roots instantly.", correct: false, explanation: "Incorrect. 6.2 is very close to neutral (7.0) and is actually ideal. Highly acidic would be below 5.0." },
-      { text: "It is too alkaline, meaning plants cannot drink water.", correct: false, explanation: "Incorrect. Alkaline is above 7.5. 6.2 is slightly acidic." }
+      { text: "It is the ideal slightly acidic range and texture for vegetables.", correct: true, explanation: "Spot on! pH 6.2 in Sandy Loam provides prime nutrient uptake and excellent drainage." },
+      { text: "It is too acidic and will burn plant roots instantly.", correct: false, explanation: "Incorrect. 6.2 is very close to neutral and ideal for vegetables." },
+      { text: "It is pure clay and water will never drain.", correct: false, explanation: "Incorrect. Sandy Loam drains easily and has a balanced texture." }
     ]
   },
   {
-    question: "Your stick sensor reports Low Nitrogen (N). What is the safest way to prepare your plot before planting?",
+    question: "Your stick sensor reports Low Nitrogen (N). What is the safest way to prepare your plot?",
     options: [
-      { text: "Apply high-nitrogen organic compost 48 hours before planting.", correct: true, explanation: "Correct! Organic compost top-dressing safely boosts nitrogen without burning young roots." },
-      { text: "Flood the field with heavy chemical sprays during a rainstorm.", correct: false, explanation: "Incorrect! Heavy rain right after fertilizing causes nutrient washout and pollutes runoff." },
-      { text: "Ignore it; nitrogen has no effect on plant leaf growth.", correct: false, explanation: "Incorrect. Nitrogen is vital for lush leaf and stem growth." }
+      { text: "Apply organic nitrogen compost 48 hours before planting.", correct: true, explanation: "Correct! Organic compost top-dressing safely boosts nitrogen without burning young roots." },
+      { text: "Flood the field with heavy chemical sprays during a rainstorm.", correct: false, explanation: "Incorrect! Heavy rain causes nutrient washout." },
+      { text: "Ignore it; nitrogen has no effect on plant growth.", correct: false, explanation: "Incorrect. Nitrogen is vital for lush leaf and stem growth." }
     ]
   },
   {
-    question: "The weather API forecasts 15mm of rain in the next 48 hours. What should you do with your scheduled fertilizer?",
+    question: "The weather API forecasts significant rain in the next 48 hours. What should you do with your fertilizer?",
     options: [
-      { text: "Postpone the application until after the rain passes to prevent washout.", correct: true, explanation: "Exactly right! Waiting prevents expensive nutrients from washing away into the soil table." },
-      { text: "Apply double the amount immediately to beat the rain.", correct: false, explanation: "Incorrect. That would cause severe nutrient run-off and acidify the plot bed." },
-      { text: "Stop checking weather entirely and plant anyway.", correct: false, explanation: "Incorrect. Monitoring microclimates protects your farming investment." }
+      { text: "Postpone application until after the rain passes to prevent washout.", correct: true, explanation: "Exactly right! Waiting prevents expensive nutrients from washing away." },
+      { text: "Apply double the amount immediately.", correct: false, explanation: "Incorrect. That would cause severe nutrient run-off." },
+      { text: "Stop checking weather entirely.", correct: false, explanation: "Incorrect. Monitoring microclimates protects your harvest." }
     ]
   }
 ];
@@ -699,7 +812,6 @@ function resetQuiz() {
   renderQuiz();
 }
 
-// Initialize Quiz on load
 document.addEventListener('DOMContentLoaded', () => {
   renderQuiz();
 });
@@ -771,7 +883,7 @@ function renderPlotStep() {
   const step = steps[currentStepIndex];
   bodyEl.innerHTML = `
     <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 mb-2">
-      <strong>Soil Baseline:</strong> pH 6.2 (Optimal) | Moisture 45% | N: Low
+      <strong>Soil Baseline:</strong> pH 6.2 (Optimal) | Sandy Loam | Moisture 45% | N: Low
     </div>
     <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
       <h4 class="font-bold text-slate-900 text-base mb-2">${step.title}</h4>
@@ -836,7 +948,7 @@ async function submitConfusion() {
         stepText: currentStep.text,
         userConfusion: txt,
         language: guideLanguage,
-        soilData: "pH 6.2 (Optimal), Moisture 45%, Nitrogen: Low"
+        soilData: "pH 6.2 (Optimal), Sandy Loam, Moisture 45%, Nitrogen: Low"
       })
     });
 
@@ -845,7 +957,7 @@ async function submitConfusion() {
     
     clarityEl.innerHTML = `<strong>Tutor AI:</strong> ${md(data.reply)}`;
   } catch (e) {
-    clarityEl.innerHTML = `<strong>Tutor AI:</strong> Let's break this down further for ${currentCropName}. Because your soil has a pH of 6.2 and low nitrogen, ${txt}. Here is how you tackle it: make sure you apply the amendments evenly across the top layer so the roots absorb nutrients safely.`;
+    clarityEl.innerHTML = `<strong>Tutor AI:</strong> Let's break this down further for ${currentCropName}. Because your soil has Sandy Loam texture, pH 6.2, and low nitrogen, ${txt}. Here is how you tackle it: apply organic amendments evenly across the top layer so the roots absorb nutrients safely.`;
   }
 }
 
@@ -1113,21 +1225,6 @@ async function loadUserProfile() {
     }
 }
 loadUserProfile();
-
-/* ===== YIELD OPTIMIZATION MODAL HANDLERS ===== */
-function openYieldModal(){
-    const m = document.getElementById('yield-modal');
-    const c = document.getElementById('yield-modal-content');
-    m.classList.remove('hidden'); m.classList.add('flex');
-    void m.offsetWidth;
-    c.classList.remove('scale-95', 'opacity-0');
-}
-function closeYieldModal(){
-    const m = document.getElementById('yield-modal');
-    const c = document.getElementById('yield-modal-content');
-    c.classList.add('scale-95', 'opacity-0');
-    setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
-}
 </script>
 </body>
 </html>
