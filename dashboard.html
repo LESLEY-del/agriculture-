@@ -2,88 +2,58 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
-<title>Advanced Dashboard | Soil Buddies</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>Dashboard | Soil Buddies</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
-<!-- jsPDF for Generating Slide-Deck Educational PDFs -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden;max-width:100%}
-body{font-family:'Inter',sans-serif;background:#F8FAFC;color:#0F172A;font-size:16px;overflow-x:hidden;max-width:100%}
+html{-webkit-text-size-adjust:100%;overflow-x:hidden;max-width:100%;touch-action:manipulation}
+body{font-family:'Inter',sans-serif;background:#F8FAFC;color:#0F172A;font-size:17px;overflow-x:hidden;max-width:100%}
 h1,h2,h3,h4,.font-heading{font-family:'Plus Jakarta Sans',sans-serif}
-html{touch-action:manipulation}
-input,select,textarea{font-size:16px!important;line-height:1.4;-webkit-text-size-adjust:100%;touch-action:manipulation}
-#chat-input,#problem-input,#crop-input{font-size:16px!important}
-button{touch-action:manipulation}
-.glass-nav{background:rgba(255,255,255,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(226,232,240,.8)}
-.advanced-card{background:#fff;border:1px solid rgba(226,232,240,.9);box-shadow:0 4px 6px -1px rgba(0,0,0,.03),0 10px 15px -3px rgba(0,0,0,.03);transition:transform .3s,box-shadow .3s,border-color .3s}
-@media (hover:hover){.advanced-card:hover{transform:translateY(-4px);box-shadow:0 20px 25px -5px rgba(0,0,0,.06);border-color:#10B981}}
+input,select,textarea{font-size:16px!important}
+.glass-nav{background:rgba(255,255,255,.9);backdrop-filter:blur(16px);border-bottom:1px solid #E2E8F0}
+.advanced-card{background:#fff;border:1px solid #E2E8F0;box-shadow:0 4px 6px -1px rgba(0,0,0,.03),0 10px 15px -3px rgba(0,0,0,.03)}
 .gradient-text{background:linear-gradient(135deg,#059669,#10B981);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.view-section{animation:up .4s cubic-bezier(.16,1,.3,1) both}
-@keyframes up{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:none}}
-.pulse-ring{animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{50%{opacity:.5}}
-.bg-blobs{position:fixed;inset:0;overflow:hidden;z-index:-1;pointer-events:none}
-.bg-blobs i{position:absolute;width:40vw;height:40vw;border-radius:9999px;filter:blur(110px)}
+.view-section{animation:up .4s both}@keyframes up{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:none}}
+.pulse-ring{animation:pulse 2s ease-in-out infinite}@keyframes pulse{50%{opacity:.5}}
 .chat-bubble-ai{background:#F1F5F9;color:#334155;border-radius:16px 16px 16px 4px;overflow-wrap:anywhere}
 .chat-bubble-user{background:#059669;color:#fff;border-radius:16px 16px 4px 16px;overflow-wrap:anywhere}
-.chat-bubble-ai p{margin:0 0 .5rem}.chat-bubble-ai p:last-child{margin:0}
-.chat-bubble-ai ul{list-style:disc;padding-left:1.2rem}.chat-bubble-ai ol{list-style:decimal;padding-left:1.2rem}
-.chat-scroll::-webkit-scrollbar{width:6px}.chat-scroll::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:10px}
-.chat-overlay{position:fixed;top:0;left:0;right:0;width:100%;height:100vh;height:100dvh;display:flex;flex-direction:column;border-radius:0!important;border:0!important;opacity:0;transform:translateY(24px);pointer-events:none;visibility:hidden;transition:opacity .25s,transform .25s,visibility .25s}
+.chat-bubble-ai p{margin:0 0 .5rem}.chat-bubble-ai ul{list-style:disc;padding-left:1.2rem}.chat-bubble-ai ol{list-style:decimal;padding-left:1.2rem}
+.chat-overlay{position:fixed;top:0;left:0;right:0;width:100%;height:100dvh;display:flex;flex-direction:column;opacity:0;transform:translateY(24px);pointer-events:none;visibility:hidden;transition:opacity .25s,transform .25s,visibility .25s}
 .chat-overlay.open{opacity:1;transform:none;pointer-events:auto;visibility:visible}
-.chat-overlay .chat-pad{padding-left:max(1rem,calc((100% - 768px)/2));padding-right:max(1rem,calc((100% - 768px)/2))}
-.chat-overlay .chat-top{padding-top:calc(.75rem + env(safe-area-inset-top,0px))}
-.chat-overlay .chat-bottom{padding-bottom:calc(.75rem + env(safe-area-inset-bottom,0px))}
-body.chat-open{overflow:hidden;position:fixed;width:100%}
-body.chat-open #chat-fab{display:none}
+.chat-pad{padding-left:max(1rem,calc((100% - 768px)/2));padding-right:max(1rem,calc((100% - 768px)/2))}
+.chat-top{padding-top:calc(.75rem + env(safe-area-inset-top,0px))}.chat-bottom{padding-bottom:calc(.75rem + env(safe-area-inset-bottom,0px))}
+body.chat-open{overflow:hidden;position:fixed;width:100%}body.chat-open #chat-fab{display:none}
 #chat-fab{right:1rem;bottom:calc(1rem + env(safe-area-inset-bottom,0px))}
-@media(min-width:640px){#chat-fab{right:2rem;bottom:2rem}}
-.btn-icon{padding:.65rem;border-radius:.75rem;background:#F1F5F9;color:#475569;transition:background .2s}
-.btn-icon:hover{background:#E2E8F0}
+.btn-icon{padding:.65rem;border-radius:.75rem;background:#F1F5F9;color:#475569}.btn-icon:hover{background:#E2E8F0}
 :focus-visible{outline:3px solid #059669;outline-offset:2px}
-.chat-bubble-ai strong{font-weight:700}
-.chat-bubble-ai li{margin:.15rem 0}
 </style>
 </head>
 <body class="min-h-screen">
-<div class="bg-blobs"><i style="top:-10%;left:-10%;background:rgba(52,211,153,.12)"></i><i style="bottom:-10%;right:-10%;background:rgba(251,191,36,.12)"></i></div>
 
 <header class="sticky top-0 z-50 glass-nav">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 h-[72px] flex items-center justify-between">
-    <div class="flex items-center gap-3 cursor-pointer group" onclick="switchView('main-dashboard')">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-emerald-500/30"><iconify-icon icon="lucide:cpu" class="text-white text-xl"></iconify-icon></div>
-      <span class="hidden min-[430px]:inline text-xl sm:text-2xl font-bold tracking-tight font-heading text-slate-800">Soil<span class="text-emerald-600">Buddies</span></span>
+    <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('main-dashboard')">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center"><iconify-icon icon="lucide:sprout" class="text-white text-xl"></iconify-icon></div>
+      <span class="hidden min-[430px]:inline text-2xl font-bold font-heading text-slate-800">Soil<span class="text-emerald-600">Buddies</span></span>
     </div>
-    
-    <!-- Experience Level Selector & Navigation Controls -->
     <div class="flex items-center gap-2 sm:gap-3">
-      <div class="hidden md:flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
-        <span class="text-xs font-bold text-slate-500 uppercase">Level:</span>
-        <select id="farmer-level-select" onchange="changeFarmerLevel(this.value)" class="text-xs font-bold bg-transparent text-emerald-700 outline-none cursor-pointer">
-          <option value="beginner">🌱 New / Beginner Farmer</option>
-          <option value="intermediate" selected>🌾 Intermediate Farmer</option>
-          <option value="advanced">🚜 Advanced Farmer</option>
-        </select>
-      </div>
-
-      <button onclick="openProblem()" class="flex items-center gap-2 h-11 px-3 sm:px-4 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 font-bold text-sm" aria-label="Problem AI"><iconify-icon icon="lucide:message-square-warning" class="text-xl"></iconify-icon><span class="hidden sm:inline">Problem AI</span></button>
+      <button onclick="openProblem()" class="flex items-center gap-2 h-11 px-3 sm:px-4 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 font-bold" aria-label="Problem AI"><iconify-icon icon="lucide:message-square-warning" class="text-xl"></iconify-icon><span class="hidden sm:inline">Problem AI</span></button>
       <button onclick="switchView('settings-view')" class="btn-icon" aria-label="Settings"><iconify-icon icon="lucide:settings" class="text-xl"></iconify-icon></button>
       <button id="bell-btn" onclick="toggleNotif()" class="btn-icon relative" aria-label="Notifications"><iconify-icon icon="lucide:bell" class="text-xl"></iconify-icon><span id="bell-badge" style="display:none" class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 rounded-full bg-rose-500 text-white text-xs font-bold items-center justify-center border-2 border-white pulse-ring">0</span></button>
-      <a href="/logout" class="btn-icon flex items-center gap-2" aria-label="Log out" title="Log out"><iconify-icon icon="lucide:log-out" class="text-xl"></iconify-icon></a>
-      <div class="hidden sm:flex w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-200 items-center justify-center text-emerald-700 font-bold font-heading">TM</div>
+      <a href="/logout" class="btn-icon" aria-label="Log out" title="Log out"><iconify-icon icon="lucide:log-out" class="text-xl"></iconify-icon></a>
+      <div id="avatar" class="hidden sm:flex w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-200 items-center justify-center text-emerald-700 font-bold font-heading">SB</div>
     </div>
   </div>
 </header>
 
 <div id="notif-panel" style="display:none" class="fixed z-[80] top-[78px] left-3 right-3 sm:left-auto sm:right-6 sm:w-[390px] bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
-  <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><h3 class="font-bold font-heading text-slate-900">Soil alerts</h3><button onclick="toggleNotif(false)" class="w-9 h-9 flex items-center justify-center text-slate-500" aria-label="Close alerts"><iconify-icon icon="lucide:x" class="text-xl"></iconify-icon></button></div>
+  <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><h3 class="font-bold font-heading">Soil alerts</h3><button onclick="toggleNotif(false)" class="w-9 h-9 flex items-center justify-center text-slate-500" aria-label="Close alerts"><iconify-icon icon="lucide:x" class="text-xl"></iconify-icon></button></div>
   <div id="notif-list" class="max-h-[55vh] overflow-y-auto"></div>
   <div class="p-3 border-t border-slate-100"><button id="enable-push" onclick="enablePush()" class="w-full min-h-[44px] rounded-xl bg-slate-900 text-white text-sm font-bold hover:bg-emerald-700 flex items-center justify-center gap-2"><iconify-icon icon="lucide:bell-ring"></iconify-icon><span id="push-label">Turn on push alerts</span></button></div>
 </div>
@@ -92,1191 +62,395 @@ body.chat-open #chat-fab{display:none}
 
 <!-- MAIN -->
 <div id="main-dashboard" class="view-section">
-  <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
-    <div>
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 mb-2 font-heading">Welcome back, <span class="gradient-text">Farmer</span></h1>
-      <p class="text-slate-600 text-base sm:text-lg font-medium">Your telemetry, calibrated drone soil type, and weather status are synced.</p>
-    </div>
-    <div class="self-start flex flex-wrap gap-2">
-      <div class="flex items-center gap-2 text-sm font-semibold text-emerald-700 bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-100"><span class="w-2 h-2 rounded-full bg-emerald-500 pulse-ring"></span> System Online</div>
-      <div class="flex items-center gap-2 text-sm font-semibold text-slate-700 bg-white px-4 py-2 rounded-lg border border-slate-200"><iconify-icon icon="lucide:map-pin" class="text-base text-emerald-600"></iconify-icon><span>DB Synced GPS</span></div>
-    </div>
+  <div class="mb-10">
+    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-2 font-heading">Welcome back, <span class="gradient-text" id="welcome-name">Farmer</span></h1>
+    <p class="text-slate-600 text-lg font-medium">Your latest soil results, local weather and crop advice.</p>
   </div>
 
-  <!-- TOP GRID: SENSOR ARRAY & QUIZ BUTTON CARD -->
   <div class="grid md:grid-cols-2 gap-5 lg:gap-8">
-    <div onclick="switchView('detail-hardware')" class="advanced-card p-6 sm:p-8 rounded-3xl cursor-pointer group flex flex-col justify-between gap-6 min-h-[280px]">
+    <div onclick="switchView('detail-hardware')" class="advanced-card p-6 sm:p-8 rounded-3xl cursor-pointer flex flex-col justify-between gap-6 min-h-[260px] hover:border-emerald-500">
       <div class="flex justify-between items-start">
         <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center border border-emerald-100"><iconify-icon icon="lucide:activity" class="text-3xl text-emerald-600"></iconify-icon></div>
-        <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors text-slate-400"><iconify-icon icon="lucide:arrow-up-right" class="text-xl"></iconify-icon></div>
+        <span class="text-emerald-700 font-bold">See details &rarr;</span>
       </div>
       <div>
-        <h2 class="text-2xl font-bold text-slate-900 mb-1 font-heading">Sensor Array &amp; Soil Type</h2>
-        <p class="text-sm font-medium text-slate-500 mb-5">Calibrated Probe + Drone Multispectral Scan</p>
-        <div class="flex items-end justify-between">
-          <div class="flex items-end gap-4">
-            <div><p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">pH Level</p><p class="text-4xl font-black text-slate-800 tracking-tighter">6.2</p></div>
-            <div class="h-10 w-px bg-slate-200"></div>
-            <div><p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Moisture</p><p class="text-4xl font-black text-slate-800 tracking-tighter">45<span class="text-2xl text-slate-400">%</span></p></div>
-          </div>
-          <div class="text-right">
-            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Soil Texture</p>
-            <p class="text-lg font-black text-emerald-700 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200">Sandy Loam</p>
-          </div>
+        <h2 class="text-2xl font-bold mb-4 font-heading">My Soil</h2>
+        <div class="grid grid-cols-3 gap-3">
+          <div><p class="text-xs font-bold text-slate-500 uppercase mb-1">pH</p><p class="text-4xl font-black" data-ph>-</p></div>
+          <div><p class="text-xs font-bold text-slate-500 uppercase mb-1">Moisture</p><p class="text-4xl font-black"><span data-moisture>-</span><span class="text-xl text-slate-400">%</span></p></div>
+          <div><p class="text-xs font-bold text-slate-500 uppercase mb-1">Nitrogen</p><p class="text-3xl font-black" data-n>-</p></div>
         </div>
+        <p class="mt-4 text-base font-semibold text-slate-700">Soil type: <span class="text-emerald-700" data-soil>Not recorded yet</span></p>
       </div>
     </div>
 
-    <!-- KNOW YOUR LAND QUIZ CARD -->
-    <div class="advanced-card p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 text-white relative overflow-hidden flex flex-col justify-between gap-6 min-h-[280px]">
-      <div class="absolute top-0 right-0 w-40 h-40 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
-      <div class="flex justify-between items-start relative z-10">
+    <div class="advanced-card p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 text-white flex flex-col justify-between gap-6 min-h-[260px]">
+      <div class="flex justify-between items-start">
         <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 text-emerald-400"><iconify-icon icon="lucide:award" class="text-3xl"></iconify-icon></div>
-        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider border border-emerald-500/30">Farmer Academy</span>
+        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold uppercase border border-emerald-500/30">Farmer Academy</span>
       </div>
-      <div class="relative z-10">
-        <h2 class="text-2xl font-bold text-white mb-1 font-heading">Know Your Land Quiz</h2>
-        <p class="text-sm font-medium text-slate-300 mb-6">Test your mastery of soil telemetry, pH 6.2, and nitrogen management.</p>
-        <button onclick="openQuizModal()" class="w-full min-h-[48px] rounded-xl font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-colors flex items-center justify-center gap-2 shadow-lg">
-          <iconify-icon icon="lucide:award" class="text-lg"></iconify-icon> Start Know Your Land Quiz
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- RECOMMENDED FOR PLANTING WITH MOTIVATIONAL METRICS -->
-  <div class="mt-14">
-    <div class="flex items-center justify-between gap-4 mb-8">
       <div>
-        <h2 class="text-2xl font-bold font-heading text-slate-900">Recommended for Planting</h2>
-        <p class="text-slate-600 font-medium mt-1">Verified for your current soil telemetry (pH 6.2, Sandy Loam) &amp; local weather cycle.</p>
-      </div>
-      <button onclick="switchView('detail-plans')" class="hidden sm:block shrink-0 text-sm font-bold text-emerald-700 hover:text-emerald-800">View All Plans &rarr;</button>
-    </div>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-8">
-      <!-- TOMATOES CARD -->
-      <div class="advanced-card rounded-3xl overflow-hidden group flex flex-col">
-        <div class="h-48 sm:h-52 overflow-hidden relative">
-          <img src="https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&q=80&w=800" alt="Tomatoes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-          <span class="absolute top-4 right-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
-            <iconify-icon icon="lucide:sparkles"></iconify-icon> 98% Success Match
-          </span>
-        </div>
-        <div class="p-6 sm:p-8 flex flex-col flex-grow">
-          <h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Roma Tomatoes</h3>
-          <p class="text-sm text-slate-600 mb-6 leading-relaxed">Optimal for your current pH of 6.2 in Sandy Loam soil. High yield expected in the current temperature cycle.</p>
-          
-          <div class="grid grid-cols-2 gap-3 mb-6 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-100">
-            <div>
-              <p class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-0.5 flex items-center gap-1"><iconify-icon icon="lucide:sprout"></iconify-icon> Recommended Plot</p>
-              <p class="text-lg font-black text-emerald-950">~250 Plants <span class="text-xs font-semibold text-emerald-700">(100m²)</span></p>
-            </div>
-            <div>
-              <p class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-0.5 flex items-center gap-1"><iconify-icon icon="lucide:trending-up"></iconify-icon> Est. Yield &amp; Profit</p>
-              <p class="text-lg font-black text-emerald-950">~1,450 kg <span class="text-xs font-semibold text-emerald-700">(~R24,650)</span></p>
-            </div>
-          </div>
-
-          <button onclick="openPlotGuide('Roma Tomatoes')" class="w-full min-h-[48px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm">
-            <iconify-icon icon="lucide:sprout" class="text-lg"></iconify-icon> Prepare Plot &amp; Start Growing
-          </button>
-        </div>
-      </div>
-
-      <!-- CARROTS CARD -->
-      <div class="advanced-card rounded-3xl overflow-hidden group flex flex-col">
-        <div class="h-48 sm:h-52 overflow-hidden relative">
-          <img src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&q=80&w=800" alt="Carrots" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-          <span class="absolute top-4 right-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
-            <iconify-icon icon="lucide:sparkles"></iconify-icon> 92% Success Match
-          </span>
-        </div>
-        <div class="p-6 sm:p-8 flex flex-col flex-grow">
-          <h3 class="font-heading font-bold text-xl text-slate-900 mb-2">Root Carrots</h3>
-          <p class="text-sm text-slate-600 mb-6 leading-relaxed">Sandy Loam soil texture provides ideal density resistance for deep, straight root development.</p>
-          
-          <div class="grid grid-cols-2 gap-3 mb-6 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-100">
-            <div>
-              <p class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-0.5 flex items-center gap-1"><iconify-icon icon="lucide:sprout"></iconify-icon> Recommended Plot</p>
-              <p class="text-lg font-black text-emerald-950">~400 Seeds <span class="text-xs font-semibold text-emerald-700">(50m²)</span></p>
-            </div>
-            <div>
-              <p class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-0.5 flex items-center gap-1"><iconify-icon icon="lucide:trending-up"></iconify-icon> Est. Yield &amp; Profit</p>
-              <p class="text-lg font-black text-emerald-950">~850 kg <span class="text-xs font-semibold text-emerald-700">(~R15,300)</span></p>
-            </div>
-          </div>
-
-          <button onclick="openPlotGuide('Root Carrots')" class="w-full min-h-[48px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm">
-            <iconify-icon icon="lucide:sprout" class="text-lg"></iconify-icon> Prepare Plot &amp; Start Growing
-          </button>
-        </div>
+        <h2 class="text-2xl font-bold mb-1 font-heading">Know Your Land Quiz</h2>
+        <p class="text-slate-300 mb-5">Three quick questions on soil pH, nitrogen and rain.</p>
+        <button onclick="openQuizModal()" class="w-full min-h-[52px] rounded-xl font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 flex items-center justify-center gap-2"><iconify-icon icon="lucide:award"></iconify-icon> Start Quiz</button>
       </div>
     </div>
   </div>
 
+  <div class="mt-14">
+    <h2 class="text-3xl font-bold font-heading">Should I plant now?</h2>
+    <p id="reco-basis" class="text-lg text-slate-600 font-medium mt-1 mb-8">Checking your soil, your area's climate and the coming rain...</p>
+    <div id="reco-list" class="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-8"></div>
+  </div>
 </div>
 
-<!-- HARDWARE -->
+<!-- SOIL DETAIL -->
 <div id="detail-hardware" class="view-section hidden">
-  <button onclick="switchView('main-dashboard')" class="flex items-center gap-2 min-h-[44px] text-sm font-bold text-slate-600 mb-4 hover:text-emerald-700"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Return to Dashboard</button>
-  <div class="advanced-card p-6 sm:p-10 lg:p-12 rounded-[2rem]">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold font-heading text-slate-900 flex items-center gap-3"><span class="p-3 bg-emerald-100 text-emerald-600 rounded-xl flex"><iconify-icon icon="lucide:activity"></iconify-icon></span>Telemetry &amp; Soil Type Analysis</h2>
-      <button class="self-start min-h-[44px] px-5 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 flex items-center gap-2"><iconify-icon icon="lucide:refresh-cw"></iconify-icon> Sync Stick &amp; Drone</button>
-    </div>
-
-    <!-- Soil Texture Banner & Slide Manual Download Button -->
-    <div class="mb-8 p-6 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-      <div class="flex items-center gap-4">
-        <div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
-          <iconify-icon icon="lucide:layers" class="text-2xl"></iconify-icon>
-        </div>
-        <div>
-          <span class="text-xs font-bold text-emerald-800 uppercase tracking-widest">Drone + Probe Calibration</span>
-          <h3 class="text-xl font-bold text-emerald-950 font-heading">Soil Texture: Sandy Loam</h3>
-          <p class="text-sm text-emerald-800 mt-0.5">Excellent drainage capacity with moderate nutrient retention. Ideal for root crops and fruiting vegetables.</p>
-        </div>
-      </div>
-      <button onclick="downloadSoilGuidePDF()" class="min-h-[48px] px-6 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition-colors shrink-0 flex items-center gap-2 shadow-sm">
-        <iconify-icon icon="lucide:file-down" class="text-lg"></iconify-icon> Download Soil Slide Manual
-      </button>
-    </div>
-
+  <button onclick="switchView('main-dashboard')" class="flex items-center gap-2 min-h-[44px] font-bold text-slate-600 mb-4 hover:text-emerald-700"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Back</button>
+  <div class="advanced-card p-6 sm:p-10 rounded-[2rem]">
+    <h2 class="text-3xl font-bold font-heading mb-2">My Soil</h2>
+    <p class="text-lg text-slate-600 mb-8">Soil type: <strong data-soil>Not recorded yet</strong></p>
     <div class="grid md:grid-cols-3 gap-5 mb-8">
-      <div class="p-6 sm:p-8 bg-slate-50 rounded-2xl border border-slate-100"><div class="flex justify-between items-center mb-5"><p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Soil pH</p><iconify-icon icon="lucide:flask-conical" class="text-slate-400 text-2xl"></iconify-icon></div><p class="text-5xl font-black text-slate-800 tracking-tighter mb-4">6.2</p><div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="bg-gradient-to-r from-emerald-400 to-emerald-600 w-[62%] h-full rounded-full"></div></div><p class="text-sm font-bold text-emerald-700 mt-4 flex items-center gap-1"><iconify-icon icon="lucide:check-circle"></iconify-icon> Optimal Range</p></div>
-      <div class="p-6 sm:p-8 bg-slate-50 rounded-2xl border border-slate-100"><div class="flex justify-between items-center mb-5"><p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Moisture</p><iconify-icon icon="lucide:droplets" class="text-slate-400 text-2xl"></iconify-icon></div><p class="text-5xl font-black text-slate-800 tracking-tighter mb-4">45<span class="text-2xl text-slate-400">%</span></p><div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="bg-gradient-to-r from-blue-400 to-blue-600 w-[45%] h-full rounded-full"></div></div><p class="text-sm font-bold text-blue-700 mt-4 flex items-center gap-1"><iconify-icon icon="lucide:info"></iconify-icon> Field Capacity</p></div>
-      <div class="p-6 sm:p-8 bg-slate-50 rounded-2xl border border-slate-100"><div class="flex justify-between items-center mb-5"><p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Nitrogen (N)</p><iconify-icon icon="lucide:leafy-green" class="text-slate-400 text-2xl"></iconify-icon></div><p class="text-5xl font-black text-slate-800 tracking-tighter mb-4">Low</p><div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="bg-gradient-to-r from-rose-400 to-rose-600 w-[20%] h-full rounded-full"></div></div><p class="text-sm font-bold text-rose-700 mt-4 flex items-center gap-1"><iconify-icon icon="lucide:alert-triangle"></iconify-icon> Requires Action</p></div>
+      <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100"><p class="text-sm font-bold text-slate-500 uppercase mb-3">Soil pH</p><p class="text-5xl font-black mb-3" data-ph>-</p><p class="text-lg font-bold" id="st-ph">No reading yet</p></div>
+      <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100"><p class="text-sm font-bold text-slate-500 uppercase mb-3">Moisture</p><p class="text-5xl font-black mb-3"><span data-moisture>-</span><span class="text-2xl text-slate-400">%</span></p><p class="text-lg font-bold" id="st-m">No reading yet</p></div>
+      <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100"><p class="text-sm font-bold text-slate-500 uppercase mb-3">Nitrogen</p><p class="text-5xl font-black mb-3" data-n>-</p><p class="text-lg font-bold" id="st-n">No reading yet</p></div>
     </div>
-    <div class="bg-emerald-900 text-white p-6 sm:p-8 rounded-2xl relative overflow-hidden"><div class="absolute top-0 right-0 w-64 h-64 bg-emerald-800/50 rounded-full blur-3xl"></div><h3 class="text-xl font-bold font-heading mb-3 relative">AI Diagnostic Report</h3><p class="text-emerald-50 leading-relaxed relative max-w-3xl">Your soil is currently well-hydrated. The pH of 6.2 is excellent for vegetables. However, your stick readings indicate a slight nitrogen deficiency. We recommend applying a high-nitrogen organic compost top-dressing 48 hours before planting your next cycle.</p></div>
-  </div>
-</div>
-
-<!-- PLANS -->
-<div id="detail-plans" class="view-section hidden">
-  <button onclick="switchView('main-dashboard')" class="flex items-center gap-2 min-h-[44px] text-sm font-bold text-slate-600 mb-4 hover:text-amber-700"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Return to Dashboard</button>
-  <div class="advanced-card p-6 sm:p-10 lg:p-12 rounded-[2rem]">
-    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold font-heading text-slate-900 flex items-center gap-3 mb-8"><span class="p-3 bg-amber-100 text-amber-600 rounded-xl flex"><iconify-icon icon="lucide:database-zap"></iconify-icon></span>Algorithmic Plot Matches</h2>
-    <p class="text-slate-600 font-medium text-base sm:text-lg mb-8 max-w-3xl">Based on your telemetry <span class="font-bold text-slate-800">(pH 6.2, Sandy Loam, N-Level: Low)</span> and the current climate cycle, the AI recommends the following planting strategy.</p>
-    <div class="grid gap-4">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white">
-        <div class="flex items-center gap-4 sm:gap-6"><div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-rose-100 rounded-2xl flex items-center justify-center text-rose-600"><iconify-icon icon="lucide:apple" class="text-3xl"></iconify-icon></div><div><div class="flex flex-wrap items-center gap-2 mb-1"><h3 class="font-bold font-heading text-xl text-slate-900">Roma Tomatoes</h3><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-md">98% Match</span></div><p class="text-sm font-medium text-slate-600">Thrives perfectly in pH 6.2. Estimated yield: ~1,450 kg (~R24,650 revenue).</p></div></div>
-        <button onclick="openPlotGuide('Roma Tomatoes')" class="min-h-[48px] px-6 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-emerald-600 transition-colors">Initialize Plot</button>
-      </div>
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white">
-        <div class="flex items-center gap-4 sm:gap-6"><div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-green-100 rounded-2xl flex items-center justify-center text-green-600"><iconify-icon icon="lucide:carrot" class="text-3xl"></iconify-icon></div><div><div class="flex flex-wrap items-center gap-2 mb-1"><h3 class="font-bold font-heading text-xl text-slate-900">Root Carrots</h3><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-md">92% Match</span></div><p class="text-sm font-medium text-slate-600">Sandy Loam suits deep root growth. Estimated yield: ~850 kg (~R15,300 revenue).</p></div></div>
-        <button onclick="openPlotGuide('Root Carrots')" class="min-h-[48px] px-6 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-emerald-600 transition-colors">Initialize Plot</button>
-      </div>
-    </div>
+    <h3 class="text-xl font-bold font-heading mb-3">What to do</h3>
+    <div id="soil-advice" class="space-y-3 text-lg text-slate-700"></div>
   </div>
 </div>
 
 <!-- SETTINGS -->
 <div id="settings-view" class="view-section hidden">
-  <button onclick="switchView('main-dashboard')" class="flex items-center gap-2 min-h-[44px] text-sm font-bold text-slate-600 mb-4 hover:text-slate-900"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Return to Dashboard</button>
-  <div class="advanced-card p-6 sm:p-10 lg:p-12 rounded-[2rem]">
-    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold font-heading text-slate-900 flex items-center gap-3 mb-8"><span class="p-3 bg-slate-100 text-slate-600 rounded-xl flex"><iconify-icon icon="lucide:settings"></iconify-icon></span>System Settings</h2>
+  <button onclick="switchView('main-dashboard')" class="flex items-center gap-2 min-h-[44px] font-bold text-slate-600 mb-4 hover:text-slate-900"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Back</button>
+  <div class="advanced-card p-6 sm:p-10 rounded-[2rem]">
+    <h2 class="text-3xl font-bold font-heading mb-8">Settings</h2>
     <div class="grid lg:grid-cols-2 gap-6">
-      <div class="space-y-4">
-        <div class="p-6 rounded-2xl border border-slate-200 bg-white"><h3 class="font-bold font-heading text-xl text-slate-900 mb-2">Account Details</h3><p class="text-sm text-slate-600">Manage your profile and farm information.</p></div>
-        <div class="p-6 rounded-2xl border border-slate-200 bg-white"><h3 class="font-bold font-heading text-xl text-slate-900 mb-2">Hardware Configuration</h3><p class="text-sm text-slate-600">Connect and calibrate your soil testing sticks and drone multispectral sync.</p></div>
+      <div class="p-6 rounded-2xl border border-slate-200">
+        <h3 class="font-bold font-heading text-xl mb-2">My farm location</h3>
+        <p class="text-slate-600 mb-4">Needed for accurate weather, rain warnings and crop advice. Stand on your farm and tap the button.</p>
+        <button onclick="setLocation()" class="w-full min-h-[52px] rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 flex items-center justify-center gap-2"><iconify-icon icon="lucide:map-pin"></iconify-icon> Use my current location</button>
+        <p id="loc-status" class="mt-3 font-semibold text-slate-700"></p>
       </div>
-      <div onclick="switchView('detail-weather')" class="p-6 sm:p-8 rounded-3xl border border-slate-200 bg-white hover:border-indigo-300 transition-all cursor-pointer group flex flex-col justify-between gap-6 min-h-[250px] shadow-sm hover:shadow-md">
-        <div class="flex justify-between items-start"><div class="w-14 h-14 rounded-2xl bg-[#EBEFFF] flex items-center justify-center"><iconify-icon icon="lucide:cloud-drizzle" class="text-2xl text-[#6366F1]"></iconify-icon></div><div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-slate-100 text-slate-400"><iconify-icon icon="lucide:arrow-up-right" class="text-xl"></iconify-icon></div></div>
-        <div><h2 class="text-2xl font-bold text-slate-900 mb-1 font-heading">Microclimate</h2><p class="text-sm font-medium text-slate-500 mb-4">Live Weather API</p>
-          <div class="flex items-center justify-between"><div><p id="weather-summary-temp" class="text-5xl font-black text-slate-800 tracking-tighter">--°</p><p id="weather-summary-condition" class="text-sm font-bold text-[#4338CA] mt-1">Loading weather…</p></div><div class="text-right"><p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">48h Rain</p><p id="weather-summary-rain" class="text-2xl font-bold text-slate-800">--<span class="text-sm text-slate-500">mm</span></p></div></div></div>
+      <div onclick="switchView('detail-weather')" class="p-6 rounded-2xl border border-slate-200 hover:border-indigo-300 cursor-pointer">
+        <h3 class="font-bold font-heading text-xl mb-2">Weather &amp; climate</h3>
+        <p id="weather-summary-temp" class="text-5xl font-black">--°</p>
+        <p id="weather-summary-condition" class="font-bold text-indigo-700 mt-1">Loading weather...</p>
+        <p class="mt-2 text-slate-600">Rain, past 48h: <strong id="weather-summary-rain">--</strong> mm. Tap for forecast and climate.</p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- WEATHER (APPLE WEATHER STYLE) -->
+<!-- WEATHER -->
 <div id="detail-weather" class="view-section hidden">
-  <button onclick="switchView('settings-view')" class="flex items-center gap-2 min-h-[44px] text-sm font-bold text-slate-600 mb-4 hover:text-[#4338CA]"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Return to Settings</button>
-  
+  <button onclick="switchView('settings-view')" class="flex items-center gap-2 min-h-[44px] font-bold text-slate-600 mb-4"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Back</button>
   <div class="grid lg:grid-cols-3 gap-8">
-    <div class="lg:col-span-2 bg-[#1E2538] rounded-[2.5rem] p-6 sm:p-10 text-white shadow-2xl relative overflow-hidden flex flex-col justify-between">
-      <div>
-        <div class="text-center my-6">
-          <h2 id="weather-city-title" class="text-3xl sm:text-4xl font-light tracking-wide text-white/90">Synced Farm Location</h2>
-          <p id="weather-temp-main" class="text-7xl sm:text-8xl font-thin tracking-tighter my-2">--°</p>
-          <p id="weather-condition-main" class="text-lg font-medium text-slate-300">Loading conditions...</p>
-          <p class="text-sm text-slate-400 mt-1">H: <span id="weather-high">--°</span>&nbsp;&nbsp; L: <span id="weather-low">--°</span></p>
-        </div>
-
-        <div class="mt-8 bg-black/20 backdrop-blur-md rounded-2xl p-4 border border-white/5">
-          <p class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-4 flex items-center gap-2"><iconify-icon icon="lucide:clock" class="text-base"></iconify-icon> Hourly Conditions</p>
-          <div id="hourly-container" class="grid grid-cols-6 gap-2 text-center overflow-x-auto pb-2"></div>
-        </div>
-
-        <div class="mt-6 bg-black/20 backdrop-blur-md rounded-2xl p-5 border border-white/5">
-          <p class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-4 flex items-center gap-2"><iconify-icon icon="lucide:calendar" class="text-base"></iconify-icon> 5-Day Forecast</p>
-          <div id="daily-container" class="space-y-3"></div>
-        </div>
+    <div class="lg:col-span-2 bg-[#1E2538] rounded-[2.5rem] p-6 sm:p-10 text-white shadow-2xl">
+      <div class="text-center my-6">
+        <h2 id="weather-city-title" class="text-3xl font-light text-white/90">Your farm</h2>
+        <p id="weather-temp-main" class="text-8xl font-thin tracking-tighter my-2">--°</p>
+        <p id="weather-condition-main" class="text-lg font-medium text-slate-300">Loading...</p>
+        <p class="text-sm text-slate-400 mt-1">H: <span id="weather-high">--°</span>&nbsp;&nbsp; L: <span id="weather-low">--°</span></p>
       </div>
-      <p id="weather-updated" class="text-xs text-slate-400 mt-8 text-center">Weather supplied by Open-Meteo API using database coordinates.</p>
+      <div class="mt-8 bg-black/20 rounded-2xl p-4"><p class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-4">Next hours</p><div id="hourly-container" class="grid grid-cols-6 gap-2 text-center"></div></div>
+      <div class="mt-6 bg-black/20 rounded-2xl p-5"><p class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-4">5-day forecast</p><div id="daily-container" class="space-y-3"></div></div>
+      <p id="weather-updated" class="text-xs text-slate-400 mt-8 text-center">Weather by Open-Meteo.</p>
     </div>
-
-    <div class="flex flex-col justify-start">
-      <h3 class="text-sm uppercase tracking-widest font-bold text-slate-500 mb-5">Rain Dilution &amp; Forecast API</h3>
-      <div id="rain-card-box" class="bg-white p-6 rounded-2xl border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.15)] mb-6 transition-all">
+    <div>
+      <h3 class="text-sm uppercase tracking-widest font-bold text-slate-500 mb-5">Rain check</h3>
+      <div id="rain-card-box" class="bg-white p-6 rounded-2xl border-2 border-emerald-500 mb-6">
         <div class="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <p class="text-xs font-bold text-slate-500 uppercase mb-1">Past 48 Hours</p>
-            <p class="text-2xl font-black text-slate-800"><span id="weather-rain48">--</span> <span class="text-sm text-slate-500 font-bold">mm</span></p>
-          </div>
-          <div>
-            <p class="text-xs font-bold text-slate-500 uppercase mb-1">Next 48 Hours</p>
-            <p class="text-2xl font-black text-slate-800"><span id="weather-rain-future">--</span> <span class="text-sm text-slate-500 font-bold">mm</span></p>
-          </div>
+          <div><p class="text-xs font-bold text-slate-500 uppercase mb-1">Past 48 hours</p><p class="text-2xl font-black"><span id="weather-rain48">--</span> <span class="text-sm text-slate-500">mm</span></p></div>
+          <div><p class="text-xs font-bold text-slate-500 uppercase mb-1">Next 48 hours</p><p class="text-2xl font-black"><span id="weather-rain-future">--</span> <span class="text-sm text-slate-500">mm</span></p></div>
         </div>
-        <p id="weather-rain-status" class="text-sm font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg block text-center">Checking rainfall conditions…</p>
+        <p id="weather-rain-status" class="font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg text-center">Checking rainfall...</p>
       </div>
-      
-      <div class="advanced-card p-6 rounded-2xl bg-white mb-6">
-        <h4 class="font-bold font-heading text-slate-900 mb-2 flex items-center gap-2"><iconify-icon icon="lucide:shield-alert" class="text-amber-500 text-xl"></iconify-icon> Smart Agricultural Warning</h4>
-        <p class="text-sm text-slate-600 leading-relaxed">If significant rain is forecasted for the upcoming 48 hours, the system highlights an advance warning so you can postpone fertilizer or compost top-dressings before nutrients wash away.</p>
-        
-        <!-- Integrated Weather Slide Manual Download Button -->
-        <button onclick="downloadWeatherGuidePDF()" class="mt-4 w-full min-h-[48px] bg-slate-900 hover:bg-emerald-600 text-white text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm">
-          <iconify-icon icon="lucide:file-down" class="text-lg"></iconify-icon> Download Weather Slide Manual
-        </button>
-      </div>
+      <div id="climate-card" class="advanced-card p-6 rounded-2xl text-base text-slate-700 leading-relaxed">Loading your area's climate...</div>
     </div>
   </div>
 </div>
 </main>
 
-<!-- QUIZ POPUP MODAL -->
+<!-- QUIZ -->
 <div id="quiz-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
-  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeQuizModal()"></div>
-  <div id="quiz-modal-content" class="relative bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-3xl shadow-2xl w-full max-w-xl max-h-[90dvh] overflow-y-auto p-6 sm:p-8 scale-95 opacity-0 transition-all duration-300 border border-slate-700">
-    <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center"><iconify-icon icon="lucide:award" class="text-xl"></iconify-icon></div>
-        <div>
-          <h3 class="text-lg font-bold font-heading text-white">Know Your Land Quiz</h3>
-          <p id="quiz-modal-score" class="text-xs text-emerald-400 font-semibold">0 / 3 Correct</p>
-        </div>
-      </div>
-      <button onclick="closeQuizModal()" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white rounded-full bg-white/5"><iconify-icon icon="lucide:x" class="text-xl"></iconify-icon></button>
-    </div>
-    
-    <div id="quiz-container">
-      <!-- Injected via JavaScript -->
-    </div>
+  <div class="absolute inset-0 bg-slate-900/60" onclick="closeQuizModal()"></div>
+  <div class="relative bg-slate-900 text-white rounded-3xl shadow-2xl w-full max-w-xl max-h-[90dvh] overflow-y-auto p-6 sm:p-8 border border-slate-700">
+    <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/10"><div><h3 class="text-lg font-bold font-heading">Know Your Land Quiz</h3><p id="quiz-score" class="text-sm text-emerald-400 font-semibold">0 / 3 correct</p></div><button onclick="closeQuizModal()" class="w-10 h-10 flex items-center justify-center text-slate-300 rounded-full bg-white/5" aria-label="Close"><iconify-icon icon="lucide:x" class="text-xl"></iconify-icon></button></div>
+    <div id="quiz-container"></div>
   </div>
 </div>
 
-<!-- STEP-BY-STEP PLOT PREPARATION GUIDE MODAL -->
-<div id="plot-guide-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
-  <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closePlotGuide()"></div>
-  <div id="plot-guide-content" class="relative bg-white rounded-3xl shadow-2xl w-full max-w-xl max-h-[90dvh] overflow-y-auto p-6 sm:p-8 scale-95 opacity-0 transition-all duration-300">
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center"><iconify-icon icon="lucide:list-checks" class="text-xl"></iconify-icon></div>
-        <h3 id="plot-guide-title" class="text-xl font-bold font-heading text-slate-900">Plot Preparation Guide</h3>
-      </div>
-      <div class="flex items-center gap-2">
-        <select id="guide-lang-select" onchange="changeGuideLanguage(this.value)" class="text-xs font-bold py-1 px-2 rounded-lg border border-slate-300 bg-slate-50 text-slate-800 outline-none">
-          <option value="English">English</option>
-          <option value="Sepedi">Sepedi</option>
-          <option value="Xitsonga">Xitsonga</option>
-          <option value="Tshivenda">Tshivenda</option>
-          <option value="IsiZulu">IsiZulu</option>
-          <option value="Afrikaans">Afrikaans</option>
-        </select>
-        <button onclick="closePlotGuide()" class="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-rose-500"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
-      </div>
-    </div>
-    
-    <div id="plot-guide-body" class="space-y-4 text-sm text-slate-700 leading-relaxed font-medium"></div>
-    <div id="guide-interactive-area" class="mt-6 pt-4 border-t border-slate-100"></div>
-  </div>
-</div>
-
-<!-- CHAT BUTTON -->
-<button id="chat-fab" onclick="toggleChat()" aria-label="Open Agri-Talk chat" class="fixed w-14 h-14 sm:w-16 sm:h-16 bg-slate-900 text-emerald-400 rounded-full shadow-2xl flex items-center justify-center hover:bg-slate-800 transition-colors z-[90] border border-slate-700">
-  <iconify-icon id="fab-open" icon="lucide:message-square-plus" class="text-3xl"></iconify-icon>
-  <iconify-icon id="fab-close" icon="lucide:x" class="text-3xl hidden"></iconify-icon>
-</button>
-
-<!-- CHAT WINDOW -->
+<!-- AGRI-TALK -->
+<button id="chat-fab" onclick="toggleChat()" aria-label="Open Agri-Talk chat" class="fixed w-16 h-16 bg-slate-900 text-emerald-400 rounded-full shadow-2xl flex items-center justify-center hover:bg-slate-800 z-[90] border border-slate-700"><iconify-icon icon="lucide:message-square-plus" class="text-3xl"></iconify-icon></button>
 <div id="agri-talk-window" class="chat-overlay bg-white z-[90] overflow-hidden" role="dialog" aria-label="Agri-Talk AI">
   <div class="bg-slate-900 text-white py-3 chat-pad chat-top flex items-center justify-between shrink-0">
-    <div class="flex items-center gap-3 min-w-0">
-      <div class="w-10 h-10 shrink-0 rounded-full bg-emerald-500/20 flex items-center justify-center"><iconify-icon icon="lucide:bot" class="text-emerald-400 text-2xl"></iconify-icon></div>
-      <div class="min-w-0"><h3 class="font-bold font-heading text-lg leading-tight">Agri-Talk AI</h3><p class="text-xs text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-ring"></span> Gemini Engine Online</p></div>
-    </div>
-    <button onclick="toggleChat()" class="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-white" aria-label="Close chat"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
+    <div><h3 class="font-bold font-heading text-lg">Agri-Talk AI</h3><p class="text-xs text-emerald-400">Ask about soil, crops, pests, irrigation</p></div>
+    <button onclick="toggleChat()" class="w-10 h-10 flex items-center justify-center text-slate-300" aria-label="Close chat"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
   </div>
-  <div id="chat-messages" class="msgs flex-1 min-h-0 bg-slate-50 py-4 chat-pad overflow-y-auto chat-scroll flex flex-col gap-4">
-    <div class="flex gap-3 max-w-[90%]">
-      <div class="w-8 h-8 rounded-full bg-emerald-100 shrink-0 flex items-center justify-center text-emerald-600 mt-1"><iconify-icon icon="lucide:bot"></iconify-icon></div>
-      <div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm" id="chat-greeting">Hello! I am your Agri-Talk assistant powered by Gemini. Ask me about your soil, crops, planting seasons, pests, or irrigation.</div>
-    </div>
+  <div id="chat-messages" class="msgs flex-1 min-h-0 bg-slate-50 py-4 chat-pad overflow-y-auto flex flex-col gap-4">
+    <div class="chat-bubble-ai p-4 font-medium shadow-sm max-w-[90%]" id="chat-greeting">Hello! Ask me about your soil, crops, planting seasons, pests, or irrigation. You can ask in your own language.</div>
   </div>
   <div class="pt-3 chat-pad chat-bottom bg-white border-t border-slate-100 flex items-end gap-2 shrink-0">
-    <div class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-2xl focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-200">
-      <textarea id="chat-input" rows="1" class="w-full bg-transparent border-none px-3 py-2.5 focus:outline-none resize-none font-medium text-slate-800 max-h-28" placeholder="Ask about soil, crops, planting..." enterkeyhint="send" autocomplete="off" autocorrect="on"></textarea>
-    </div>
-    <button id="send-btn" onclick="sendMessage()" class="w-11 h-11 shrink-0 flex items-center justify-center bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 shadow-md" aria-label="Send"><iconify-icon icon="lucide:send" class="text-xl"></iconify-icon></button>
+    <div class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-2xl focus-within:border-emerald-500"><textarea id="chat-input" rows="1" class="w-full bg-transparent border-none px-3 py-2.5 focus:outline-none resize-none font-medium max-h-28" placeholder="Ask about soil, crops, planting..." enterkeyhint="send"></textarea></div>
+    <button onclick="sendMessage()" class="w-12 h-12 shrink-0 flex items-center justify-center bg-emerald-600 text-white rounded-xl hover:bg-emerald-700" aria-label="Send"><iconify-icon icon="lucide:send" class="text-xl"></iconify-icon></button>
   </div>
 </div>
 
-<!-- PROBLEM AI WINDOW -->
+<!-- PROBLEM AI -->
 <div id="problem-window" class="chat-overlay bg-white z-[90] overflow-hidden" role="dialog" aria-label="Problem AI">
   <div class="bg-slate-900 text-white py-3 chat-pad chat-top flex items-center justify-between shrink-0">
-    <div class="flex items-center gap-3 min-w-0">
-      <div class="w-10 h-10 shrink-0 rounded-full bg-rose-500/20 flex items-center justify-center"><iconify-icon icon="lucide:message-square-warning" class="text-rose-400 text-2xl"></iconify-icon></div>
-      <div class="min-w-0"><h3 class="font-bold font-heading text-lg leading-tight">Problem AI</h3><p class="text-xs text-rose-300">Soil alerts from your sensor</p></div>
-    </div>
-    <button onclick="toggleProblem(false)" class="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-white" aria-label="Close Problem AI"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
+    <div><h3 class="font-bold font-heading text-lg">Problem AI</h3><p class="text-xs text-rose-300">Soil alerts from your sensor</p></div>
+    <button onclick="toggleProblem(false)" class="w-10 h-10 flex items-center justify-center text-slate-300" aria-label="Close Problem AI"><iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon></button>
   </div>
-  <div id="problem-messages" class="msgs flex-1 min-h-0 bg-slate-50 py-4 chat-pad overflow-y-auto chat-scroll flex flex-col gap-4">
-    <div id="crop-box">
+  <div id="problem-messages" class="msgs flex-1 min-h-0 bg-slate-50 py-4 chat-pad overflow-y-auto flex flex-col gap-4">
+    <div>
       <label for="crop-input" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">What did you plant? (optional)</label>
-      <div class="flex gap-2">
-        <input id="crop-input" type="text" maxlength="60" autocomplete="off" enterkeyhint="done" placeholder="e.g. Tomatoes, Maize" class="flex-1 min-w-0 min-h-[48px] px-3 rounded-xl border border-slate-300 bg-white text-slate-800 font-medium focus:border-rose-500 focus:ring-2 focus:ring-rose-200 outline-none">
-        <button onclick="saveCrop()" class="min-h-[48px] px-5 rounded-xl bg-rose-600 text-white font-bold hover:bg-rose-700">Save</button>
-      </div>
-      <p id="crop-note" class="text-xs text-slate-600 font-medium mt-2"></p>
+      <div class="flex gap-2"><input id="crop-input" type="text" maxlength="60" autocomplete="off" placeholder="e.g. Tomatoes, Maize" class="flex-1 min-w-0 min-h-[48px] px-3 rounded-xl border border-slate-300 bg-white font-medium focus:border-rose-500 outline-none"><button onclick="saveCrop()" class="min-h-[48px] px-5 rounded-xl bg-rose-600 text-white font-bold hover:bg-rose-700">Save</button></div>
+      <p id="crop-note" class="text-sm text-slate-600 font-medium mt-2"></p>
     </div>
     <div id="problem-summary"></div>
-    <div class="flex gap-3 max-w-[90%]">
-      <div class="w-8 h-8 rounded-full bg-rose-100 shrink-0 flex items-center justify-center text-rose-600 mt-1"><iconify-icon icon="lucide:message-square-warning"></iconify-icon></div>
-      <div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm">I report soil issues from your sensor. Tell me what crop you planted and I will tell you if the soil is changing in a way that could harm it.</div>
-    </div>
+    <div class="chat-bubble-ai p-4 font-medium shadow-sm max-w-[90%]">I report soil issues from your sensor. Tell me what you planted and I will tell you if the soil could harm it.</div>
   </div>
   <div class="pt-3 chat-pad chat-bottom bg-white border-t border-slate-100 flex items-end gap-2 shrink-0">
-    <div class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-2xl focus-within:border-rose-500 focus-within:ring-2 focus-within:ring-rose-200">
-      <textarea id="problem-input" rows="1" class="w-full bg-transparent border-none px-3 py-2.5 focus:outline-none resize-none font-medium text-slate-800 max-h-28" placeholder="Ask about this problem..." enterkeyhint="send" autocomplete="off"></textarea>
-    </div>
-    <button onclick="sendProblem()" class="w-11 h-11 shrink-0 flex items-center justify-center bg-rose-600 text-white rounded-xl hover:bg-rose-700 shadow-md" aria-label="Send"><iconify-icon icon="lucide:send" class="text-xl"></iconify-icon></button>
+    <div class="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-2xl focus-within:border-rose-500"><textarea id="problem-input" rows="1" class="w-full bg-transparent border-none px-3 py-2.5 focus:outline-none resize-none font-medium max-h-28" placeholder="Ask about this problem..." enterkeyhint="send"></textarea></div>
+    <button onclick="sendProblem()" class="w-12 h-12 shrink-0 flex items-center justify-center bg-rose-600 text-white rounded-xl hover:bg-rose-700" aria-label="Send"><iconify-icon icon="lucide:send" class="text-xl"></iconify-icon></button>
   </div>
 </div>
 
 <script>
-function switchView(id){
-  document.querySelectorAll('.view-section').forEach(v=>v.classList.add('hidden'));
-  const v=document.getElementById(id); if(v) v.classList.remove('hidden');
-  window.scrollTo({top:0,behavior:'smooth'});
+const $ = id => document.getElementById(id);
+const escapeHtml = t => String(t).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
+const mdFallback = t => escapeHtml(t).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+const md = t => { let h; try { h = window.marked && marked.parse ? marked.parse(t) : mdFallback(t) } catch (e) { h = mdFallback(t) } return window.DOMPurify ? DOMPurify.sanitize(h) : h };
+const post = (url, body) => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+
+function switchView(id) {
+  document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
+  const v = $(id); if (v) v.classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-function setVV(){
-  const w=document.querySelector('.chat-overlay.open'), vv=window.visualViewport;
-  if(!vv||!w) return;
-  w.style.top=vv.offsetTop+'px'; w.style.height=vv.height+'px';
-  const m=w.querySelector('.msgs'); if(m) m.scrollTop=m.scrollHeight;
+function setVV() {
+  const w = document.querySelector('.chat-overlay.open'), vv = window.visualViewport; if (!vv || !w) return;
+  w.style.top = vv.offsetTop + 'px'; w.style.height = vv.height + 'px';
+  const m = w.querySelector('.msgs'); if (m) m.scrollTop = m.scrollHeight;
 }
-if(window.visualViewport){visualViewport.addEventListener('resize',setVV);visualViewport.addEventListener('scroll',setVV)}
-['gesturestart','gesturechange','gestureend'].forEach(ev=>document.addEventListener(ev,e=>e.preventDefault()));
-let savedY=0;
-function toggleChat(){
-  const w=document.getElementById('agri-talk-window'), open=!w.classList.contains('open');
-  if(open){savedY=window.scrollY;document.body.style.top=-savedY+'px';document.body.classList.add('chat-open');w.classList.add('open');setVV();}
-  else{w.classList.remove('open');w.style.top='';w.style.height='';document.body.classList.remove('chat-open');document.body.style.top='';window.scrollTo(0,savedY);document.activeElement&&document.activeElement.blur();}
+if (window.visualViewport) { visualViewport.addEventListener('resize', setVV); visualViewport.addEventListener('scroll', setVV) }
+let savedY = 0;
+function openOverlay(w) { savedY = window.scrollY; document.body.style.top = -savedY + 'px'; document.body.classList.add('chat-open'); w.classList.add('open'); setVV(); }
+function closeOverlay(w) { w.classList.remove('open'); w.style.top = ''; w.style.height = ''; document.body.classList.remove('chat-open'); document.body.style.top = ''; window.scrollTo(0, savedY); document.activeElement && document.activeElement.blur(); }
+function toggleChat() { const w = $('agri-talk-window'); w.classList.contains('open') ? closeOverlay(w) : openOverlay(w); }
+function toggleProblem(force) {
+  const w = $('problem-window'), open = force !== undefined ? force : !w.classList.contains('open');
+  if (open === w.classList.contains('open')) return;
+  if (open) { if ($('agri-talk-window').classList.contains('open')) closeOverlay($('agri-talk-window')); toggleNotif(false); openOverlay(w); } else closeOverlay(w);
 }
-document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('agri-talk-window').classList.contains('open'))toggleChat();else if($('problem-window').classList.contains('open'))toggleProblem(false);});
-function escapeHtml(t){return t.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-const AI_AVATAR='<div class="w-8 h-8 rounded-full bg-emerald-100 shrink-0 flex items-center justify-center text-emerald-600 mt-1"><iconify-icon icon="lucide:bot"></iconify-icon></div>';
+document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if ($('agri-talk-window').classList.contains('open')) toggleChat(); else if ($('problem-window').classList.contains('open')) toggleProblem(false); });
 
-/* ===== FARMER EXPERIENCE LEVEL STATE ===== */
-let currentFarmerLevel = 'intermediate';
-
-function changeFarmerLevel(level) {
-  currentFarmerLevel = level;
-  const labels = { beginner: 'New / Beginner', intermediate: 'Intermediate', advanced: 'Advanced' };
-  if(document.getElementById('current-level-label')) document.getElementById('current-level-label').textContent = labels[level];
-}
-
-/* ===== SLIDE-DECK TEACHING PDF GENERATION ENGINES (jsPDF) ===== */
-function downloadSoilGuidePDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  
-  function renderSlide(slideNum, totalSlides, title, bullets, techNotes) {
-    if (slideNum > 1) doc.addPage();
-    
-    doc.setFillColor(15, 23, 42);
-    doc.rect(0, 0, 210, 32, 'F');
-    
-    doc.setFillColor(16, 185, 129);
-    doc.rect(0, 32, 210, 3, 'F');
-
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14);
-    doc.text("SOIL BUDDIES - PROFESSIONAL LECTURE SERIES", 15, 14);
-    
-    doc.setFontSize(10);
-    doc.setTextColor(148, 163, 184);
-    doc.text(`Module: Soil Telemetry & Agronomy | Level: ${currentFarmerLevel.toUpperCase()}`, 15, 23);
-
-    doc.setFillColor(241, 245, 249);
-    doc.roundedRect(175, 10, 22, 14, 3, 3, 'F');
-    doc.setTextColor(15, 23, 42);
-    doc.setFontSize(9);
-    doc.text(`${slideNum} / ${totalSlides}`, 181, 19);
-
-    doc.setTextColor(15, 23, 42);
-    doc.setFontSize(16);
-    doc.setFont("helvetica", "bold");
-    doc.text(title, 15, 50);
-
-    let y = 62;
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(51, 65, 85);
-    
-    bullets.forEach(bullet => {
-      doc.setFillColor(16, 185, 129);
-      doc.circle(18, y - 1.5, 1.5, 'F');
-      doc.text(bullet, 24, y, { maxWidth: 170 });
-      y += 14;
-    });
-
-    if(techNotes && techNotes.length > 0) {
-      doc.setFillColor(248, 250, 252);
-      doc.setDrawColor(226, 232, 240);
-      doc.roundedRect(15, y + 5, 180, 52, 4, 4, 'FD');
-      
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-      doc.setTextColor(5, 150, 105);
-      doc.text("⚡ ADVANCED TECHNICAL SPECIFICATION FOR SRS FARMERS:", 20, y + 15);
-
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
-      doc.setTextColor(71, 85, 105);
-      let ty = y + 23;
-      techNotes.forEach(note => {
-        doc.text(`• ${note}`, 20, ty, { maxWidth: 170 });
-        ty += 8;
-      });
-    }
-
-    doc.setFontSize(8);
-    doc.setTextColor(148, 163, 184);
-    doc.text("Soil Buddies Enterprise Telemetry Engine © 2026. Confidential Academic & Field Manual.", 15, 288);
-  }
-
-  renderSlide(1, 4, "Slide 1: Executive Telemetry & Soil Baseline", [
-    "Comprehensive Multispectral Drone Scan & IoT Probe Synchronization complete.",
-    "Current Active Soil pH: 6.2 (Optimal range for Solanaceae and root vegetables).",
-    "Soil Texture Classification: Sandy Loam (Optimal hydraulic conductivity & aeration).",
-    "Primary Macro-Nutrient Deficit Detected: Nitrogen (N) is currently at Low threshold."
-  ], [
-    "Cation Exchange Capacity (CEC) is holding at 18.4 meq/100g, ensuring moderate buffering capacity.",
-    "Bulk density measured at 1.35 g/cm³; root penetration resistance is minimal.",
-    "Immediate action: Execute nitrogen top-dressing prior to canopy closure to prevent yield suppression."
-  ]);
-
-  renderSlide(2, 4, "Slide 2: pH Buffering & Nutrient Availability", [
-    "pH 6.2 sits precisely in the sweet spot where phosphorus (P) and micronutrients remain soluble.",
-    "Avoiding nutrient lockout: At pH > 7.5 or < 5.5, chemical binding locks essential ions.",
-    "Biological activity: Bacterial mineralization peaks at pH 6.0 - 6.5, maximizing organic breakdown.",
-    "Liming status: No agricultural lime required for this production cycle."
-  ], [
-    "Micronutrient availability (Fe, Mn, Zn, Cu) remains balanced without inducing iron chlorosis.",
-    "Soil solution electrical conductivity (EC) indicates stable ionic concentration.",
-    "Maintain pH monitoring weekly via automated telemetry probe arrays."
-  ]);
-
-  renderSlide(3, 4, "Slide 3: Sandy Loam Hydraulic Conductivity", [
-    "Texture breakdown: 65% Sand, 20% Silt, 15% Clay ensures rapid infiltration and aeration.",
-    "Current Field Moisture: 45% (Balanced right at optimum plant available water capacity).",
-    "Drainage efficiency: Prevents root asphyxiation during heavy cloudburst events.",
-    "Evapotranspiration rate: Requires consistent early-morning irrigation cycles."
-  ], [
-    "Permanent Wilting Point (PWP) estimated at 12% volumetric water content.",
-    "Readily Available Water (RAW) window spans between 25% and 45% moisture.",
-    "Drip irrigation emitters recommended to minimize evaporative surface loss."
-  ]);
-
-  renderSlide(4, 4, "Slide 4: Commercial Action Plan & Execution", [
-    "Step 1: Broadcast high-nitrogen organic compost or calcium nitrate 48 hours pre-planting.",
-    "Step 2: Maintain tillage depth strictly at 20cm to preserve aggregate stability.",
-    "Step 3: Monitor 48-hour weather APIs before fertigation to prevent rain washout.",
-    "Step 4: Deploy Problem AI sensor monitoring daily to track N-recovery velocity."
-  ], [
-    "Target yield benchmark: 1,450 kg per 100m² plot (~R24,650 estimated gross revenue).",
-    "Risk mitigation: Ensure drainage ditches are clear ahead of forecasted weather fronts.",
-    "Full compliance with Soil Buddies Advanced Agronomy Standards verified."
-  ]);
-
-  doc.save(`Soil_Buddies_Slide_Manual_${currentFarmerLevel}.pdf`);
-}
-
-function downloadWeatherGuidePDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-
-  function renderWeatherSlide(slideNum, totalSlides, title, bullets, techNotes) {
-    if (slideNum > 1) doc.addPage();
-    
-    doc.setFillColor(30, 41, 59);
-    doc.rect(0, 0, 210, 32, 'F');
-    
-    doc.setFillColor(59, 130, 246);
-    doc.rect(0, 32, 210, 3, 'F');
-
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14);
-    doc.text("SOIL BUDDIES - METEOROLOGICAL LECTURE SERIES", 15, 14);
-    
-    doc.setFontSize(10);
-    doc.setTextColor(148, 163, 184);
-    doc.text(`Module: Microclimate & Rain Dilution | Level: ${currentFarmerLevel.toUpperCase()}`, 15, 23);
-
-    doc.setFillColor(241, 245, 249);
-    doc.roundedRect(175, 10, 22, 14, 3, 3, 'F');
-    doc.setTextColor(15, 23, 42);
-    doc.setFontSize(9);
-    doc.text(`${slideNum} / ${totalSlides}`, 181, 19);
-
-    doc.setTextColor(15, 23, 42);
-    doc.setFontSize(16);
-    doc.setFont("helvetica", "bold");
-    doc.text(title, 15, 50);
-
-    let y = 62;
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(51, 65, 85);
-    
-    bullets.forEach(bullet => {
-      doc.setFillColor(59, 130, 246);
-      doc.circle(18, y - 1.5, 1.5, 'F');
-      doc.text(bullet, 24, y, { maxWidth: 170 });
-      y += 14;
-    });
-
-    if(techNotes && techNotes.length > 0) {
-      doc.setFillColor(248, 250, 252);
-      doc.setDrawColor(226, 232, 240);
-      doc.roundedRect(15, y + 5, 180, 52, 4, 4, 'FD');
-      
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-      doc.setTextColor(37, 99, 235);
-      doc.text("⚡ METEOROLOGICAL SPECIFICATION FOR SRS FARMERS:", 20, y + 15);
-
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
-      doc.setTextColor(71, 85, 105);
-      let ty = y + 23;
-      techNotes.forEach(note => {
-        doc.text(`• ${note}`, 20, ty, { maxWidth: 170 });
-        ty += 8;
-      });
-    }
-
-    doc.setFontSize(8);
-    doc.setTextColor(148, 163, 184);
-    doc.text("Soil Buddies Enterprise Meteorological Engine © 2026. Confidential Academic & Field Manual.", 15, 288);
-  }
-
-  renderWeatherSlide(1, 4, "Slide 1: Open-Meteo API & Farm Synced GPS", [
-    "Real-time meteorological synchronization connected to precise farm GPS coordinates.",
-    "Atmospheric pressure monitoring to predict sudden convective storm cells.",
-    "Ambient temperature tracking: Crucial for calculating Crop Water Stress Index (CWSI).",
-    "Relative humidity tracking to assess fungal disease spore propagation risks."
-  ], [
-    "Vapor Pressure Deficit (VPD) currently optimal at 0.9 kPa.",
-    "Solar radiation tracking indicates 6.8 peak sun hours daily.",
-    "Integrated warning triggers active when precipitation probability exceeds 65%."
-  ]);
-
-  renderWeatherSlide(2, 4, "Slide 2: Rain Dilution & Nutrient Leaching Mechanics", [
-    "The 48-Hour Rule: Heavy rainfall post-fertilization induces severe nitrate leaching.",
-    "Percolation velocity: Sandy Loam allows rapid water movement, carrying mobile ions deep past root zones.",
-    "Osmotic shock prevention: Avoiding fertilizer application immediately prior to cloudbursts.",
-    "Cost savings: Protecting expensive nitrogen investments from washing into sub-strata."
-  ], [
-    "Leaching coefficient in Sandy Loam: ~0.45 per 25mm of unmanaged precipitation.",
-    "Cation retention buffer: Calcium and Magnesium resist leaching better than Nitrates.",
-    "Action trigger: Postpone all top-dressing when forecasted 48h rain exceeds 1.0mm."
-  ]);
-
-  renderWeatherSlide(3, 4, "Slide 3: Moisture Equilibrium & Irrigation Control", [
-    "Current soil moisture holds steady at 45% field capacity.",
-    "Precipitation offset: Natural rainfall reduces irrigation pumping energy costs.",
-    "Waterlogging prevention: Sandy Loam drains excess head water within 6 hours.",
-    "Root zone aeration recovery post-storm."
-  ], [
-    "Drainage rate: 15mm/hour saturated hydraulic conductivity.",
-    "Evapotranspiration demand: ~4.2mm/day under current thermal conditions.",
-    "Automated valve lockout activated during active precipitation events."
-  ]);
-
-  renderWeatherSlide(4, 4, "Slide 4: Strategic Weather Risk Mitigation", [
-    "Daily routine: Inspect the Apple Weather microclimate widget every morning at 06:00.",
-    "Emergency protocol: Secure open compost heaps and fertilizer bags when storm alerts trigger.",
-    "Post-storm verification: Wait 24 hours before heavy machinery operation to avoid soil compaction.",
-    "Continuous sync: Ensure IoT telemetry sticks remain powered and connected."
-  ], [
-    "Yield protection index improved by 34% through proactive weather integration.",
-    "Zero unmanaged nutrient washout recorded in current production cycle.",
-    "Advanced farming standards fully maintained across all active plots."
-  ]);
-
-  doc.save(`Soil_Buddies_Weather_Slide_Manual_${currentFarmerLevel}.pdf`);
-}
-
-/* ===== FARMER QUIZ ENGINE (KNOW YOUR LAND) ===== */
-const farmQuizzes = [
-  {
-    question: "Your land probe and calibrated drone scan show pH 6.2 and Sandy Loam. What does this mean for your crops?",
-    options: [
-      { text: "It is the ideal slightly acidic range and texture for vegetables.", correct: true, explanation: "Spot on! pH 6.2 in Sandy Loam provides prime nutrient uptake and excellent drainage." },
-      { text: "It is too acidic and will burn plant roots instantly.", correct: false, explanation: "Incorrect. 6.2 is very close to neutral and ideal for vegetables." },
-      { text: "It is pure clay and water will never drain.", correct: false, explanation: "Incorrect. Sandy Loam drains easily and has a balanced texture." }
-    ]
-  },
-  {
-    question: "Your stick sensor reports Low Nitrogen (N). What is the safest way to prepare your plot?",
-    options: [
-      { text: "Apply organic nitrogen compost 48 hours before planting.", correct: true, explanation: "Correct! Organic compost top-dressing safely boosts nitrogen without burning young roots." },
-      { text: "Flood the field with heavy chemical sprays during a rainstorm.", correct: false, explanation: "Incorrect! Heavy rain causes nutrient washout." },
-      { text: "Ignore it; nitrogen has no effect on plant growth.", correct: false, explanation: "Incorrect. Nitrogen is vital for lush leaf and stem growth." }
-    ]
-  },
-  {
-    question: "The weather API forecasts significant rain in the next 48 hours. What should you do with your fertilizer?",
-    options: [
-      { text: "Postpone application until after the rain passes to prevent washout.", correct: true, explanation: "Exactly right! Waiting prevents expensive nutrients from washing away." },
-      { text: "Apply double the amount immediately.", correct: false, explanation: "Incorrect. That would cause severe nutrient run-off." },
-      { text: "Stop checking weather entirely.", correct: false, explanation: "Incorrect. Monitoring microclimates protects your harvest." }
-    ]
-  }
-];
-
-let currentQuizIndex = 0;
-let userQuizScore = 0;
-let quizAnswered = false;
-
-function openQuizModal() {
-  currentQuizIndex = 0;
-  userQuizScore = 0;
-  renderQuiz();
-  const m = document.getElementById('quiz-modal');
-  const c = document.getElementById('quiz-modal-content');
-  m.classList.remove('hidden'); m.classList.add('flex');
-  void m.offsetWidth;
-  c.classList.remove('scale-95', 'opacity-0');
-}
-
-function closeQuizModal() {
-  const m = document.getElementById('quiz-modal');
-  const c = document.getElementById('quiz-modal-content');
-  c.classList.add('scale-95', 'opacity-0');
-  setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
-}
-
-function renderQuiz() {
-  const container = document.getElementById('quiz-container');
-  if(!container) return;
-
-  const quiz = farmQuizzes[currentQuizIndex];
-  document.getElementById('quiz-modal-score').textContent = `${userQuizScore} / ${farmQuizzes.length} Correct`;
-
-  let optionsHtml = quiz.options.map((opt, idx) => `
-    <button onclick="handleQuizAnswer(${idx})" id="quiz-opt-${idx}" class="w-full text-left p-4 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 transition-all font-medium text-sm sm:text-base flex items-center justify-between group">
-      <span>${escapeHtml(opt.text)}</span>
-      <span class="w-6 h-6 rounded-full border border-white/30 flex items-center justify-center shrink-0 group-hover:border-emerald-400"></span>
-    </button>
-  `).join('');
-
-  container.innerHTML = `
-    <div class="mb-3 flex items-center justify-between">
-      <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Question ${currentQuizIndex + 1} of ${farmQuizzes.length}</span>
-    </div>
-    <h3 class="text-lg sm:text-xl font-bold font-heading text-white mb-5">${escapeHtml(quiz.question)}</h3>
-    <div class="space-y-3 mb-5" id="quiz-options-list">
-      ${optionsHtml}
-    </div>
-    <div id="quiz-feedback-box" class="hidden p-4 rounded-xl border text-sm leading-relaxed mb-4"></div>
-    <div id="quiz-next-wrap" class="hidden flex justify-end">
-      <button onclick="nextQuizQuestion()" class="min-h-[44px] px-6 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-colors flex items-center gap-2">
-        <span>${currentQuizIndex < farmQuizzes.length - 1 ? 'Next Question' : 'Complete Quiz'}</span>
-        <iconify-icon icon="lucide:arrow-right"></iconify-icon>
-      </button>
-    </div>
-  `;
-  quizAnswered = false;
-}
-
-function handleQuizAnswer(idx) {
-  if (quizAnswered) return;
-  quizAnswered = true;
-
-  const quiz = farmQuizzes[currentQuizIndex];
-  const selected = quiz.options[idx];
-  const feedbackBox = document.getElementById('quiz-feedback-box');
-  const nextWrap = document.getElementById('quiz-next-wrap');
-
-  quiz.options.forEach((opt, i) => {
-    const btn = document.getElementById(`quiz-opt-${i}`);
-    btn.disabled = true;
-    if(opt.correct) {
-      btn.className = "w-full text-left p-4 rounded-xl border border-emerald-500 bg-emerald-500/20 text-emerald-200 font-bold text-sm sm:text-base flex items-center justify-between";
-    } else if(i === idx) {
-      btn.className = "w-full text-left p-4 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-200 font-medium text-sm sm:text-base flex items-center justify-between";
-    }
-  });
-
-  if (selected.correct) {
-    userQuizScore++;
-    feedbackBox.className = "p-4 rounded-xl border border-emerald-500/40 bg-emerald-500/20 text-emerald-100 text-sm leading-relaxed mb-4";
-    feedbackBox.innerHTML = `<strong>✅ Correct!</strong> ${escapeHtml(selected.explanation)}`;
-  } else {
-    feedbackBox.className = "p-4 rounded-xl border border-rose-500/40 bg-rose-500/20 text-rose-100 text-sm leading-relaxed mb-4";
-    feedbackBox.innerHTML = `<strong>❌ Not quite.</strong> ${escapeHtml(selected.explanation)}`;
-  }
-
-  document.getElementById('quiz-modal-score').textContent = `${userQuizScore} / ${farmQuizzes.length} Correct`;
-  feedbackBox.classList.remove('hidden');
-  nextWrap.classList.remove('hidden');
-}
-
-function nextQuizQuestion() {
-  currentQuizIndex++;
-  if (currentQuizIndex < farmQuizzes.length) {
-    renderQuiz();
-  } else {
-    const container = document.getElementById('quiz-container');
-    container.innerHTML = `
-      <div class="text-center py-6">
-        <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-4 text-3xl">
-          <iconify-icon icon="lucide:award"></iconify-icon>
-        </div>
-        <h3 class="text-2xl font-bold font-heading text-white mb-2">Quiz Completed!</h3>
-        <p class="text-slate-300 mb-6">You scored <strong class="text-emerald-400">${userQuizScore} out of ${farmQuizzes.length}</strong>. You understand your soil telemetry and weather triggers like a pro farmer!</p>
-        <div class="flex gap-3 justify-center">
-          <button onclick="resetQuiz()" class="min-h-[44px] px-6 rounded-xl font-bold bg-white/10 text-white hover:bg-white/20 transition-colors">Retake Quiz</button>
-          <button onclick="closeQuizModal()" class="min-h-[44px] px-6 rounded-xl font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-colors">Close</button>
-        </div>
-      </div>
-    `;
-  }
-}
-
-function resetQuiz() {
-  currentQuizIndex = 0;
-  userQuizScore = 0;
-  renderQuiz();
-}
-
-/* ===== STEP-BY-STEP TUTOR AI GUIDE ===== */
-let currentCropName = '';
-let currentStepIndex = 0;
-let guideLanguage = 'English';
-
-const plotSteps = {
-  'English': [
-    { title: "Step 1: Nitrogen Top-Dressing", text: "Apply organic nitrogen compost around the bed 48 hours prior to planting. Why? Your stick sensor indicates low nitrogen, which slows early leaf growth." },
-    { title: "Step 2: Bed Tilling & pH Verification", text: "Till the top 20cm of soil. Why? At pH 6.2, your soil is in the ideal range for planting without needing lime adjustment, saving nutrients from lockout." },
-    { title: "Step 3: Moisture Management", text: "Maintain current 45% moisture with light early-morning watering. Why? This prevents root stress while avoiding waterlogging during the upcoming weather cycle." }
-  ],
-  'Sepedi': [
-    { title: "Kgato ya 1: Go Tlaša Nithrojene", text: "Diragatša monontsha wa organic wa nitrogen mo tošong diiri tše 48 pele o bjala. Ke ka bang? Sensor ya gago e bontšha nithrojene ya fase." },
-    { title: "Kgato ya 2: Go lema le go lekola pH", text: "Lema karolo ya godimo ya 20cm ya mabu. Ke ka bang? Ka pH ya 6.2, mabu a gago a lokile go bjala." },
-    { title: "Kgato ya 3: Taolo ya Mongobo", text: "Boloka mongobo wa 45% ka go nošetša mo mosong. Ke ka bang? Se se thibela kgatello ya medi." }
-  ],
-  'Xitsonga': [
-    { title: "Nkongu wa 1: Ku cheleta Nitrogen", text: "Tirhisa comfits ya nitrogen ku rhendzeleka xiphemu masiku 48 u nga si byala. Hikwalaho ka yini? Sensor ya wena yi kombisa nitrogen yi le hansi." },
-    { title: "Nkongu wa 2: Ku rima ni ku kambela pH", text: "Rima 20cm yo sungula ya misava. Hikwalaho ka yini? Hi pH ya 6.2, misava ya wena yi ringana kahle." },
-    { title: "Nkongu wa 3: Ku khathalela Mati", text: "Hlayisa mati ya 45% hi ku cheleta mixo. Hikwalaho ka yini? Leswi swi sivela ku vaviseka ka timitsu." }
-  ],
-  'Tshivenda': [
-    { title: "Nyato ya 1: Uawedza Nitrogen", text: "Shandumisani kompositi ya nitrogen maori 48 u sa athu u lima. Ndi ngani? Sensor ya nu vhudza uri nitrogen i fhasi." },
-    { title: "Nyato ya 2: U lima na u sedza pH", text: "Limani vhura vhu no swika 20cm. Ndi ngani? Nga pH ya 6.2, mavu anu a khwine u lima." },
-    { title: "Nyato ya 3: Vhulunga Maḓi", text: "Tsireledzani 45% ya maḓi nga u tou shela nga matshelo. Ndi ngani? Izwi zwi thivhela vhulwadze ha midzi." }
-  ],
-  'IsiZulu': [
-    { title: "Isinyathelo sesi-1: Ukufaka i-Nitrogen", text: "Faka umquba we-nitrogen emahoreni angama-48 ngaphambi kokutshala. Kungani? Isinzwa sakho sibonisa ukuthi i-nitrogen iphansi." },
-    { title: "Isinyathelo sesi-2: Ukulima nokubheka i-pH", text: "Lima amasentimitha angama-20 angaphezulu enhlabathi. Kungani? Nge-pH ka-6.2, inhlabathi yakho ilungele." },
-    { title: "Isinyathelo sesi-3: Ukulawula Umswakama", text: "Gcina umswakama ka-45% ngokunisela ekuseni kakhulu. Kungani? Lokhu kuvimbela ukucindezeleka kwezimpande." }
-  ],
-  'Afrikaans': [
-    { title: "Stap 1: Stikstof Topbemesting", text: "Dien organiese stikstofkompos toe 48 uur voor plant. Waarom? Jou sensor dui lae stikstof aan." },
-    { title: "Stap 2: Grondbewerking & pH Verifikasie", text: "Bewer die boonste 20cm grond. Waarom? Teen pH 6.2 is jou grond in die ideale reeks." },
-    { title: "Stap 3: Vogbestuur", text: "Handhaaf huidige 45% vog deur ligte oggendbesproeiing. Waarom? Dit voorkom wortelstres." }
-  ]
-};
-
-function openPlotGuide(cropName){
-  currentCropName = cropName;
-  currentStepIndex = 0;
-  guideLanguage = document.getElementById('guide-lang-select').value;
-  renderPlotStep();
-  
-  const m = document.getElementById('plot-guide-modal');
-  const c = document.getElementById('plot-guide-content');
-  m.classList.remove('hidden'); m.classList.add('flex');
-  void m.offsetWidth;
-  c.classList.remove('scale-95', 'opacity-0');
-}
-
-function changeGuideLanguage(lang) {
-  guideLanguage = lang;
-  renderPlotStep();
-}
-
-function renderPlotStep() {
-  const steps = plotSteps[guideLanguage] || plotSteps['English'];
-  const titleEl = document.getElementById('plot-guide-title');
-  const bodyEl = document.getElementById('plot-guide-body');
-  const interactiveEl = document.getElementById('guide-interactive-area');
-
-  titleEl.textContent = `${currentCropName} Guide (${currentStepIndex + 1}/${steps.length})`;
-  
-  const step = steps[currentStepIndex];
-  bodyEl.innerHTML = `
-    <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 mb-2">
-      <strong>Soil Baseline:</strong> pH 6.2 (Optimal) | Sandy Loam | Moisture 45% | N: Low
-    </div>
-    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
-      <h4 class="font-bold text-slate-900 text-base mb-2">${step.title}</h4>
-      <p class="text-slate-700 leading-relaxed">${step.text}</p>
-    </div>
-  `;
-
-  interactiveEl.innerHTML = `
-    <div id="understand-prompt">
-      <p class="text-sm font-bold text-slate-800 mb-3 text-center">Do you understand this step?</p>
-      <div class="flex gap-3 justify-center">
-        <button onclick="handleUnderstand(true)" class="min-h-[44px] px-6 rounded-xl font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition-colors">Yes, I understand</button>
-        <button onclick="handleUnderstand(false)" class="min-h-[44px] px-6 rounded-xl font-bold bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition-colors">No, explain more</button>
-      </div>
-    </div>
-    <div id="explanation-box" class="hidden mt-3 space-y-2">
-      <textarea id="confusa-input" rows="2" class="w-full p-3 rounded-xl border border-slate-300 text-sm font-medium focus:ring-2 focus:ring-emerald-200 outline-none" placeholder="Type what you don't understand about this step..."></textarea>
-      <div class="flex justify-end gap-2">
-        <button onclick="submitConfusion()" class="min-h-[40px] px-4 rounded-xl font-bold bg-slate-900 text-white text-xs hover:bg-emerald-600">Ask Guide AI</button>
-      </div>
-    </div>
-    <div id="ai-clarification" class="hidden mt-3 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 leading-relaxed"></div>
-  `;
-}
-
-function handleUnderstand(yes) {
-  if (yes) {
-    const steps = plotSteps[guideLanguage] || plotSteps['English'];
-    if (currentStepIndex < steps.length - 1) {
-      currentStepIndex++;
-      renderPlotStep();
-    } else {
-      document.getElementById('guide-interactive-area').innerHTML = `
-        <div class="p-4 rounded-xl bg-emerald-100 text-emerald-900 text-center font-bold">
-          🎉 You have completed all preparation steps for ${currentCropName}! Your plot is ready for success.
-        </div>
-      `;
-    }
-  } else {
-    document.getElementById('explanation-box').classList.remove('hidden');
-  }
-}
-
-async function submitConfusion() {
-  const txt = document.getElementById('confusa-input').value.trim();
-  const clarityEl = document.getElementById('ai-clarification');
-  if(!txt) return;
-
-  clarityEl.classList.remove('hidden');
-  clarityEl.innerHTML = `<strong>Tutor AI is teaching...</strong>`;
-
-  const steps = plotSteps[guideLanguage] || plotSteps['English'];
-  const currentStep = steps[currentStepIndex];
-
+/* ---------- Agri-Talk ---------- */
+async function sendMessage() {
+  const input = $('chat-input'), box = $('chat-messages'), text = input.value.trim(); if (!text) return;
+  box.insertAdjacentHTML('beforeend', `<div class="flex justify-end"><div class="chat-bubble-user p-4 font-medium shadow-sm max-w-[90%]">${escapeHtml(text)}</div></div>`);
+  input.value = ''; input.style.height = 'auto';
+  const l = document.createElement('div'); l.className = 'chat-bubble-ai p-4 font-medium shadow-sm text-slate-500 max-w-[90%]'; l.textContent = 'Thinking...'; box.appendChild(l); box.scrollTop = box.scrollHeight;
   try {
-    const response = await fetch('/api/tutor-chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        crop: currentCropName,
-        stepTitle: currentStep.title,
-        stepText: currentStep.text,
-        userConfusion: txt,
-        language: guideLanguage,
-        soilData: "pH 6.2 (Optimal), Sandy Loam, Moisture 45%, Nitrogen: Low"
-      })
-    });
+    const r = await post('/api/chat', { message: text }), d = await r.json(); if (!r.ok) throw new Error(d.error);
+    l.className = 'chat-bubble-ai p-4 font-medium shadow-sm text-slate-700 leading-relaxed max-w-[90%]'; l.innerHTML = md(d.reply);
+  } catch (e) { l.className = 'chat-bubble-ai p-4 font-medium text-rose-700 max-w-[90%]'; l.textContent = 'Could not reach the server. Please check your connection and try again.'; }
+  box.scrollTop = box.scrollHeight;
+}
+const ci = $('chat-input');
+ci.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() } });
+ci.addEventListener('focus', () => { setTimeout(setVV, 150); setTimeout(setVV, 400) });
+ci.addEventListener('input', () => { ci.style.height = 'auto'; ci.style.height = Math.min(ci.scrollHeight, 112) + 'px' });
 
-    if (!response.ok) throw new Error('Failed to reach tutor');
-    const data = await response.json();
-    
-    clarityEl.innerHTML = `<strong>Tutor AI:</strong> ${md(data.reply)}`;
-  } catch (e) {
-    clarityEl.innerHTML = `<strong>Tutor AI:</strong> Let's break this down further for ${currentCropName}. Because your soil has Sandy Loam texture, pH 6.2, and low nitrogen, ${txt}. Here is how you tackle it: apply organic amendments evenly across the top layer so the roots absorb nutrients safely.`;
-  }
+/* ---------- Quiz ---------- */
+const QUIZ = [
+  { q: 'A soil test shows pH 6.2 in a sandy loam. What does this mean for vegetables?', o: ['It is a good range for most vegetables.', 'It is too acidic and burns roots.', 'Water will never drain.'], a: 0, e: 'pH 6.0 to 7.0 suits most vegetables, and sandy loam drains well.' },
+  { q: 'Your sensor reports low nitrogen. What is the safest step?', o: ['Add organic compost about 2 days before planting.', 'Spray chemicals during a rainstorm.', 'Ignore it.'], a: 0, e: 'Compost adds nitrogen gently. Rain would wash fertiliser away, and nitrogen drives leaf growth.' },
+  { q: 'Heavy rain is forecast in the next 48 hours. What about fertiliser?', o: ['Wait until the rain has passed.', 'Apply double now.', 'Stop checking the weather.'], a: 0, e: 'Rain washes nutrients out of the soil, so you lose money and feed.' }
+];
+let qi = 0, qs = 0, qDone = false;
+function openQuizModal() { qi = 0; qs = 0; renderQuiz(); const m = $('quiz-modal'); m.classList.remove('hidden'); m.classList.add('flex'); }
+function closeQuizModal() { const m = $('quiz-modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
+function renderQuiz() {
+  const q = QUIZ[qi]; qDone = false; $('quiz-score').textContent = `${qs} / ${QUIZ.length} correct`;
+  $('quiz-container').innerHTML = `<p class="text-sm font-bold uppercase text-emerald-400 mb-2">Question ${qi + 1} of ${QUIZ.length}</p><h3 class="text-xl font-bold font-heading mb-5">${escapeHtml(q.q)}</h3>
+    <div class="space-y-3 mb-5">${q.o.map((t, i) => `<button id="qo-${i}" onclick="answerQuiz(${i})" class="w-full text-left p-4 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 font-medium text-base">${escapeHtml(t)}</button>`).join('')}</div>
+    <div id="q-fb" class="hidden p-4 rounded-xl border text-base mb-4"></div>
+    <div id="q-next" class="hidden flex justify-end"><button onclick="nextQuiz()" class="min-h-[48px] px-6 rounded-xl font-bold bg-emerald-500 text-slate-950">${qi < QUIZ.length - 1 ? 'Next question' : 'Finish'}</button></div>`;
+}
+function answerQuiz(i) {
+  if (qDone) return; qDone = true; const q = QUIZ[qi], ok = i === q.a; if (ok) qs++;
+  q.o.forEach((_, k) => { const b = $('qo-' + k); b.disabled = true; if (k === q.a) b.className = 'w-full text-left p-4 rounded-xl border border-emerald-500 bg-emerald-500/20 text-emerald-100 font-bold text-base'; else if (k === i) b.className = 'w-full text-left p-4 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-100 text-base'; });
+  const fb = $('q-fb'); fb.className = `p-4 rounded-xl border text-base mb-4 ${ok ? 'border-emerald-500/40 bg-emerald-500/20 text-emerald-100' : 'border-rose-500/40 bg-rose-500/20 text-rose-100'}`;
+  fb.innerHTML = `<strong>${ok ? 'Correct!' : 'Not quite.'}</strong> ${escapeHtml(q.e)}`; $('q-next').classList.remove('hidden'); $('quiz-score').textContent = `${qs} / ${QUIZ.length} correct`;
+}
+function nextQuiz() {
+  if (++qi < QUIZ.length) return renderQuiz();
+  $('quiz-container').innerHTML = `<div class="text-center py-6"><h3 class="text-2xl font-bold font-heading mb-2">Quiz complete!</h3><p class="text-slate-300 mb-6">You scored <strong class="text-emerald-400">${qs} out of ${QUIZ.length}</strong>.</p><div class="flex gap-3 justify-center"><button onclick="openQuizModal()" class="min-h-[48px] px-6 rounded-xl font-bold bg-white/10">Retake</button><button onclick="closeQuizModal()" class="min-h-[48px] px-6 rounded-xl font-bold bg-emerald-500 text-slate-950">Close</button></div></div>`;
 }
 
-function closePlotGuide(){
-  const m = document.getElementById('plot-guide-modal');
-  const c = document.getElementById('plot-guide-content');
-  c.classList.add('scale-95', 'opacity-0');
-  setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
-}
+/* ---------- Live soil readings, alerts, Problem AI ---------- */
+let alertsState = [], readingState = null, changeState = null, pushActive = false, problemHistory = [];
+const CROP_KEY = 'sb_crop', SEEN_KEY = 'sb_seen_alerts';
+const getCrop = () => { try { return localStorage.getItem(CROP_KEY) || '' } catch (e) { return '' } };
+const getSeen = () => { try { return JSON.parse(localStorage.getItem(SEEN_KEY) || '[]') } catch (e) { return [] } };
+const addSeen = ids => { try { localStorage.setItem(SEEN_KEY, JSON.stringify([...new Set([...getSeen(), ...ids])].slice(-50))) } catch (e) {} };
+const sevClass = a => a.severity === 'critical' ? { box: 'bg-rose-50 border-rose-200', ico: 'bg-rose-100 text-rose-600', txt: 'text-rose-700' } : { box: 'bg-amber-50 border-amber-200', ico: 'bg-amber-100 text-amber-600', txt: 'text-amber-700' };
 
-/* ===== PROBLEM AI, ALERTS, PUSH ===== */
-const $=id=>document.getElementById(id);
-const mdFallback=t=>escapeHtml(t).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^#{1,6}\s*/gm,'').replace(/^\s*[\*\-]\s+/gm,'&bull; ').replace(/\*/g,'').replace(/\n/g,'<br>');
-const md=t=>{let h;try{h=window.marked&&marked.parse?marked.parse(t):mdFallback(t)}catch(e){h=mdFallback(t)}return window.DOMPurify?DOMPurify.sanitize(h):h};
-let alertsState=[],readingState=null,changeState=null,pushActive=false,problemHistory=[];
-const CROP_KEY='sb_crop';
-const getCrop=()=>{try{return localStorage.getItem(CROP_KEY)||''}catch(e){return''}};
-async function saveCrop(){
-  const v=$('crop-input').value.replace(/\s+/g,' ').trim().slice(0,60);
-  try{localStorage.setItem(CROP_KEY,v)}catch(e){}
-  $('crop-note').textContent=v?'Saved. Problem AI will check your soil against: '+v:'Crop cleared. Showing general soil health.';
-  fetch('/api/crop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({crop:v})}).catch(()=>{});
-  await refreshAlerts();
-  if(v) sendProblem(`I planted ${v}. Is my soil okay for it, and is anything changing that could harm it?`);
+function paintReadings() {
+  const r = readingState; if (!r) return;
+  const set = (s, v) => document.querySelectorAll(s).forEach(e => e.textContent = v);
+  set('[data-ph]', r.ph_level ?? '-'); set('[data-moisture]', r.moisture_level ?? '-'); set('[data-n]', r.nitrogen_status ?? '-');
+  const ph = Number(r.ph_level), m = Number(r.moisture_level), n = String(r.nitrogen_status || '').toLowerCase();
+  $('st-ph').textContent = isNaN(ph) ? 'No reading' : ph < 6 ? '⚠️ Too acidic' : ph > 7 ? '⚠️ Too alkaline' : '✅ Good range';
+  $('st-m').textContent = isNaN(m) ? 'No reading' : m < 35 ? '⚠️ Too dry' : m > 65 ? '⚠️ Too wet' : '✅ Good range';
+  $('st-n').textContent = n === 'low' ? '⚠️ Needs action' : n ? '✅ ' + r.nitrogen_status : 'No reading';
+  $('soil-advice').innerHTML = alertsState.length ? alertsState.map(a => `<div class="p-4 rounded-xl border ${sevClass(a).box}"><p class="font-bold">${escapeHtml(a.label)}</p><p>${escapeHtml(a.advice)}</p></div>`).join('') : '<p class="font-semibold text-emerald-700">✅ Your soil is in a healthy range. Nothing to fix right now.</p>';
 }
-$('crop-input').value=getCrop();$('crop-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveCrop()}});
-const SEEN_KEY='sb_seen_alerts';
-const getSeen=()=>{try{return JSON.parse(localStorage.getItem(SEEN_KEY)||'[]')}catch(e){return[]}};
-const addSeen=ids=>{try{localStorage.setItem(SEEN_KEY,JSON.stringify([...new Set([...getSeen(),...ids])].slice(-50)))}catch(e){}};
-const sevClass=a=>a.severity==='critical'?{box:'bg-rose-50 border-rose-200',ico:'bg-rose-100 text-rose-600',txt:'text-rose-700'}:{box:'bg-amber-50 border-amber-200',ico:'bg-amber-100 text-amber-600',txt:'text-amber-700'};
+async function refreshAlerts() {
+  try {
+    const r = await fetch('/api/alerts' + (getCrop() ? '?crop=' + encodeURIComponent(getCrop()) : '')); if (!r.ok) return;
+    const d = await r.json(); alertsState = d.alerts || []; readingState = d.reading || null; changeState = d.change || null;
+    renderBell(); renderProblemSummary(); paintReadings();
+    const fresh = alertsState.filter(a => !getSeen().includes(a.id));
+    if (fresh.length) { if (!pushActive && 'Notification' in window && Notification.permission === 'granted') fresh.forEach(localNotify); addSeen(fresh.map(a => a.id)); }
+  } catch (e) { console.error('Alerts error:', e) }
+}
+function localNotify(a) {
+  const o = { body: a.detail + (a.harm ? ' ' + a.harm : ''), tag: a.id, requireInteraction: true, data: { url: '/dashboard?alert=' + encodeURIComponent(a.id) } };
+  if ('serviceWorker' in navigator) navigator.serviceWorker.ready.then(r => r.showNotification(a.title, o)).catch(() => { try { new Notification(a.title, o) } catch (e) {} });
+}
+function renderBell() {
+  const n = alertsState.length, b = $('bell-badge'); b.textContent = n; b.style.display = n ? 'flex' : 'none';
+  const list = $('notif-list');
+  list.innerHTML = n ? alertsState.map((a, i) => { const c = sevClass(a); return `<button data-open="${i}" class="w-full text-left p-4 flex gap-3 hover:bg-slate-50 border-b border-slate-100"><span class="w-10 h-10 shrink-0 rounded-xl ${c.ico} flex items-center justify-center"><iconify-icon icon="lucide:alert-triangle" class="text-xl"></iconify-icon></span><span class="min-w-0"><span class="block font-bold text-sm">${escapeHtml(a.title)}</span><span class="block text-sm text-slate-600">${escapeHtml(a.detail)}</span>${a.harm ? `<span class="block text-sm font-semibold ${c.txt} mt-1">${escapeHtml(a.harm)}</span>` : ''}<span class="block text-xs font-bold ${c.txt} mt-1">Tap to get help from Problem AI</span></span></button>` }).join('') : '<p class="p-6 text-center text-slate-600 font-medium">No soil problems detected.</p>';
+  list.querySelectorAll('[data-open]').forEach(btn => btn.addEventListener('click', () => { toggleNotif(false); openProblem(alertsState[btn.dataset.open].id) }));
+}
+function renderProblemSummary() {
+  const el = $('problem-summary'); if (!el) return;
+  const r = readingState || {}, ch = changeState || {};
+  const delta = (v, u) => (v == null || v === 0) ? '' : `<span class="block text-[11px] font-bold text-slate-600">${v > 0 ? '&#9650;' : '&#9660;'} ${Math.abs(v)}${u}</span>`;
+  const chip = (l, v, x) => `<div class="bg-white border border-slate-200 rounded-xl px-3 py-2"><p class="text-[11px] font-bold text-slate-500 uppercase">${l}</p><p class="text-lg font-black">${escapeHtml(String(v))}</p>${x || ''}</div>`;
+  let h = `<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 mt-4">Live soil readings</p><div class="grid grid-cols-3 gap-2 mb-1">${chip('pH', r.ph_level ?? '-', delta(ch.ph, ''))}${chip('Moisture', r.moisture_level != null ? r.moisture_level + '%' : '-', delta(ch.moisture, '%'))}${chip('Nitrogen', r.nitrogen_status ?? '-', ch.nitrogen_from ? `<span class="block text-[11px] font-bold text-slate-600">was ${escapeHtml(String(ch.nitrogen_from))}</span>` : '')}</div><p class="text-[11px] text-slate-500 font-medium mb-4">Arrows show the change since the previous reading.</p>`;
+  if (!readingState) h += '<div class="rounded-xl bg-slate-100 p-4 font-semibold text-slate-700">No sensor readings are linked to your account yet.</div>';
+  else if (!alertsState.length) h += '<div class="rounded-xl bg-emerald-50 border border-emerald-200 p-4 font-semibold text-emerald-800">No soil problems detected' + (getCrop() ? ' for ' + escapeHtml(getCrop()) : '') + '.</div>';
+  else h += '<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Soil alerts</p>' + alertsState.map((a, i) => { const c = sevClass(a); return `<button data-ask="${i}" class="w-full text-left mb-2 rounded-xl border p-4 ${c.box}"><span class="flex items-center justify-between gap-2"><span class="font-bold">${escapeHtml(a.label)}</span><span class="text-xs font-bold uppercase ${c.txt}">${a.severity}</span></span><span class="block text-sm text-slate-700 mt-1">${escapeHtml(a.detail)}</span>${a.harm ? `<span class="block text-sm font-semibold ${c.txt} mt-1">${escapeHtml(a.harm)}</span>` : ''}<span class="block text-sm font-bold ${c.txt} mt-2">Get help</span></button>` }).join('');
+  el.innerHTML = h; el.querySelectorAll('[data-ask]').forEach(b => b.addEventListener('click', () => askAlert(alertsState[b.dataset.ask])));
+}
+function toggleNotif(force) { const p = $('notif-panel'), open = force !== undefined ? force : p.style.display === 'none'; p.style.display = open ? 'block' : 'none'; if (open) updatePushUI(); }
+document.addEventListener('click', e => { if (!e.target.closest('#notif-panel,#bell-btn')) $('notif-panel').style.display = 'none' });
+async function openProblem(alertId) { toggleProblem(true); await refreshAlerts(); if (alertId) { const a = alertsState.find(x => x.id === alertId); if (a) askAlert(a) } }
+function askAlert(a) { if (a) sendProblem(`Soil alert: ${a.label}. Can this harm my crop, and what should I do?`) }
+async function saveCrop() {
+  const v = $('crop-input').value.replace(/\s+/g, ' ').trim().slice(0, 60);
+  try { localStorage.setItem(CROP_KEY, v) } catch (e) {}
+  $('crop-note').textContent = v ? 'Saved. Problem AI will check your soil against: ' + v : 'Crop cleared. Showing general soil health.';
+  post('/api/crop', { crop: v }).catch(() => {}); await refreshAlerts();
+  if (v) sendProblem(`I planted ${v}. Is my soil okay for it, and is anything changing that could harm it?`);
+}
+$('crop-input').value = getCrop(); $('crop-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveCrop() } });
+async function sendProblem(preset) {
+  const input = $('problem-input'), box = $('problem-messages'), text = (preset || input.value).trim(); if (!text) return;
+  box.insertAdjacentHTML('beforeend', `<div class="flex justify-end"><div class="chat-bubble-user p-4 font-medium shadow-sm max-w-[90%]">${escapeHtml(text)}</div></div>`);
+  if (!preset) { input.value = ''; input.style.height = 'auto' }
+  const l = document.createElement('div'); l.className = 'chat-bubble-ai p-4 font-medium shadow-sm text-slate-500 max-w-[90%]'; l.textContent = 'Problem AI is checking your soil...'; box.appendChild(l); box.scrollTop = box.scrollHeight;
+  try {
+    const r = await post('/api/problem-chat', { message: text, history: problemHistory.slice(-8), crop: getCrop() }), d = await r.json(); if (!r.ok) throw new Error(d.error);
+    problemHistory.push({ role: 'user', text }, { role: 'ai', text: d.reply });
+    l.className = 'chat-bubble-ai p-4 font-medium shadow-sm text-slate-700 leading-relaxed max-w-[90%]'; l.innerHTML = md(d.reply);
+  } catch (e) { l.className = 'chat-bubble-ai p-4 font-medium text-rose-700 max-w-[90%]'; l.textContent = 'Could not reach the server. Please check your connection and try again.'; }
+  box.scrollTop = box.scrollHeight;
+}
+const pi = $('problem-input');
+pi.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendProblem() } });
+pi.addEventListener('focus', () => { setTimeout(setVV, 150); setTimeout(setVV, 400) });
+pi.addEventListener('input', () => { pi.style.height = 'auto'; pi.style.height = Math.min(pi.scrollHeight, 112) + 'px' });
 
-async function refreshAlerts(){
-  try{
-    const r=await fetch('/api/alerts'+(getCrop()?'?crop='+encodeURIComponent(getCrop()):'')); if(!r.ok) return;
-    const d=await r.json();
-    alertsState=d.alerts||[]; readingState=d.reading||null; changeState=d.change||null;
-    renderBell(); renderProblemSummary();
-    const fresh=alertsState.filter(a=>!getSeen().includes(a.id));
-    if(fresh.length){
-      if(!pushActive&&'Notification' in window&&Notification.permission==='granted') fresh.forEach(localNotify);
-      addSeen(fresh.map(a=>a.id));
-    }
-  }catch(e){console.error('Alerts error:',e)}
+/* ---------- Push ---------- */
+function b64ToU8(b) { const p = '='.repeat((4 - b.length % 4) % 4), s = (b + p).replace(/-/g, '+').replace(/_/g, '/'), r = atob(s); return Uint8Array.from([...r].map(c => c.charCodeAt(0))) }
+function updatePushUI() {
+  const l = $('push-label'), btn = $('enable-push'); if (!l) return;
+  if (!('Notification' in window)) { l.textContent = 'Notifications not supported here'; btn.disabled = true; return }
+  if (Notification.permission === 'denied') { l.textContent = 'Blocked: allow notifications in browser settings'; btn.disabled = true; return }
+  l.textContent = Notification.permission === 'granted' ? (pushActive ? 'Push alerts are on' : 'Alerts on while this page is open') : 'Turn on push alerts';
 }
-function localNotify(a){
-  const o={body:a.detail+(a.harm?' '+a.harm:''),tag:a.id,requireInteraction:true,data:{url:'/dashboard?alert='+encodeURIComponent(a.id)}};
-  if('serviceWorker' in navigator) navigator.serviceWorker.ready.then(r=>r.showNotification(a.title,o)).catch(()=>{try{new Notification(a.title,o)}catch(e){}});
-}
-function renderBell(){
-  const n=alertsState.length,b=$('bell-badge'); b.textContent=n; b.style.display=n?'flex':'none';
-  const list=$('notif-list');
-  list.innerHTML=n?alertsState.map((a,i)=>{const c=sevClass(a);return `<button data-open="${i}" class="w-full text-left p-4 flex gap-3 hover:bg-slate-50 border-b border-slate-100"><span class="w-10 h-10 shrink-0 rounded-xl ${c.ico} flex items-center justify-center"><iconify-icon icon="lucide:alert-triangle" class="text-xl"></iconify-icon></span><span class="min-w-0"><span class="block font-bold text-slate-900 text-sm">${escapeHtml(a.title)}</span><span class="block text-sm text-slate-600">${escapeHtml(a.detail)}</span>${a.harm?`<span class="block text-sm font-semibold ${c.txt} mt-1">${escapeHtml(a.harm)}</span>`:""}<span class="block text-xs font-bold ${c.txt} mt-1">Tap to get help from Problem AI</span></span></button>`}).join(''):'<p class="p-6 text-sm text-center text-slate-600 font-medium">No soil problems detected. Your soil looks healthy.</p>';
-  list.querySelectorAll('[data-open]').forEach(btn=>btn.addEventListener('click',()=>{toggleNotif(false);openProblem(alertsState[btn.dataset.open].id)}));
-}
-function renderProblemSummary(){
-  const el=$('problem-summary'); if(!el) return;
-  const r=readingState||{}, ch=changeState||{};
-  const delta=(v,u)=>(v==null||v===0)?'':`<span class="block text-[11px] font-bold text-slate-600">${v>0?'&#9650;':'&#9660;'} ${Math.abs(v)}${u}</span>`;
-  const chip=(l,v,extra)=>`<div class="bg-white border border-slate-200 rounded-xl px-3 py-2"><p class="text-[11px] font-bold text-slate-500 uppercase">${l}</p><p class="text-lg font-black text-slate-800">${escapeHtml(String(v))}</p>${extra||''}</div>`;
-  let h=`<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 mt-4">Live soil readings</p><div class="grid grid-cols-3 gap-2 mb-1">${chip('pH',r.ph_level??'-',delta(ch.ph,''))}${chip('Moisture',r.moisture_level!=null?r.moisture_level+'%':'-',delta(ch.moisture,'%'))}${chip('Nitrogen',r.nitrogen_status??'-',ch.nitrogen_from?`<span class="block text-[11px] font-bold text-slate-600">was ${escapeHtml(String(ch.nitrogen_from))}</span>`:'')}</div><p class="text-[11px] text-slate-500 font-medium mb-4">Arrows show the change since the previous reading.</p>`;
-  if(!alertsState.length) h+='<div class="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-sm font-semibold text-emerald-800">No soil problems detected'+(getCrop()?' for '+escapeHtml(getCrop()):'')+'. Your soil is within healthy range.</div>';
-  else h+='<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Soil alerts</p>'+alertsState.map((a,i)=>{const c=sevClass(a);return `<button data-ask="${i}" class="w-full text-left mb-2 rounded-xl border p-4 ${c.box}"><span class="flex items-center justify-between gap-2"><span class="font-bold text-slate-900">${escapeHtml(a.label)}</span><span class="text-xs font-bold uppercase ${c.txt}">${a.severity}</span></span><span class="block text-sm text-slate-700 mt-1">${escapeHtml(a.detail)}</span>${a.harm?`<span class="block text-sm font-semibold ${c.txt} mt-1">${escapeHtml(a.harm)}</span>`:''}<span class="block text-sm font-bold ${c.txt} mt-2">Get help</span></button>`}).join('');
-  el.innerHTML=h;
-  el.querySelectorAll('[data-ask]').forEach(b=>b.addEventListener('click',()=>askAlert(alertsState[b.dataset.ask])));
-}
-function toggleNotif(force){
-  const p=$('notif-panel'),open=force!==undefined?force:p.style.display==='none';
-  p.style.display=open?'block':'none'; if(open) updatePushUI();
-}
-document.addEventListener('click',e=>{if(!e.target.closest('#notif-panel,#bell-btn'))$('notif-panel').style.display='none'});
-
-let savedY2=0;
-function toggleProblem(force){
-  const w=$('problem-window'),open=force!==undefined?force:!w.classList.contains('open');
-  if(open===w.classList.contains('open')) return;
-  if(open){
-    if($('agri-talk-window').classList.contains('open')) toggleChat();
-    toggleNotif(false);
-    savedY2=window.scrollY; document.body.style.top=-savedY2+'px'; document.body.classList.add('chat-open'); w.classList.add('open'); setVV();
-  }else{
-    w.classList.remove('open'); w.style.top=''; w.style.height=''; document.body.classList.remove('chat-open'); document.body.style.top=''; window.scrollTo(0,savedY2); document.activeElement&&document.activeElement.blur();
-  }
-}
-async function openProblem(alertId){
-  toggleProblem(true);
-  await refreshAlerts();
-  if(alertId){const a=alertsState.find(x=>x.id===alertId); if(a) askAlert(a);}
-}
-function askAlert(a){ if(a) sendProblem(`Soil alert: ${a.label}. Can this harm my crop, and what should I do?`); }
-
-const PAVATAR='<div class="w-8 h-8 rounded-full bg-rose-100 shrink-0 flex items-center justify-center text-rose-600 mt-1"><iconify-icon icon="lucide:message-square-warning"></iconify-icon></div>';
-async function sendProblem(preset){
-  const input=$('problem-input'),box=$('problem-messages'),text=(preset||input.value).trim();
-  if(!text) return;
-  const u=document.createElement('div'); u.className='flex justify-end';
-  u.innerHTML=`<div class="chat-bubble-user p-4 text-sm font-medium shadow-sm max-w-[90%]">${escapeHtml(text)}</div>`;
-  box.appendChild(u); if(!preset){input.value='';input.style.height='auto'}
-  const l=document.createElement('div'); l.className='flex gap-3 max-w-[90%]';
-  l.innerHTML=PAVATAR+'<div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm text-slate-500">Problem AI is checking your soil...</div>';
-  box.appendChild(l); box.scrollTop=box.scrollHeight;
-  try{
-    const r=await fetch('/api/problem-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,history:problemHistory.slice(-8),crop:getCrop()})});
-    const d=await r.json(); l.remove();
-    if(!r.ok) throw new Error(d.error||'Something went wrong');
-    problemHistory.push({role:'user',text},{role:'ai',text:d.reply});
-    const a=document.createElement('div'); a.className='flex gap-3 max-w-[90%]';
-    a.innerHTML=PAVATAR+`<div class="chat-bubble-ai p-4 text-sm font-medium shadow-sm text-slate-700 leading-relaxed min-w-0">${md(d.reply)}</div>`;
-    box.appendChild(a);
-  }catch(e){
-    console.error('Problem AI error:',e); l.remove();
-    const x=document.createElement('div'); x.className='flex gap-3 max-w-[90%]';
-    x.innerHTML=PAVATAR+'<div class="chat-bubble-ai p-4 text-sm font-medium text-rose-700 shadow-sm">Could not reach the server. Please check your connection and try again.</div>';
-    box.appendChild(x);
-  }
-  box.scrollTop=box.scrollHeight;
-}
-const pi=$('problem-input');
-pi.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendProblem()}});
-pi.addEventListener('focus',()=>{setTimeout(setVV,150);setTimeout(setVV,400)});
-pi.addEventListener('input',()=>{pi.style.height='auto';pi.style.height=Math.min(pi.scrollHeight,112)+'px'});
-
-/* Push notifications */
-function b64ToU8(b){const p='='.repeat((4-b.length%4)%4),s=(b+p).replace(/-/g,'+').replace(/_/g,'/'),r=atob(s);return Uint8Array.from([...r].map(c=>c.charCodeAt(0)))}
-function updatePushUI(){
-  const l=$('push-label'),btn=$('enable-push'); if(!l) return;
-  if(!('Notification' in window)){l.textContent='Notifications not supported here';btn.disabled=true;return}
-  if(Notification.permission==='denied'){l.textContent='Blocked: allow notifications in browser settings';btn.disabled=true;return}
-  if(Notification.permission==='granted'){l.textContent=pushActive?'Push alerts are on':'Alerts on while this page is open';return}
-  l.textContent='Turn on push alerts';
-}
-async function enablePush(){
-  if(!('Notification' in window)) return;
-  if(Notification.permission!=='granted'){ await Notification.requestPermission(); }
-  if(Notification.permission==='granted'&&'serviceWorker' in navigator&&'PushManager' in window){
-    try{
-      const reg=await navigator.serviceWorker.ready;
-      const k=await (await fetch('/api/push/key')).json();
-      if(k.key){
-        const sub=(await reg.pushManager.getSubscription())||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToU8(k.key)});
-        await fetch('/api/push/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(sub)});
-        pushActive=true;
-      }
-    }catch(e){console.error('Push setup error:',e)}
+async function enablePush() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'granted') await Notification.requestPermission();
+  if (Notification.permission === 'granted' && 'serviceWorker' in navigator && 'PushManager' in window) {
+    try {
+      const reg = await navigator.serviceWorker.ready, k = await (await fetch('/api/push/key')).json();
+      if (k.key) { const sub = (await reg.pushManager.getSubscription()) || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToU8(k.key) }); await post('/api/push/subscribe', sub); pushActive = true }
+    } catch (e) { console.error('Push setup error:', e) }
   }
   updatePushUI();
 }
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/sw.js').then(async reg=>{
-    try{pushActive=!!(await reg.pushManager.getSubscription())}catch(e){}
-    updatePushUI();
-  }).catch(()=>{});
-}
-document.addEventListener('error',e=>{
-  if(e.target&&e.target.tagName==='IMG'){e.target.style.display='none';e.target.parentElement.classList.add('bg-gradient-to-br','from-emerald-100','to-emerald-50')}
-},true);
-refreshAlerts(); setInterval(refreshAlerts,60000);
-const alertParam=new URLSearchParams(location.search).get('alert');
-if(alertParam){window.history.replaceState(null,'',location.pathname);openProblem(alertParam)}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').then(async reg => { try { pushActive = !!(await reg.pushManager.getSubscription()) } catch (e) {} updatePushUI() }).catch(() => {});
 
-/* ===== APPLE WEATHER UI RENDERER (DB COORDINATES) ===== */
-function getWeatherIcon(code) {
-    if ([0].includes(Number(code))) return 'lucide:sun';
-    if ([1, 2].includes(Number(code))) return 'lucide:cloud-sun';
-    if ([3, 45, 48].includes(Number(code))) return 'lucide:cloud';
-    if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(Number(code))) return 'lucide:cloud-rain';
-    if ([95, 96, 99].includes(Number(code))) return 'lucide:cloud-lightning';
-    return 'lucide:cloud';
+/* ---------- Farm location ---------- */
+function setLocation() {
+  const s = $('loc-status');
+  if (!navigator.geolocation) { s.textContent = 'This device cannot share its location.'; return }
+  s.textContent = 'Finding your location...';
+  navigator.geolocation.getCurrentPosition(async p => {
+    try { const r = await post('/api/location', { latitude: p.coords.latitude, longitude: p.coords.longitude }); if (!r.ok) throw 0; s.textContent = '✅ Farm location saved.'; refreshLiveWeather(); loadRecommendations() }
+    catch (e) { s.textContent = 'Could not save your location. Please try again.' }
+  }, () => { s.textContent = 'Location was blocked. Allow location access in your browser and try again.' }, { enableHighAccuracy: true, timeout: 15000 });
 }
 
+/* ---------- Weather + climate ---------- */
+function getWeatherIcon(c) { c = Number(c); return c === 0 ? 'lucide:sun' : c <= 2 ? 'lucide:cloud-sun' : c <= 48 ? 'lucide:cloud' : (c >= 95) ? 'lucide:cloud-lightning' : 'lucide:cloud-rain' }
+function renderClimate(c) {
+  const el = $('climate-card'); if (!el) return;
+  if (!c) { el.textContent = 'Climate history is not available right now.'; return }
+  el.innerHTML = `<h4 class="font-bold font-heading text-slate-900 mb-2">Your area's climate</h4><p><strong>${escapeHtml(c.type)}</strong>, about ${c.annualRain} mm of rain a year.</p><p>Hottest: ${c.hot.month} (${c.hot.temp}°C). Coldest: ${c.cold.month} (${c.cold.temp}°C).</p><p>Rainy months: ${c.rainyMonths.length ? c.rainyMonths.join(', ') : 'no clear rainy season'}.</p><p>Frost risk: ${c.frostMonths.length ? c.frostMonths.join(', ') : 'rare'}.</p><p class="font-semibold mt-2">Compared with 10+ years ago it is ${c.warmingC >= 0 ? 'warmer' : 'cooler'} by ${Math.abs(c.warmingC)}°C and rainfall is ${c.rainChangePct >= 0 ? 'up' : 'down'} ${Math.abs(c.rainChangePct)}%.</p>`;
+}
 async function refreshLiveWeather() {
-    try {
-        const response = await fetch('/api/weather');
-        if (!response.ok) throw new Error('Weather request failed');
-        const data = await response.json();
-
-        document.getElementById('weather-city-title').textContent = data.city || 'Synced Farm Location';
-        document.getElementById('weather-temp-main').textContent = `${Math.round(data.temp)}°`;
-        document.getElementById('weather-condition-main').textContent = data.condition || 'Mostly Cloudy';
-        document.getElementById('weather-high').textContent = `${Math.round(data.high)}°`;
-        document.getElementById('weather-low').textContent = `${Math.round(data.low)}°`;
-
-        if(document.getElementById('weather-summary-temp')) document.getElementById('weather-summary-temp').textContent = `${Math.round(data.temp)}°`;
-        if(document.getElementById('weather-summary-condition')) document.getElementById('weather-summary-condition').textContent = data.condition;
-        if(document.getElementById('weather-summary-rain')) document.getElementById('weather-summary-rain').textContent = data.rain48h.toFixed(1);
-
-        const hourlyEl = document.getElementById('hourly-container');
-        if (hourlyEl && data.hourly) {
-            hourlyEl.innerHTML = data.hourly.map(h => `
-                <div class="flex flex-col items-center justify-center p-2 rounded-xl bg-white/5">
-                    <span class="text-xs text-slate-300 mb-2">${h.time}</span>
-                    <iconify-icon icon="${getWeatherIcon(h.code)}" class="text-xl text-amber-400 mb-2"></iconify-icon>
-                    <span class="text-sm font-bold text-white">${h.temp}°</span>
-                </div>
-            `).join('');
-        }
-
-        const dailyEl = document.getElementById('daily-container');
-        if (dailyEl && data.daily) {
-            dailyEl.innerHTML = data.daily.map(d => `
-                <div class="flex items-center justify-between py-1.5 border-b border-white/5 last:border-none">
-                    <span class="w-16 text-sm font-medium text-white">${d.day}</span>
-                    <div class="flex items-center gap-2">
-                        <iconify-icon icon="${getWeatherIcon(d.code)}" class="text-lg text-amber-400"></iconify-icon>
-                        <span class="text-xs text-blue-300">${d.pop > 15 ? d.pop + '%' : ''}</span>
-                    </div>
-                    <div class="flex items-center gap-3 w-32 justify-end">
-                        <span class="text-xs text-slate-400">${d.min}°</span>
-                        <div class="w-16 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                            <div class="bg-gradient-to-r from-emerald-400 to-amber-400 h-full rounded-full" style="width: 70%"></div>
-                        </div>
-                        <span class="text-xs font-bold text-white">${d.max}°</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        document.getElementById('weather-rain48').textContent = data.rain48h.toFixed(1);
-        document.getElementById('weather-rain-future').textContent = data.rainFuture48h.toFixed(1);
-        const rainCard = document.getElementById('rain-card-box');
-        const rainStatus = document.getElementById('weather-rain-status');
-
-        if (data.rainFuture48h > 1.0) {
-            rainCard.className = "bg-amber-50 p-6 rounded-2xl border-2 border-amber-500 shadow-[0_0_30px_rgba(245,158,11,0.15)] mb-6 transition-all";
-            rainStatus.textContent = `⚠️ Warning: ${data.rainFuture48h}mm expected soon! Postpone fertilizer application.`;
-            rainStatus.className = "text-sm font-bold text-amber-800 bg-amber-100 py-2 px-4 rounded-lg block text-center";
-        } else {
-            rainCard.className = "bg-white p-6 rounded-2xl border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.15)] mb-6 transition-all";
-            rainStatus.textContent = 'Clear conditions. Optimal for soil testing.';
-            rainStatus.className = "text-sm font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg block text-center";
-        }
-
-        document.getElementById('weather-updated').textContent = `Weather updated at ${new Date().toLocaleTimeString()}`;
-    } catch (err) {
-        console.error("Weather error:", err);
-    }
+  try {
+    const r = await fetch('/api/weather'); if (!r.ok) throw new Error('Weather request failed');
+    const d = await r.json(), t = (id, v) => { const e = $(id); if (e) e.textContent = v };
+    t('weather-city-title', d.city); renderClimate(d.climate);
+    t('weather-temp-main', Math.round(d.temp) + '°'); t('weather-condition-main', d.condition); t('weather-high', d.high + '°'); t('weather-low', d.low + '°');
+    t('weather-summary-temp', Math.round(d.temp) + '°'); t('weather-summary-condition', d.condition); t('weather-summary-rain', d.rain48h.toFixed(1));
+    $('hourly-container').innerHTML = d.hourly.map(h => `<div class="flex flex-col items-center p-2 rounded-xl bg-white/5"><span class="text-xs text-slate-300 mb-2">${h.time}</span><iconify-icon icon="${getWeatherIcon(h.code)}" class="text-xl text-amber-400 mb-2"></iconify-icon><span class="text-sm font-bold">${h.temp}°</span></div>`).join('');
+    $('daily-container').innerHTML = d.daily.map(x => `<div class="flex items-center justify-between py-1.5 border-b border-white/5"><span class="w-16 text-sm font-medium">${x.day}</span><div class="flex items-center gap-2"><iconify-icon icon="${getWeatherIcon(x.code)}" class="text-lg text-amber-400"></iconify-icon><span class="text-xs text-blue-300">${x.pop > 15 ? x.pop + '%' : ''}</span></div><span class="text-sm w-24 text-right"><span class="text-slate-400">${x.min}°</span> / <strong>${x.max}°</strong></span></div>`).join('');
+    t('weather-rain48', d.rain48h.toFixed(1)); t('weather-rain-future', d.rainFuture48h.toFixed(1));
+    const card = $('rain-card-box'), st = $('weather-rain-status');
+    if (d.rainFuture48h > 10) { card.className = 'bg-amber-50 p-6 rounded-2xl border-2 border-amber-500 mb-6'; st.textContent = `⚠️ ${d.rainFuture48h} mm of rain expected. Postpone fertiliser and compost.`; st.className = 'font-bold text-amber-800 bg-amber-100 py-2 px-4 rounded-lg text-center' }
+    else { card.className = 'bg-white p-6 rounded-2xl border-2 border-emerald-500 mb-6'; st.textContent = 'No heavy rain expected in the next 48 hours.'; st.className = 'font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg text-center' }
+    t('weather-updated', 'Weather updated at ' + new Date().toLocaleTimeString());
+  } catch (e) { console.error('Weather error:', e); const s = $('weather-summary-condition'); if (s) s.textContent = 'Weather unavailable right now' }
 }
 
-refreshLiveWeather();
-setInterval(refreshLiveWeather, 10 * 60 * 1000);
+/* ---------- Crop advice ---------- */
+const VERDICT = { plant: { t: 'Good to plant', c: 'bg-emerald-600' }, plant_with_care: { t: 'Plant with care', c: 'bg-amber-500' }, wait: { t: 'Wait, not a good time', c: 'bg-rose-600' } };
+async function loadRecommendations() {
+  const box = $('reco-list'), basis = $('reco-basis');
+  try {
+    const res = await fetch('/api/recommendations'); if (!res.ok) throw new Error(); const d = await res.json();
+    if (!d.ready) { basis.textContent = ''; box.innerHTML = `<p class="text-lg font-semibold text-slate-700">We still need: ${d.missing.map(escapeHtml).join(', ')}. Your crop advice appears once this is recorded.</p>`; return }
+    const b = d.basis;
+    document.querySelectorAll('[data-soil]').forEach(e => e.textContent = b.soilType ? b.soilType.replace(/\b\w/g, c => c.toUpperCase()) : 'Not recorded yet');
+    basis.textContent = `Based on your soil (pH ${b.ph}, moisture ${b.moisture}%, nitrogen ${b.nitrogen}${b.soilType ? ', ' + b.soilType : ''}), your area's usual weather for the next 3 months, and this week's rain forecast.` + (d.missing.length ? ` Still missing: ${d.missing.join(', ')}.` : '');
+    box.innerHTML = d.crops.map(c => { const v = VERDICT[c.verdict]; return `<div class="advanced-card rounded-3xl p-6 sm:p-8"><div class="flex items-center justify-between gap-3 mb-4"><h3 class="font-heading font-bold text-2xl">${escapeHtml(c.crop)}</h3><span class="${v.c} text-white font-bold px-4 py-2 rounded-full">${v.t}</span></div>${c.pros.map(p => `<p class="mb-2 text-slate-700">✅ ${escapeHtml(p)}</p>`).join('')}${c.cons.map(p => `<p class="mb-2 font-semibold">⚠️ ${escapeHtml(p)}</p>`).join('')}</div>` }).join('');
+  } catch (e) { box.innerHTML = '<p class="text-lg font-semibold text-rose-700">Could not load crop advice. Please try again.</p>' }
+}
 
-/* ===== DYNAMIC USER PROFILE LOADER ===== */
+/* ---------- Profile + start ---------- */
 async function loadUserProfile() {
-    try {
-        const res = await fetch('/api/me');
-        if (!res.ok) return;
-        const user = await res.json();
-        
-        const welcomeEl = document.querySelector('h1 span.gradient-text');
-        if (welcomeEl && user.fullname) {
-            welcomeEl.textContent = user.fullname;
-        }
-
-        const greetingEl = document.getElementById('chat-greeting');
-        if (greetingEl && user.fullname) {
-            greetingEl.textContent = `Hello ${user.fullname}! I am your Agri-Talk assistant powered by Gemini. Ask me about your soil, crops, planting seasons, pests, or irrigation.`;
-        }
-
-        const initials = user.fullname.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-        const avatarEl = document.querySelector('header .rounded-xl.bg-emerald-100');
-        if (avatarEl && initials) {
-            avatarEl.textContent = initials;
-        }
-    } catch (err) {
-        console.error("Failed to load user profile", err);
-    }
+  try {
+    const r = await fetch('/api/me'); if (!r.ok) return; const u = await r.json(); if (!u.fullname) return;
+    $('welcome-name').textContent = u.fullname;
+    $('chat-greeting').textContent = `Hello ${u.fullname}! Ask me about your soil, crops, planting seasons, pests, or irrigation. You can ask in your own language.`;
+    $('avatar').textContent = u.fullname.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  } catch (e) { console.error('Profile error', e) }
 }
-loadUserProfile();
+document.addEventListener('error', e => { if (e.target && e.target.tagName === 'IMG') e.target.style.display = 'none' }, true);
+loadUserProfile(); refreshAlerts(); setInterval(refreshAlerts, 60000); refreshLiveWeather(); setInterval(refreshLiveWeather, 600000); loadRecommendations();
+const alertParam = new URLSearchParams(location.search).get('alert');
+if (alertParam) { history.replaceState(null, '', location.pathname); openProblem(alertParam) }
 </script>
 </body>
 </html>
