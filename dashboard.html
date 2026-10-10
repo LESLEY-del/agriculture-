@@ -144,32 +144,7 @@ body.chat-open #chat-fab{display:none}
     </div>
   </div>
 
-  <!-- KNOW YOUR LAND: INTERACTIVE SOIL & FARM QUIZ (PLACED BELOW) -->
-  <div class="mt-14">
-    <div class="advanced-card p-6 sm:p-10 rounded-[2rem] bg-gradient-to-br from-slate-900 to-slate-800 text-white relative overflow-hidden">
-      <div class="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-      
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 relative z-10">
-        <div>
-          <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider border border-emerald-500/30">Farmer Academy</span>
-          <h2 class="text-2xl sm:text-3xl font-bold font-heading text-white mt-2">Know Your Land: Interactive Soil Quiz</h2>
-          <p class="text-slate-300 text-sm sm:text-base mt-1">Test your understanding of your soil telemetry (pH 6.2, Sandy Loam, and nitrogen) and master your farm decisions.</p>
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="text-right">
-            <p class="text-xs text-slate-400 font-semibold uppercase">Quiz Score</p>
-            <p id="quiz-score-badge" class="text-lg font-black text-emerald-400">0 / 3 Correct</p>
-          </div>
-        </div>
-      </div>
-
-      <div id="quiz-container" class="bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 border border-white/10 relative z-10">
-        <!-- Injected via JavaScript -->
-      </div>
-    </div>
-  </div>
-
-  <!-- DOWNLOADABLE EDUCATIONAL GUIDES & PDF HUB -->
+  <!-- 1. DOWNLOADABLE EDUCATIONAL GUIDES & PDF HUB (PLACED ABOVE) -->
   <div class="mt-14">
     <div class="advanced-card p-6 sm:p-10 rounded-[2rem] bg-gradient-to-br from-emerald-900 to-slate-900 text-white relative overflow-hidden">
       <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -207,6 +182,25 @@ body.chat-open #chat-fab{display:none}
             <li>• Actionable checklist to protect your crop investment from weather shocks.</li>
           </ul>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. KNOW YOUR LAND: CLEAN QUIZ BUTTON CARD (PLACED BELOW) -->
+  <div class="mt-14">
+    <div class="advanced-card p-6 sm:p-10 rounded-[2rem] bg-gradient-to-br from-slate-900 to-slate-800 text-white relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="relative z-10 max-w-xl">
+        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider border border-emerald-500/30">Farmer Academy</span>
+        <h2 class="text-2xl sm:text-3xl font-bold font-heading text-white mt-2">Know Your Land: Interactive Soil Quiz</h2>
+        <p class="text-slate-300 text-sm sm:text-base mt-1">Test your understanding of your soil telemetry (pH 6.2, Sandy Loam, and nitrogen) and master your farm decisions in a clean quiz session.</p>
+      </div>
+
+      <div class="relative z-10 shrink-0">
+        <button onclick="openQuizModal()" class="min-h-[52px] px-8 rounded-2xl font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-colors flex items-center gap-3 shadow-xl">
+          <iconify-icon icon="lucide:award" class="text-xl"></iconify-icon> Start Know Your Land Quiz
+        </button>
       </div>
     </div>
   </div>
@@ -409,6 +403,27 @@ body.chat-open #chat-fab{display:none}
   </div>
 </div>
 </main>
+
+<!-- QUIZ POPUP MODAL -->
+<div id="quiz-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeQuizModal()"></div>
+  <div id="quiz-modal-content" class="relative bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-3xl shadow-2xl w-full max-w-xl max-h-[90dvh] overflow-y-auto p-6 sm:p-8 scale-95 opacity-0 transition-all duration-300 border border-slate-700">
+    <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center"><iconify-icon icon="lucide:award" class="text-xl"></iconify-icon></div>
+        <div>
+          <h3 class="text-lg font-bold font-heading text-white">Know Your Land Quiz</h3>
+          <p id="quiz-modal-score" class="text-xs text-emerald-400 font-semibold">0 / 3 Correct</p>
+        </div>
+      </div>
+      <button onclick="closeQuizModal()" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white rounded-full bg-white/5"><iconify-icon icon="lucide:x" class="text-xl"></iconify-icon></button>
+    </div>
+    
+    <div id="quiz-container">
+      <!-- Injected via JavaScript -->
+    </div>
+  </div>
+</div>
 
 <!-- STEP-BY-STEP PLOT PREPARATION GUIDE MODAL -->
 <div id="plot-guide-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
@@ -721,12 +736,30 @@ let currentQuizIndex = 0;
 let userQuizScore = 0;
 let quizAnswered = false;
 
+function openQuizModal() {
+  currentQuizIndex = 0;
+  userQuizScore = 0;
+  renderQuiz();
+  const m = document.getElementById('quiz-modal');
+  const c = document.getElementById('quiz-modal-content');
+  m.classList.remove('hidden'); m.classList.add('flex');
+  void m.offsetWidth;
+  c.classList.remove('scale-95', 'opacity-0');
+}
+
+function closeQuizModal() {
+  const m = document.getElementById('quiz-modal');
+  const c = document.getElementById('quiz-modal-content');
+  c.classList.add('scale-95', 'opacity-0');
+  setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
+}
+
 function renderQuiz() {
   const container = document.getElementById('quiz-container');
   if(!container) return;
 
   const quiz = farmQuizzes[currentQuizIndex];
-  document.getElementById('quiz-score-badge').textContent = `${userQuizScore} / ${farmQuizzes.length} Correct`;
+  document.getElementById('quiz-modal-score').textContent = `${userQuizScore} /${farmQuizzes.length} Correct`;
 
   let optionsHtml = quiz.options.map((opt, idx) => `
     <button onclick="handleQuizAnswer(${idx})" id="quiz-opt-${idx}" class="w-full text-left p-4 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 transition-all font-medium text-sm sm:text-base flex items-center justify-between group">
@@ -736,17 +769,16 @@ function renderQuiz() {
   `).join('');
 
   container.innerHTML = `
-    <div class="mb-4 flex items-center justify-between">
-      <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Question ${currentQuizIndex + 1} of ${farmQuizzes.length}</span>
-      <span class="text-xs text-slate-300 font-medium">Test &amp; Learn Your Land</span>
+    <div class="mb-3 flex items-center justify-between">
+      <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Question ${currentQuizIndex + 1} of${farmQuizzes.length}</span>
     </div>
-    <h3 class="text-lg sm:text-xl font-bold font-heading text-white mb-6">${escapeHtml(quiz.question)}</h3>
-    <div class="space-y-3 mb-6" id="quiz-options-list">
+    <h3 class="text-lg sm:text-xl font-bold font-heading text-white mb-5">${escapeHtml(quiz.question)}</h3>
+    <div class="space-y-3 mb-5" id="quiz-options-list">
       ${optionsHtml}
     </div>
     <div id="quiz-feedback-box" class="hidden p-4 rounded-xl border text-sm leading-relaxed mb-4"></div>
     <div id="quiz-next-wrap" class="hidden flex justify-end">
-      <button onclick="nextQuizQuestion()" class="min-h-[44px] px-6 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-600 text-slate-950 transition-colors flex items-center gap-2">
+      <button onclick="nextQuizQuestion()" class="min-h-[44px] px-6 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-colors flex items-center gap-2">
         <span>${currentQuizIndex < farmQuizzes.length - 1 ? 'Next Question' : 'Complete Quiz'}</span>
         <iconify-icon icon="lucide:arrow-right"></iconify-icon>
       </button>
@@ -783,7 +815,7 @@ function handleQuizAnswer(idx) {
     feedbackBox.innerHTML = `<strong>❌ Not quite.</strong> ${escapeHtml(selected.explanation)}`;
   }
 
-  document.getElementById('quiz-score-badge').textContent = `${userQuizScore} / ${farmQuizzes.length} Correct`;
+  document.getElementById('quiz-modal-score').textContent = `${userQuizScore} /${farmQuizzes.length} Correct`;
   feedbackBox.classList.remove('hidden');
   nextWrap.classList.remove('hidden');
 }
@@ -795,13 +827,16 @@ function nextQuizQuestion() {
   } else {
     const container = document.getElementById('quiz-container');
     container.innerHTML = `
-      <div class="text-center py-8">
+      <div class="text-center py-6">
         <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-4 text-3xl">
           <iconify-icon icon="lucide:award"></iconify-icon>
         </div>
         <h3 class="text-2xl font-bold font-heading text-white mb-2">Quiz Completed!</h3>
-        <p class="text-slate-300 mb-6">You scored <strong class="text-emerald-400">${userQuizScore} out of ${farmQuizzes.length}</strong>. You understand your soil telemetry and weather triggers like a pro farmer!</p>
-        <button onclick="resetQuiz()" class="min-h-[48px] px-8 rounded-xl font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-colors">Retake Quiz</button>
+        <p class="text-slate-300 mb-6">You scored <strong class="text-emerald-400">${userQuizScore} out of${farmQuizzes.length}</strong>. You understand your soil telemetry and weather triggers like a pro farmer!</p>
+        <div class="flex gap-3 justify-center">
+          <button onclick="resetQuiz()" class="min-h-[44px] px-6 rounded-xl font-bold bg-white/10 text-white hover:bg-white/20 transition-colors">Retake Quiz</button>
+          <button onclick="closeQuizModal()" class="min-h-[44px] px-6 rounded-xl font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-colors">Close</button>
+        </div>
       </div>
     `;
   }
@@ -812,10 +847,6 @@ function resetQuiz() {
   userQuizScore = 0;
   renderQuiz();
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  renderQuiz();
-});
 
 /* ===== STEP-BY-STEP TUTOR AI GUIDE ===== */
 let currentCropName = '';
@@ -1018,7 +1049,7 @@ function renderProblemSummary(){
   const r=readingState||{}, ch=changeState||{};
   const delta=(v,u)=>(v==null||v===0)?'':`<span class="block text-[11px] font-bold text-slate-600">${v>0?'&#9650;':'&#9660;'} ${Math.abs(v)}${u}</span>`;
   const chip=(l,v,extra)=>`<div class="bg-white border border-slate-200 rounded-xl px-3 py-2"><p class="text-[11px] font-bold text-slate-500 uppercase">${l}</p><p class="text-lg font-black text-slate-800">${escapeHtml(String(v))}</p>${extra||''}</div>`;
-  let h=`<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 mt-4">Live soil readings</p><div class="grid grid-cols-3 gap-2 mb-1">${chip('pH',r.ph_level??'-',delta(ch.ph,''))}${chip('Moisture',r.moisture_level!=null?r.moisture_level+'%':'-',delta(ch.moisture,'%'))}${chip('Nitrogen',r.nitrogen_status??'-',ch.nitrogen_from?`<span class="block text-[11px] font-bold text-slate-600">was ${escapeHtml(String(ch.nitrogen_from))}</span>`:'')}</div><p class="text-[11px] text-slate-500 font-medium mb-4">Arrows show the change since the previous reading.</p>`;
+  let h=`<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 mt-4">Live soil readings</p><div class="grid grid-cols-3 gap-2 mb-1">${chip('pH',r.ph_level??'-',delta(ch.ph,''))}${chip('Moisture',r.moisture_level!=null?r.moisture_level+'\%':'-',delta(ch.moisture,'\%'))}${chip('Nitrogen',r.nitrogen_status??'-',ch.nitrogen_from?`<span class="block text-[11px] font-bold text-slate-600">was ${escapeHtml(String(ch.nitrogen_from))}</span>`:'')}</div><p class="text-[11px] text-slate-500 font-medium mb-4">Arrows show the change since the previous reading.</p>`;
   if(!alertsState.length) h+='<div class="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-sm font-semibold text-emerald-800">No soil problems detected'+(getCrop()?' for '+escapeHtml(getCrop()):'')+'. Your soil is within healthy range.</div>';
   else h+='<p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Soil alerts</p>'+alertsState.map((a,i)=>{const c=sevClass(a);return `<button data-ask="${i}" class="w-full text-left mb-2 rounded-xl border p-4 ${c.box}"><span class="flex items-center justify-between gap-2"><span class="font-bold text-slate-900">${escapeHtml(a.label)}</span><span class="text-xs font-bold uppercase ${c.txt}">${a.severity}</span></span><span class="block text-sm text-slate-700 mt-1">${escapeHtml(a.detail)}</span>${a.harm?`<span class="block text-sm font-semibold ${c.txt} mt-1">${escapeHtml(a.harm)}</span>`:''}<span class="block text-sm font-bold ${c.txt} mt-2">Get help</span></button>`}).join('');
   el.innerHTML=h;
@@ -1149,83 +1180,4 @@ async function refreshLiveWeather() {
             hourlyEl.innerHTML = data.hourly.map(h => `
                 <div class="flex flex-col items-center justify-center p-2 rounded-xl bg-white/5">
                     <span class="text-xs text-slate-300 mb-2">${h.time}</span>
-                    <iconify-icon icon="${getWeatherIcon(h.code)}" class="text-xl text-amber-400 mb-2"></iconify-icon>
-                    <span class="text-sm font-bold text-white">${h.temp}°</span>
-                </div>
-            `).join('');
-        }
-
-        const dailyEl = document.getElementById('daily-container');
-        if (dailyEl && data.daily) {
-            dailyEl.innerHTML = data.daily.map(d => `
-                <div class="flex items-center justify-between py-1.5 border-b border-white/5 last:border-none">
-                    <span class="w-16 text-sm font-medium text-white">${d.day}</span>
-                    <div class="flex items-center gap-2">
-                        <iconify-icon icon="${getWeatherIcon(d.code)}" class="text-lg text-amber-400"></iconify-icon>
-                        <span class="text-xs text-blue-300">${d.pop > 15 ? d.pop + '%' : ''}</span>
-                    </div>
-                    <div class="flex items-center gap-3 w-32 justify-end">
-                        <span class="text-xs text-slate-400">${d.min}°</span>
-                        <div class="w-16 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                            <div class="bg-gradient-to-r from-emerald-400 to-amber-400 h-full rounded-full" style="width: 70%"></div>
-                        </div>
-                        <span class="text-xs font-bold text-white">${d.max}°</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        document.getElementById('weather-rain48').textContent = data.rain48h.toFixed(1);
-        document.getElementById('weather-rain-future').textContent = data.rainFuture48h.toFixed(1);
-        const rainCard = document.getElementById('rain-card-box');
-        const rainStatus = document.getElementById('weather-rain-status');
-
-        if (data.rainFuture48h > 1.0) {
-            rainCard.className = "bg-amber-50 p-6 rounded-2xl border-2 border-amber-500 shadow-[0_0_30px_rgba(245,158,11,0.15)] mb-6 transition-all";
-            rainStatus.textContent = `⚠️ Warning: ${data.rainFuture48h}mm expected soon! Postpone fertilizer application.`;
-            rainStatus.className = "text-sm font-bold text-amber-800 bg-amber-100 py-2 px-4 rounded-lg block text-center";
-        } else {
-            rainCard.className = "bg-white p-6 rounded-2xl border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.15)] mb-6 transition-all";
-            rainStatus.textContent = 'Clear conditions. Optimal for soil testing.';
-            rainStatus.className = "text-sm font-bold text-slate-700 bg-slate-100 py-2 px-4 rounded-lg block text-center";
-        }
-
-        document.getElementById('weather-updated').textContent = `Weather updated at ${new Date().toLocaleTimeString()}`;
-    } catch (err) {
-        console.error("Weather error:", err);
-    }
-}
-
-refreshLiveWeather();
-setInterval(refreshLiveWeather, 10 * 60 * 1000);
-
-/* ===== DYNAMIC USER PROFILE LOADER ===== */
-async function loadUserProfile() {
-    try {
-        const res = await fetch('/api/me');
-        if (!res.ok) return;
-        const user = await res.json();
-        
-        const welcomeEl = document.querySelector('h1 span.gradient-text');
-        if (welcomeEl && user.fullname) {
-            welcomeEl.textContent = user.fullname;
-        }
-
-        const greetingEl = document.getElementById('chat-greeting');
-        if (greetingEl && user.fullname) {
-            greetingEl.textContent = `Hello ${user.fullname}! I am your Agri-Talk assistant powered by Gemini. Ask me about your soil, crops, planting seasons, pests, or irrigation.`;
-        }
-
-        const initials = user.fullname.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-        const avatarEl = document.querySelector('header .rounded-xl.bg-emerald-100');
-        if (avatarEl && initials) {
-            avatarEl.textContent = initials;
-        }
-    } catch (err) {
-        console.error("Failed to load user profile", err);
-    }
-}
-loadUserProfile();
-</script>
-</body>
-</html>
+                    <iconify-icon icon="${getWeatherIcon(h.code)}" class="text-xl text-amber-400 mb-2"></iconify-
