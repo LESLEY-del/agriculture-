@@ -296,9 +296,11 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
     if (!message) return res.status(400).json({ error: 'Message content is required.' });
     if (message.length > 1000) return res.status(400).json({ error: 'Message is too long. Please keep it under 1000 characters.' });
     const reading = (await getReadings(req.user.id, 1))[0] || { ph_level: 'unknown', moisture_level: 'unknown', nitrogen_status: 'unknown' };
+    const prof = await getProfile(req.user.id), planted = await getPlantedCrops(req.user.id);
+    const farmCtx = `\nRECORDED FARM FACTS: soil type ${(prof && prof.soil_type) || 'not recorded'}; irrigation ${prof ? (prof.irrigated ? 'yes' : 'none recorded') : 'not recorded'}; water source ${(prof && prof.water_source) || 'not recorded'}; crops planted ${planted.join(', ') || 'not recorded'}.\nNever invent farm facts. Do not prescribe fertiliser or pesticide quantities. If information is missing, say what is needed and suggest an agricultural advisor.`;
     for (let attempt = 1; attempt <= 2; attempt++) {
         try {
-            const response = await ai.models.generateContent({ model: MODEL(), contents: message, config: { systemInstruction: buildSystemInstruction(req.user, reading), temperature: 0.4, maxOutputTokens: 700 } });
+            const response = await ai.models.generateContent({ model: MODEL(), contents: message, config: { systemInstruction: buildSystemInstruction(req.user, reading) + farmCtx, temperature: 0.4, maxOutputTokens: 700 } });
             const reply = (response.text || '').trim();
             if (!reply || reply.toUpperCase().startsWith(OFF_TOPIC_TAG)) return res.json({ reply: OFF_TOPIC_REPLY, offTopic: true });
             return res.json({ reply });
@@ -408,6 +410,94 @@ app.post('/api/admin/farm-profile', async (req, res) => {
     if (!farmer_id) return res.status(400).json({ error: 'farmer_id required' });
     const { error } = await supabase.from('farm_profiles').upsert({ farmer_id: String(farmer_id), soil_type: String(soil_type || '').toLowerCase().trim() || null, irrigated: !!irrigated, water_source, size_m2, updated_at: new Date().toISOString() }, { onConflict: 'farmer_id' });
     if (error) return res.status(500).json({ error: error.message });
+    res.json({ success: true });
+});
+
+/* ---------- MY FARM: 3-level findings, glance, next actions, calendar tasks, history ---------- */
+const STATUS = { good: 'Good', attention: 'Needs attention', action: 'Action recommended', unassessed: 'Not yet assessed' };
+const SOIL_NOTES = {
+    'sandy': 'Sandy soil drains fast and holds little water and nutrients, so crops may need water more often.',
+    'sandy loam': 'Sandy loam drains well and still holds a fair amount of water.',
+    'loam': 'Loam is balanced: it holds water and still drains well.',
+    'clay loam': 'Clay loam holds water well and drains more slowly than loam.',
+    'clay': 'Clay holds water and nutrients but drains slowly and can get waterlogged.'
+};
+function rainNext48(d) {
+    if (!d) return null;
+    const h = d.hourly, now = Math.max(0, h.time.findIndex(t => t >= d.current.time));
+    return +h.precipitation.slice(now, now + 48).reduce((a, b) => a + (b || 0), 0).toFixed(1);
+}
+function buildFindings(r, p, crops, rain) {
+    const F = [], f = (area, title, status, result, meaning, todo) => F.push({ area, title, status, statusLabel: STATUS[status], result, meaning, todo: todo || [] });
+    const cp = crops.length ? profileFor(crops[0]) : null, rng = cp || GENERAL, forCrop = cp ? crops[0] : 'most vegetables';
+    const ph = r ? Number(r.ph_level) : NaN, m = r ? Number(r.moisture_level) : NaN, n = r ? String(r.nitrogen_status || '').toLowerCase() : '';
+    if (isNaN(ph)) f('soil', 'Soil acidity (pH)', 'unassessed', 'No pH reading has been recorded yet.', 'pH shows how acidic or alkaline your soil is. It affects how well plants take up nutrients.', ['We will add this when your soil is measured.']);
+    else {
+        const d = ph < rng.ph[0] ? rng.ph[0] - ph : ph > rng.ph[1] ? ph - rng.ph[1] : 0;
+        f('soil', 'Soil acidity (pH)', d === 0 ? 'good' : d <= 1 ? 'attention' : 'action',
+            `Your soil pH is ${ph}. ` + (d === 0 ? `That is in the usual range for ${forCrop} (${rng.ph[0]} to ${rng.ph[1]}).` : `That is more ${ph < rng.ph[0] ? 'acidic' : 'alkaline'} than the usual range for ${forCrop} (${rng.ph[0]} to ${rng.ph[1]}).`),
+            'pH affects how well plants take up nutrients. The effect depends on the crop and how far the pH is from its range.',
+            d === 0 ? ['Keep checking pH each season.'] : ['Check the pH range your crop needs.', 'Ask an agricultural advisor before adding lime or sulphur, using your soil test.', 'Test the soil again after any change.']);
+    }
+    if (isNaN(m)) f('soil', 'Soil moisture', 'unassessed', 'No moisture reading has been recorded yet.', 'Moisture shows how much water is in the soil right now.');
+    else {
+        const lo = rng.moisture[0], hi = rng.moisture[1], s = m < lo ? (m < lo - 15 ? 'action' : 'attention') : m > hi ? (m > hi + 15 ? 'action' : 'attention') : 'good';
+        f('soil', 'Soil moisture', s, `Your soil moisture is ${m}%. ` + (s === 'good' ? 'That is in a healthy range.' : m < lo ? `The soil is drier than the usual ${lo}% to ${hi}%.` : `The soil is wetter than the usual ${lo}% to ${hi}%.`),
+            'Too little water makes plants wilt. Too much water starves roots of air.',
+            s === 'good' ? ['Check again in a few days.'] : m < lo ? ['Water deeply, early in the morning.', 'Add mulch to keep moisture in.'] : ['Pause watering.', 'Check that water can drain away.']);
+    }
+    if (!n) f('soil', 'Nitrogen', 'unassessed', 'No nitrogen reading has been recorded yet.', 'Nitrogen helps leaves and stems grow.');
+    else f('soil', 'Nitrogen', n === 'low' ? 'action' : 'good', `Nitrogen is ${r.nitrogen_status}.`, 'Nitrogen helps leaves and stems grow. Low nitrogen can make leaves pale and slow growth.',
+        n === 'low' ? ['Add well-rotted compost or an organic nitrogen feed.', 'Do it when no heavy rain is forecast.', 'Check the reading again in about 7 days.'] : ['Keep a record of any fertiliser you add.']);
+    const st = p && p.soil_type;
+    f('soil', 'Soil type', st ? 'good' : 'unassessed', st ? `Your soil type was recorded as ${st}.` : 'Your soil type has not been recorded yet.',
+        st ? (SOIL_NOTES[st] || 'Soil type affects how well your soil holds water and nutrients.') : 'Soil type affects how much water and nutrient your soil holds.', st ? [] : ['We will add this after your farm study.']);
+    const heavy = rain != null && rain > 10;
+    f('water', 'Water and rain', !p ? 'unassessed' : heavy ? 'attention' : 'good',
+        (p ? `Water source: ${p.water_source || 'not recorded'}. Irrigation: ${p.irrigated ? 'yes' : 'none recorded'}.` : 'Your water sources have not been recorded yet.') + (rain != null ? ` Rain expected in the next 48 hours: ${rain} mm.` : ''),
+        'Crops need steady water. Heavy rain can wash fertiliser out of the soil.',
+        heavy ? ['Postpone fertiliser and compost until the rain has passed.'] : ['Check whether your water supply meets what your crop needs.']);
+    return F;
+}
+function buildTasks(r, crops, rain) {
+    const t = [{ id: 'moisture', title: 'Check the soil moisture in your field this week.' }];
+    if (r && String(r.nitrogen_status || '').toLowerCase() === 'low') t.push({ id: 'compost', title: 'Add organic compost to low-nitrogen areas, when no heavy rain is expected.' });
+    if (rain > 10) t.push({ id: 'rainhold', title: `Postpone fertiliser: ${rain} mm of rain is expected in the next 48 hours.` });
+    t.push(crops.length ? { id: 'inspect', title: `Inspect your ${crops[0]} for signs of pests and disease.` } : { id: 'plant', title: 'Tell us what you planted (use Problem AI) so we can check your soil against it.' });
+    t.push({ id: 'record', title: 'Write down any fertiliser you apply, and the date.' });
+    return t;
+}
+const weekKey = () => { const y = new Date().getFullYear(); return `${y}w${Math.ceil((Date.now() - new Date(y, 0, 1)) / 6048e5)}`; };
+app.get('/api/my-farm', authenticateToken, async (req, res) => {
+    try {
+        const id = req.user.id, { lat, lon } = await getCoords(id), wk = weekKey();
+        const [rs, p, crops, fc, st] = await Promise.all([
+            getReadings(id, 10), getProfile(id), getPlantedCrops(id),
+            cached(`fc:${lat.toFixed(2)},${lon.toFixed(2)}`, 6e5, () => getForecast(lat, lon)).catch(() => null),
+            supabase.from('farm_task_status').select('task_id,status').eq('farmer_id', String(id)).then(x => x.data || []).catch(() => [])
+        ]);
+        const r = rs[0] || null, rain = rainNext48(fc), F = buildFindings(r, p, crops, rain);
+        const worst = a => ['action', 'attention', 'unassessed', 'good'].find(s => a.some(x => x.status === s)) || 'unassessed';
+        const G = (area, status, note) => ({ area, status, statusLabel: STATUS[status], note });
+        const soilF = F.filter(x => x.area === 'soil' && x.title !== 'Soil type'), waterF = F.find(x => x.area === 'water');
+        res.json({
+            name: req.user.fullname, date: new Date().toISOString().slice(0, 10), hasReading: !!r, crops,
+            profile: p ? { soil_type: p.soil_type, irrigated: p.irrigated, water_source: p.water_source } : null,
+            findings: F,
+            glance: [G('Soil condition', worst(soilF), 'Based on pH, moisture and nitrogen.'), G('Water availability', waterF.status, 'Based on your recorded water source and the rain forecast.'),
+                G('Crop condition', 'unassessed', 'No crop observations have been recorded yet.'), G('Pest and disease monitoring', 'unassessed', 'No inspection has been recorded yet.'),
+                G('Farming records', crops.length ? 'good' : 'attention', crops.length ? 'Crops recorded: ' + crops.join(', ') : 'Tell us what you planted.')],
+            nextActions: F.filter(x => x.status === 'action' || x.status === 'attention').sort((a, b) => (a.status === 'action' ? 0 : 1) - (b.status === 'action' ? 0 : 1)).slice(0, 3).map(x => ({ title: x.title, text: x.todo[0] || x.result })),
+            tasks: buildTasks(r, crops, rain).map(t => { const id2 = `${t.id}-${wk}`; const s = st.find(x => x.task_id === id2); return { id: id2, title: t.title, status: s ? s.status : 'todo' }; }),
+            history: rs.map(x => ({ at: x.recorded_at, ph: x.ph_level, moisture: x.moisture_level, nitrogen: x.nitrogen_status })).reverse()
+        });
+    } catch (e) { console.error('My farm:', e.message); res.status(500).json({ error: 'Could not load your farm' }); }
+});
+app.post('/api/tasks', authenticateToken, async (req, res) => {
+    const { id, status } = req.body;
+    if (!/^[a-z0-9-]{3,40}$/.test(String(id)) || !['todo', 'doing', 'done'].includes(status)) return res.status(400).json({ error: 'Invalid task' });
+    const { error } = await supabase.from('farm_task_status').upsert({ farmer_id: String(req.user.id), task_id: id, status, updated_at: new Date().toISOString() }, { onConflict: 'farmer_id,task_id' });
+    if (error) return res.status(500).json({ error: 'Could not save' });
     res.json({ success: true });
 });
 
